@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CD0C7FBF-7376-4F9A-A8AF-8B6031D88B85}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>iTunes_Knockoff</RootNamespace>
-    <AssemblyName>iTunes Knockoff</AssemblyName>
+    <RootNamespace>Attuned</RootNamespace>
+    <AssemblyName>Attuned</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -71,6 +71,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="ShowData.resx">
       <DependentUpon>ShowData.cs</DependentUpon>

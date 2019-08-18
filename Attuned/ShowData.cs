@@ -21,20 +21,23 @@ namespace Attuned
         public XmlDocument xmldoc;
         XmlNodeList tlkeys;
 
+        // defaults to show
+        string[] defaultCols = { "Name", "Artist", "Album", "Genre", "Rating", "Play Count" };
+
         public ShowData()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Triggers when the for is loaded.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShowData_Load(object sender, EventArgs e)
         {
             // load the xml document
             xmldoc = LoadXML();
-            if (xmldoc == null)
-            {
-                MessageBox.Show("Error: Could not find XML file");
-                Environment.Exit(1);
-            }
 
             // get the node which contains all tracks
             XmlNode tracknode = xmldoc["plist"]["dict"]["dict"];
@@ -45,10 +48,26 @@ namespace Attuned
             // give the user full choice of properties
             foreach (string property in typeDict.Keys)
             {
+                // NOTE: To do -- add filter for advanced fields
                 propertyCLB.Items.Add(property);
             }
             // Get the data to put in the gridview
             trackList = GetData();
+
+            // fetch columns to load from preferences 
+            string[] savedCols = Properties.Settings.Default.savedCols.Split(';');
+
+            // manually select columns using preferences
+            for (int i = 0; i < propertyCLB.Items.Count; i++)
+            {
+                // if in saved list
+                if (savedCols[i].Contains(propertyCLB.Items[i].ToString()))
+                {
+                    // check it
+                    propertyCLB.SetItemChecked(i, true);
+                }
+            }
+            LoadGridView();
 
         }
 
@@ -100,11 +119,27 @@ namespace Attuned
         /// </summary>
         private void LoadGridView()
         {
+            // list of selected fields/columns
+            List<string> colList = new List<string>();
+
+            // manually select columns using preferences
+            foreach (string item in propertyCLB.SelectedItems)
+            {
+                colList.Add(item);
+            }
+
+            bool hideTrackID = false;
+            // Track ID is compulsory, but if it's not selected it will be hidden
+            if (!colList.Contains("Track ID"))
+            {
+                colList.Add("Track ID");
+                hideTrackID = true;
+            }
 
             List<int> typelist = new List<int>();
 
             // create columns based on requested properties
-            foreach (string item in propertyCLB.SelectedItems)
+            foreach (string item in colList)
             {
                 // lookup type of variable
                 if (!typeDict.TryGetValue(item, out string type))
@@ -132,9 +167,9 @@ namespace Attuned
                         MessageBox.Show("Error: unrecognized type '" + type + "'.");
                         Environment.Exit(4);
                         break;
-                    
                 }
             }
+
 
             // cycle through tracks and add their info to the gridview
             foreach (Dictionary<string, string> track in trackList)
@@ -144,10 +179,11 @@ namespace Attuned
                 string value;
 
                 int i = 0;
-                foreach (string item in propertyCLB.SelectedItems)
+                // cycle through requested fields
+                foreach (string field in colList)
                 {
-                    // attempt to fetch the value from the track data
-                    if (!track.TryGetValue(item, out value))
+                    // attempt to fetch the value for that field from the track data
+                    if (!track.TryGetValue(field, out value))
                     {
                         // if failed, just set as null
                         value = null;
@@ -171,7 +207,6 @@ namespace Attuned
                                     Environment.Exit(5);
                                     break;
                                 }
-                                // write to column
                                 dr.SetField(i, valint);
                                 break;
                             case 2:
@@ -189,6 +224,15 @@ namespace Attuned
                     // increment column counter
                     i++;
                 }
+            }
+
+            // set gridview source i.e. load into gridview
+            mainGV.DataSource = mainDT;
+
+            // hide Track ID if not requested
+            if (hideTrackID)
+            {
+                mainGV.Columns["Track ID"].Visible = false;
             }
         }
 
@@ -223,9 +267,7 @@ namespace Attuned
                 // add track to tracklist
                 tracklist.Add(trackdic);
             }
-
             return tracklist;
-
         }
 
         /// <summary>
@@ -236,12 +278,18 @@ namespace Attuned
         {
             XmlDocument doc = new XmlDocument();
             // location of library xml
-            string xmlfileloc = @"C:\Users\arman\Dropbox\Coding\C\iTunesKnockoff\iTunes Library.xml";
+            string xmlfileloc = Properties.Settings.Default.xmlPath;
 
             // see if file exists
             if (!File.Exists(xmlfileloc))
             {
                 // if no, return null
+                if (xmldoc == null)
+                {
+                    MessageBox.Show("Error: Could not find XML file");
+                    // NOTE: To-do: use file picker to select XML
+                    Environment.Exit(1);
+                }
                 return null;
             }
 
