@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,24 +45,55 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TagLibSharp, Version=2.2.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\TagLibSharp.2.2.0\lib\net45\TagLibSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TrackDetails.cs">
+    <Compile Include="EditColumnsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TrackDetails.Designer.cs">
-      <DependentUpon>TrackDetails.cs</DependentUpon>
+    <Compile Include="EditColumnsForm.Designer.cs">
+      <DependentUpon>EditColumnsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShowData.cs">
+    <Compile Include="Extensions.cs" />
+    <Compile Include="LoadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ShowData.Designer.cs">
-      <DependentUpon>ShowData.cs</DependentUpon>
+    <Compile Include="LoadingForm.Designer.cs">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Logger.cs" />
+    <Compile Include="RegistryWF.cs" />
+    <Compile Include="CustomControls\SearchBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SmartPlaylist.cs" />
+    <Compile Include="Track.cs" />
+    <Compile Include="TrackDetailsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TrackDetailsForm.Designer.cs">
+      <DependentUpon>TrackDetailsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainListForm.Designer.cs">
+      <DependentUpon>MainListForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TrackDetails.resx">
-      <DependentUpon>TrackDetails.cs</DependentUpon>
+    <Compile Include="Win32.cs" />
+    <Compile Include="XMLParser.cs" />
+    <EmbeddedResource Include="EditColumnsForm.resx">
+      <DependentUpon>EditColumnsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoadingForm.resx">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TrackDetailsForm.resx">
+      <DependentUpon>TrackDetailsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -73,21 +105,19 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ShowData.resx">
-      <DependentUpon>ShowData.cs</DependentUpon>
+    <EmbeddedResource Include="MainListForm.resx">
+      <DependentUpon>MainListForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\iTunesParser\iTunesSmartParser.csproj">
+      <Project>{00742c0b-7045-4d33-899b-114385b7884c}</Project>
+      <Name>iTunesSmartParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

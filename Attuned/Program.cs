@@ -16,7 +16,7 @@ namespace Attuned
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ShowData());
+            Application.Run(new List());
         }
     }
 }
