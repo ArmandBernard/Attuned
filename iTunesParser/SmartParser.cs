@@ -1,6 +1,10 @@
-﻿namespace iTunesSmartParser;
+﻿using System.Text;
+using System.Text.RegularExpressions;
+using iTunesSmartParser.Fields;
 
-public static partial class Parser
+namespace iTunesSmartParser;
+
+public static class Parser
 {
 	/// <summary>
 	/// 
@@ -26,9 +30,9 @@ public static partial class Parser
 		};
 
 		if (useAltneq)
-            {
+		{
 			pinfo.Neq = "<>";
-		}			
+		}
 
 		// parse info and criteria bytes
 		pinfo.ParseBytes();
@@ -135,18 +139,18 @@ public static partial class Parser
 			}
 		}
 
-		private int TimeMultiple 
+		private int TimeMultiple
 		{
-			get { return ByteToUint(Criteria.SubArrayL(Offset + TIMEMULTIPLE, 4)); } 
+			get { return ByteToUint(Criteria.SubArrayL(Offset + TIMEMULTIPLE, 4)); }
 		}
 
 		private long TimeUnixA
 		{
-			get { return ByteToUnix(Criteria.SubArrayL(Offset + INTA, 4)); } 
+			get { return ByteToUnix(Criteria.SubArrayL(Offset + INTA, 4)); }
 		}
 		private long TimeUnixB
 		{
-			get { return ByteToUnix(Criteria.SubArrayL(Offset + INTB, 4)); } 
+			get { return ByteToUnix(Criteria.SubArrayL(Offset + INTB, 4)); }
 		}
 
 		private DateTime TimeA { get { return UnixToDateTime(TimeUnixA); } }
@@ -341,7 +345,7 @@ public static partial class Parser
 				}
 				else if (Enum.IsDefined(typeof(MediaKindFields), Field))
 				{
-					ProcessDictField(MediaKinds, (MediaKindFields)Field);
+					ProcessDictField(Kinds.Media, (MediaKindFields)Field);
 				}
 				else if (Enum.IsDefined(typeof(PlaylistFields), Field))
 				{
@@ -353,7 +357,7 @@ public static partial class Parser
 				}
 				else if (Enum.IsDefined(typeof(LocationFields), Field))
 				{
-					ProcessDictField(LocationKinds, (LocationFields)Field);
+					ProcessDictField(Kinds.Location, (LocationFields)Field);
 				}
 				// if reached the statement 
 				else if (Field == 0)
@@ -462,7 +466,7 @@ public static partial class Parser
 
 			// if there are uneven remaining bytes
 			if (remainingbytes.Length % 2 != 0)
-                {
+			{
 				// add a padding null byte
 				// (helps with UTF16, as last character can be UTF8 if end of criteria)
 				remainingbytes = remainingbytes.Concat(new byte[] { 0 }).ToArray();
@@ -486,7 +490,7 @@ public static partial class Parser
 			workingOutput += $"\"{content}\" ";
 
 			// if it's a file kind and the type is supported
-			if (field == StringFields.Kind && FileKinds.ContainsKey(content))
+			if (field == StringFields.Kind && Kinds.File.ContainsKey(content))
 			{
 				// clear working, we are about to replace it
 				workingQuery = "";
@@ -494,11 +498,11 @@ public static partial class Parser
 				// specify a file name filter instead
 				if (LogicSign == LogicSign.StringPositive)
 				{
-					workingQuery += $"(lower(Uri)) LIKE '%{FileKinds[content]}')";
+					workingQuery += $"(lower(Uri)) LIKE '%{Kinds.File[content]}')";
 				}
 				else
 				{
-					workingQuery += $"(lower(Uri)) NOT LIKE '%{FileKinds[content]}')";
+					workingQuery += $"(lower(Uri)) NOT LIKE '%{Kinds.File[content]}')";
 				}
 			}
 			// otherwise just add to the query like normal
@@ -563,11 +567,11 @@ public static partial class Parser
 					{
 						workingOutput += $" is between {IntA} and {IntB}";
 						if (UseBetween)
-                            {
+						{
 							workingQuery += $" BETWEEN {IntA} AND {IntB}";
 						}
 						else
-                            {
+						{
 							workingQuery += $" >= {IntA} AND [{fieldname}] <= {IntB}";
 						}
 					}
@@ -606,7 +610,7 @@ public static partial class Parser
 				case LogicRule.Other:
 					// if its a range statement
 					if (Criteria[Offset + LOGICSIGN + 2] == 1)
-                        {
+					{
 						if (LogicSign == LogicSign.IntPositive)
 						{
 							workingOutput += $" is between {TimeA} and {TimeB}";
@@ -618,7 +622,7 @@ public static partial class Parser
 							{
 								workingQuery += $" >= {TimeA} AND [{fieldname}] <= {TimeB}";
 							}
-							
+
 						}
 						else
 						{
@@ -631,11 +635,11 @@ public static partial class Parser
 							{
 								workingQuery += $" < {TimeA} AND [{fieldname}] > {TimeB}";
 							}
-							
+
 						}
 					}
 					else if (Criteria[Offset + LOGICSIGN + 2] == 2)
-                        {
+					{
 						if (LogicSign == LogicSign.IntPositive)
 						{
 							workingOutput += $" is in the last ";
@@ -648,21 +652,21 @@ public static partial class Parser
 						}
 					}
 					else
-                        {
+					{
 						throw new Exception($"Unsupported rule for {fieldname}: {LogicRule}");
 					}
 
-                        // determine the number of the given time unit
-                        // (I have no idea why this needs two's complement or + 1)
-                        int t = (int)((ByteToUint(
-                            Criteria.SubArrayL(Offset + TIMEVALUE, 4)
+					// determine the number of the given time unit
+					// (I have no idea why this needs two's complement or + 1)
+					int t = (int)((ByteToUint(
+						Criteria.SubArrayL(Offset + TIMEVALUE, 4)
 							// find two's complement for each byte
-                                .Select(b => (byte)~b).ToArray()
-                            ) + 1) % 4294967296);
+							.Select(b => (byte)~b).ToArray()
+						) + 1) % 4294967296);
 
-                        // invalid time interval
-                        if (!Enum.IsDefined(typeof(DateDiffUnits), TimeMultiple))
-                        {
+					// invalid time interval
+					if (!Enum.IsDefined(typeof(DateDiffUnits), TimeMultiple))
+					{
 						throw new Exception($"Unsupported timespan for {fieldname}: {t * TimeMultiple} seconds");
 					}
 
@@ -777,13 +781,13 @@ public static partial class Parser
 					queryOrder = "[Rating] ASC";
 					break;
 				case SelectionMethods.RecentlyPlayed:
-                        if (SelectionDesc)
-                        {
+					if (SelectionDesc)
+					{
 						outputOrder = "most recently played";
 						queryOrder = "[LastPlayed] DESC";
 					}
 					else
-                        {
+					{
 						outputOrder = "least recently played";
 						queryOrder = "[LastPlayed] ASC";
 					}
@@ -820,7 +824,7 @@ public static partial class Parser
 				// add a new line first
 				Output += "\n";
 			}
-			
+
 			Output += $"Limited to {LimitNumber} {LimitType} selected by {outputOrder}";
 			QueryOrder += $"ORDER BY {queryOrder}";
 		}
@@ -871,7 +875,7 @@ public static partial class Parser
 	}
 
 	public static long ByteToUnix(byte[] bytearr)
-        {
+	{
 		return ByteToUint(bytearr) + UNIXDELTA;
 	}
 
