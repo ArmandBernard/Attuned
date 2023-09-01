@@ -126,36 +126,30 @@ public class iTunesXMLParser
 
             var properties = xElements[i].ToPropertyDictionary();
 
-            var pl = new Playlist()
-            {
-                ID = Convert.ToInt32(properties["Playlist ID"]),
-                Name = properties["Name"]
-            };
+            var name = properties["Name"];
 
-            // if this is a smart playlist with info and criteria fields
-            if (properties.ContainsKey("Smart Info") && properties.ContainsKey("Smart Criteria"))
-            {
-                pl.IsSmart = true;
+            var id = Convert.ToInt32(properties["Playlist ID"]);
 
+            var isSmart = properties.ContainsKey("Smart Info") && properties.ContainsKey("Smart Criteria");
+
+            Parser.PlayListInfo? playlistInfo = null;
+
+            var items = new List<int>();
+
+            if (isSmart)
+            {
                 try
                 {
                     // try to parse playlist info
-                    Parser.PlayListInfo pinfo = Parser.Parse(
+                    playlistInfo = Parser.ParsePlaylistInfo(
                         properties["Smart Info"], properties["Smart Criteria"], true, false
                         );
-
-                    // use filter
-                    pl.Filter = pinfo.QueryWhere;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"Failed to parse playlist '{pl.Name}'.");
+                    Logger.Log($"Failed to parse playlist '{name}'.");
                     Logger.Log(ex);
                 }
-            }
-            else
-            {
-                pl.IsSmart = false;
             }
 
             // if there is an item list
@@ -165,19 +159,13 @@ public class iTunesXMLParser
                 var xDoc = XDocument.Parse(properties["Playlist Items"]);
 
                 // get all track IDs
-                pl.Items = xDoc.Descendants()
+                items = xDoc.Descendants()
                     .Where(x => x.Value == "Track ID")
                     .Select(x => Convert.ToInt32(((XElement)x.NextNode!).Value))
                     .ToList();
             }
-            // if no item list, assume no items
-            else
-            {
-                // no items
-                pl.Items = new List<int>();
-            }
 
-            playlists.Add(pl);
+            playlists.Add(new Playlist(name, id, isSmart, items, playlistInfo?.QueryWhere));
         }
 
         return playlists;

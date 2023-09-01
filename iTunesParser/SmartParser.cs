@@ -13,7 +13,7 @@ public static class Parser
 	/// <param name="criteria"></param>
 	/// <param name="useAltneq"></param>
 	/// <returns></returns>
-	public static PlayListInfo Parse(
+	public static PlayListInfo ParsePlaylistInfo(
 		string info, string criteria, bool useAltneq = false, bool useBetween = true
 		)
 	{
