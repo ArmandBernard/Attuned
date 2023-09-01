@@ -1,0 +1,96 @@
+
+using System.Reflection.Metadata.Ecma335;
+using System.Xml.Linq;
+using System.Xml.Schema;
+
+/// <summary>
+/// Used to parse Apple's proprietary PList format.
+/// </summary>
+public static class PListParser
+{
+    public static Dictionary<string, dynamic> ParseDocument(XDocument doc)
+    {
+        // first dictionary
+        var dict = GetTopLevelDictionaryElement(doc);
+
+        if (dict == null)
+        {
+            throw new XmlSchemaException("Expected plist and / or dict elements not found");
+        }
+
+        return ParseDictionary(dict);
+    }
+
+    /// <summary>
+    /// Parse a dictionary element
+    /// </summary>
+    /// <param name="dictionaryElement"></param>
+    /// <returns></returns>
+    public static Dictionary<string, dynamic> ParseDictionary(XElement dictionaryElement)
+    {
+        // A dictionary element looks like this:
+        // <dict>
+        //   <key>Track ID</key><integer>630</integer>
+        //   <key>Date Modified</key><date>2014-12-26T14:17:09Z</date>
+        //   ...
+        // </dict>
+        // It uses key-value pairs of elements
+
+        var enumerator = dictionaryElement.Elements().GetEnumerator();
+
+        var dictionary = new Dictionary<string, dynamic>();
+
+        // each loop iteration here deals with one key-value pair, adding it to the dictionary
+        while (enumerator.MoveNext())
+        {
+            var key = enumerator.Current.Value; // key always contains a string
+
+            enumerator.MoveNext();
+
+            var valueElement = enumerator.Current;
+
+            var value = ParseValueElement(valueElement);
+
+            dictionary.Add(key, value);
+        }
+
+        return dictionary;
+    }
+
+    /// <summary>
+    /// Parse a 
+    /// </summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    private static dynamic ParseValueElement(XElement element)
+    {
+        // the name of the element is its data type
+        var type = element.Name.LocalName;
+
+        // See https://en.wikipedia.org/wiki/Property_list#Format for all tags
+        return type switch
+        {
+            "string" => element.Value,
+            "real" => float.Parse(element.Value),
+            "integer" => int.Parse(element.Value),
+            "true" => true,
+            "false" => false,
+            "date" => DateTime.Parse(element.Value),
+            "data" => Convert.FromBase64String(element.Value),
+            "array" => element.Elements().Select(ParseValueElement),
+            "dict" => ParseDictionary(element),
+            _ => throw new NotImplementedException($"Unsupported datatype {type}")
+        };
+    }
+
+    public static XElement? GetTopLevelDictionaryElement(XDocument doc) => doc.Element("plist")?.Element("dict");
+
+    /// <summary>
+    /// Get the given dict item by key
+    /// </summary>
+    /// <param name="element">The dict element</param>
+    /// <param name="key">The key to look up</param>
+    /// <returns></returns>
+    public static XElement? PlistDictGet(this XElement element, string key) => element.Elements("key").FirstOrDefault(x => x.Value == key);
+}
