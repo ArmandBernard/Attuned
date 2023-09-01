@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 
-namespace Attuned
+namespace iTunesSmartParser
 {
     public class Playlist
     {
         public string Name { get; set; }
 
-        public string LineString 
-        { 
+        public string LineString
+        {
             get
             {
                 return (IsSmart ? "⚙ " : "🖹 ") + Name;
-            } 
+            }
         }
 
         public int ID { get; set; }
@@ -24,7 +24,7 @@ namespace Attuned
 
         public Playlist()
         {
-            
+
         }
     }
 }
