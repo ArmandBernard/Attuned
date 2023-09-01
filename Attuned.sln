@@ -1,11 +1,11 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attuned", "Attuned\Attuned.csproj", "{CD0C7FBF-7376-4F9A-A8AF-8B6031D88B85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTunesSmartParser", "iTunesParser\iTunesSmartParser.csproj", "{00742C0B-7045-4D33-899B-114385B7884C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunesSmartParser", "iTunesParser\iTunesSmartParser.csproj", "{00742C0B-7045-4D33-899B-114385B7884C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
