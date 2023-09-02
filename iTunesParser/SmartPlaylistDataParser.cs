@@ -3,7 +3,7 @@ using System.Text;
 
 namespace iTunesSmartParser;
 
-public static class Parser
+public static class SmartPlaylistDataParser
 {
     /// <summary>
     /// 
@@ -90,7 +90,7 @@ public static class Parser
 
         #region Match Rules
 
-        private int Offset { get; set; }
+        private int Offset { get; set; } = FIELD;
 
         private int Field => Criteria[Offset];
 
@@ -115,7 +115,7 @@ public static class Parser
         {
             get
             {
-                int value = ByteToUint(Criteria.SubArrayL(Offset + INTA, 4));
+                int value = ByteToInt(Criteria.Skip(Offset + INTA).Take(4));
                 // if value is rating divide by 20 to get out of 5
                 return Field == (int) IntFields.Rating ? value / 20 : value;
             }
@@ -129,17 +129,17 @@ public static class Parser
             get
             {
                 // get index
-                int value = ByteToUint(Criteria.SubArrayL(Offset + INTA + INTB, 4));
+                int value = ByteToInt(Criteria.Skip(Offset + INTA + INTB).Take(4));
                 // if value is rating divide by 20 to get out of 5
                 return Field == (int) IntFields.Rating ? value / 20 : value;
             }
         }
 
-        private int TimeMultiple => ByteToUint(Criteria.SubArrayL(Offset + TIMEMULTIPLE, 4));
+        private int TimeMultiple => ByteToInt(Criteria.Skip(Offset + TIMEMULTIPLE).Take(4));
 
-        private long TimeUnixA => ByteToUnix(Criteria.SubArrayL(Offset + INTA, 4));
+        private long TimeUnixA => ByteToUnix(Criteria.Skip(Offset + INTA).Take(4));
 
-        private long TimeUnixB => ByteToUnix(Criteria.SubArrayL(Offset + INTB, 4));
+        private long TimeUnixB => ByteToUnix(Criteria.Skip(Offset + INTB).Take(4));
 
         private DateTime TimeA => UnixToDateTime(TimeUnixA);
 
@@ -153,7 +153,7 @@ public static class Parser
 
         public bool LimitChecked => Info[LIMITCHECKED] == 1;
 
-        public int LimitNumber => ByteToUint(Info.SubArrayL(LIMITINT, 4));
+        public int LimitNumber => ByteToInt(Info.Skip(LIMITINT).Take(4).ToArray());
 
 
         public LimitUnits LimitType => (LimitUnits) Convert.ToInt32(Info[LIMITMETHOD]);
@@ -165,15 +165,6 @@ public static class Parser
         #endregion
 
         public bool LiveUpdate => Info[LIVEUPDATE] == 1;
-
-        #region Constructor
-
-        public PlayListInfo()
-        {
-            Offset = FIELD;
-        }
-
-        #endregion
 
         #region Parsing
 
@@ -238,19 +229,29 @@ public static class Parser
 
         #region Match Rules
 
-        private class Stackitem
+        private class StackItem
         {
-            public string Query;
-            public string Output;
-            public int N;
-            public string ConjQuery;
-            public string ConjOutput;
+            public readonly string Query;
+            public readonly string Output;
+            public int NumberOfSubQueries;
+            public readonly string ConjQuery;
+            public readonly string ConjOutput;
             public bool IsFirstItem;
+            
+            public StackItem(string query, string output, int numberOfSubQueries, string conjQuery, string conjOutput, bool isFirstItem)
+            {
+                Query = query;
+                Output = output;
+                NumberOfSubQueries = numberOfSubQueries;
+                ConjQuery = conjQuery;
+                ConjOutput = conjOutput;
+                IsFirstItem = isFirstItem;
+            }
         }
 
         private void ProcessMatchRules()
         {
-            Stack<Stackitem> subStack = new Stack<Stackitem>();
+            var subStack = new Stack<StackItem>();
 
             // is it an "or" or "and" general statement? (any vs all)
             if (LogicIsOr)
@@ -270,10 +271,10 @@ public static class Parser
                 if (subStack.Count > 0)
                 {
                     // if there is nothing left to read in the subexpression
-                    if (subStack.Peek().N == 0)
+                    if (subStack.Peek().NumberOfSubQueries == 0)
                     {
                         // pop the item, removing it from the list
-                        Stackitem old = subStack.Pop();
+                        StackItem old = subStack.Pop();
 
                         string conjQuery;
                         string conjOutput;
@@ -302,7 +303,7 @@ public static class Parser
                     else
                     {
                         // decrease the number of subexpressions
-                        subStack.Peek().N--;
+                        subStack.Peek().NumberOfSubQueries--;
                     }
                 }
 
@@ -348,20 +349,12 @@ public static class Parser
                 else if (Field == 0)
                 {
                     // determine the number of subexpressions in the current statement
-                    int numberOfSubExpression =
-                        (int) ByteToUint(Criteria.SubArrayL(Offset + SUBINT, 4));
+                    var numberOfSubExpression =
+                        ByteToInt(Criteria.Skip(Offset + SUBINT).Take(4));
 
                     // save the current expression into the stack
                     subStack.Push(
-                        new Stackitem()
-                        {
-                            Query = QueryWhere,
-                            Output = Output,
-                            N = numberOfSubExpression,
-                            ConjQuery = ConjQuery,
-                            ConjOutput = ConjOutput,
-                            IsFirstItem = Offset == FIELD
-                        }
+                        new StackItem(QueryWhere, Output, numberOfSubExpression, ConjQuery, ConjOutput, Offset == FIELD)
                     );
 
                     // determine next statements and/or
@@ -397,12 +390,12 @@ public static class Parser
         /// <param name="field"></param>
         private void ProcessStringField(StringFields field)
         {
-            string fieldname = field.ToString();
-            string workingOutput = fieldname;
-            string workingQuery = $"([{fieldname}]";
+            var fieldname = field.ToString();
+            var workingOutput = fieldname;
+            var workingQuery = $"([{fieldname}]";
 
             // does the query end have a % (wildcard)?
-            bool end = false;
+            var end = false;
 
             switch (LogicRule)
             {
@@ -449,7 +442,7 @@ public static class Parser
             }
 
             // get remaining bytes of criteria from start of string field
-            byte[] remainingbytes = Criteria.Skip(Offset + STRING).ToArray();
+            var remainingbytes = Criteria.Skip(Offset + STRING).ToArray();
 
             // if there are uneven remaining bytes
             if (remainingbytes.Length % 2 != 0)
@@ -461,17 +454,17 @@ public static class Parser
 
             // iTunes uses UTF16 encoding for the string. Convert all of the remaining bytes
             // to a string
-            string content = Encoding.Unicode.GetString(remainingbytes);
+            var content = Encoding.Unicode.GetString(remainingbytes);
 
             // the string should stop with either a null character or the end of the data.
             // try to find the first null character
-            int stringend = content.IndexOf('\0');
+            var stringEnd = content.IndexOf('\0');
 
             // if there are nulls
-            if (stringend != -1)
+            if (stringEnd != -1)
             {
                 // crop after first null. It's the end of the string.
-                content = content.Substring(0, stringend);
+                content = content.Substring(0, stringEnd);
             }
 
             workingOutput += $"\"{content}\" ";
@@ -495,7 +488,7 @@ public static class Parser
             // otherwise just add to the query like normal
             else
             {
-                string qend = end ? "%" : "";
+                var qend = end ? "%" : "";
                 workingQuery += content + qend + "')";
             }
 
@@ -504,10 +497,10 @@ public static class Parser
 
 
             // if end found
-            if (stringend != -1)
+            if (stringEnd != -1)
             {
                 // adjust the offset for the next field
-                Offset = Offset + STRING + 2 * stringend + 2;
+                Offset = Offset + STRING + 2 * stringEnd + 2;
             }
             else
             {
@@ -522,9 +515,9 @@ public static class Parser
         /// <param name="field"></param>
         private void ProcessIntField(IntFields field)
         {
-            string fieldname = field.ToString();
-            string workingOutput = fieldname;
-            string workingQuery = $"([{fieldname}]";
+            var fieldname = field.ToString();
+            var workingOutput = fieldname;
+            var workingQuery = $"([{fieldname}]";
 
             switch (LogicRule)
             {
@@ -582,9 +575,9 @@ public static class Parser
 
         private void ProcessDateField(DateFields field)
         {
-            string fieldname = field.ToString();
-            string workingOutput = fieldname;
-            string workingQuery = $"([{fieldname}]";
+            var fieldName = field.ToString();
+            var workingOutput = fieldName;
+            var workingQuery = $"([{fieldName}]";
 
             switch (LogicRule)
             {
@@ -609,7 +602,7 @@ public static class Parser
                             }
                             else
                             {
-                                workingQuery += $" >= {TimeA} AND [{fieldname}] <= {TimeB}";
+                                workingQuery += $" >= {TimeA} AND [{fieldName}] <= {TimeB}";
                             }
                         }
                         else
@@ -621,7 +614,7 @@ public static class Parser
                             }
                             else
                             {
-                                workingQuery += $" < {TimeA} AND [{fieldname}] > {TimeB}";
+                                workingQuery += $" < {TimeA} AND [{fieldName}] > {TimeB}";
                             }
                         }
                     }
@@ -630,35 +623,35 @@ public static class Parser
                         if (LogicSign == LogicSign.IntPositive)
                         {
                             workingOutput += $" is in the last ";
-                            workingQuery += $" (TIMESTAMP(NOW()) - TIMESTAMP({fieldname})) < ";
+                            workingQuery += $" (TIMESTAMP(NOW()) - TIMESTAMP({fieldName})) < ";
                         }
                         else
                         {
                             workingOutput += $" is not int the last ";
-                            workingQuery += $" (TIMESTAMP(NOW()) - TIMESTAMP({fieldname})) > ";
+                            workingQuery += $" (TIMESTAMP(NOW()) - TIMESTAMP({fieldName})) > ";
                         }
                     }
                     else
                     {
-                        throw new Exception($"Unsupported rule for {fieldname}: {LogicRule}");
+                        throw new Exception($"Unsupported rule for {fieldName}: {LogicRule}");
                     }
 
                     // determine the number of the given time unit
                     // (I have no idea why this needs two's complement or + 1)
-                    int t = (int) ((ByteToUint(
-                        Criteria.SubArrayL(Offset + TIMEVALUE, 4)
+                    var t = (int) ((ByteToInt(
+                        Criteria.Skip(Offset + TIMEVALUE).Take(4)
                             // find two's complement for each byte
-                            .Select(b => (byte) ~b).ToArray()
+                            .Select(b => (byte) ~b)
                     ) + 1) % 4294967296);
 
                     // invalid time interval
                     if (!Enum.IsDefined(typeof(DateDiffUnits), TimeMultiple))
                     {
-                        throw new Exception($"Unsupported timespan for {fieldname}: {t * TimeMultiple} seconds");
+                        throw new Exception($"Unsupported timespan for {fieldName}: {t * TimeMultiple} seconds");
                     }
 
                     // determine units
-                    DateDiffUnits units = (DateDiffUnits) TimeMultiple;
+                    var units = (DateDiffUnits) TimeMultiple;
 
                     // number of seconds
                     workingQuery += t * TimeMultiple;
@@ -674,7 +667,7 @@ public static class Parser
             // add result to query and output
             AddToQuery(workingOutput, workingQuery);
 
-            // offset past this rules's fields by going past intA's value
+            // offset past this rules fields by going past intA's value
             Offset += INTA + INTLENGTH;
         }
 
@@ -684,9 +677,9 @@ public static class Parser
 
         private void ProcessDictField(Dictionary<int, string> dict, Enum field)
         {
-            string fieldname = Enum.GetName(field.GetType(), field);
-            string workingOutput = fieldname;
-            string workingQuery = $"([{fieldname}]";
+            var fieldName = Enum.GetName(field.GetType(), field);
+            var workingOutput = fieldName;
+            var workingQuery = $"([{fieldName}]";
 
             // equality or or misc comparison
             if (LogicRule == LogicRule.Is || LogicRule == LogicRule.Other)
@@ -695,7 +688,7 @@ public static class Parser
                 if (LogicRule == LogicRule.Other && IntA != IntB)
                 {
                     throw new Exception(
-                        $"Invalid logic for {fieldname}: {dict[IntA]} {Neq} {dict[IntB]}"
+                        $"Invalid logic for {fieldName}: {dict[IntA]} {Neq} {dict[IntB]}"
                     );
                 }
 
@@ -713,7 +706,7 @@ public static class Parser
             }
             else
             {
-                throw new Exception($"Unsupported rule for {fieldname}: {LogicRule}");
+                throw new Exception($"Unsupported rule for {fieldName}: {LogicRule}");
             }
 
             workingQuery += ")";
@@ -846,27 +839,18 @@ public static class Parser
         #endregion
     }
 
-
     /// <summary>
-    /// iTunes uses Big Endian encoding for its integers (reversed bytes)
+    /// Convert bytes to integer.
+    /// iTunes uses Big Endian encoding for its integers (reversed bytes), so bitconverter needs the array reversed
+    /// if the converter itself is little endian (usually yes)
     /// </summary>
-    /// <param name="bytearr"></param>
-    /// <param name="divideby"></param>
-    /// <param name="denominator"></param>
     /// <returns></returns>
-    public static int ByteToUint(byte[] bytearr)
-    {
-        // bitconverter needs the array reversed if the converter itself is littel endian
-        // (depends on the system, but mostly yes)
-        if (BitConverter.IsLittleEndian)
-            Array.Reverse(bytearr);
+    private static int ByteToInt(IEnumerable<byte> bytes) =>
+        BitConverter.ToInt32(BitConverter.IsLittleEndian ? bytes.Reverse().ToArray() : bytes.ToArray(), 0);
 
-        return BitConverter.ToInt32(bytearr, 0);
-    }
-
-    public static long ByteToUnix(byte[] bytearr)
+    private static long ByteToUnix(IEnumerable<byte> byteArray)
     {
-        return ByteToUint(bytearr) + UNIXDELTA;
+        return ByteToInt(byteArray) + UNIXDELTA;
     }
 
     /// <summary>
@@ -888,13 +872,13 @@ public static class Parser
         Months = 2628000
     }
 
-    public const int UNIXDELTA = -2082844800; // iTunes/Unix time stamp 0 difference
+    const int UNIXDELTA = -2082844800; // iTunes/Unix time stamp 0 difference
 
     const int INTLENGTH = 67; // The length on a int criteria starting at the first int
     const int SUBEXPRESSIONLENGTH = 192; // The length of a subexpression starting from FIELD
 
-    // INFO OFFSETS
-    // Offsets for bytes which...
+// INFO OFFSETS
+// Offsets for bytes which...
     const int LIVEUPDATE = 0; // determine whether live updating is enabled - Absolute offset
     const int MATCHBOOL = 1; // determine whether logical matching is to be performed - Absolute offset
     const int LIMITBOOL = 2; // determine whether results are limited - Absolute offset
@@ -906,8 +890,8 @@ public static class Parser
     const int
         SELECTIONMETHODSIGN = 13; // determine whether certain selection methods are "most" or "least" - Absolute offset
 
-    // CRITERIA OFFSETS
-    // Offsets for bytes which...
+// CRITERIA OFFSETS
+// Offsets for bytes which...
     const int LOGICTYPE = 15; // determine whether all or any criteria must match - Absolute offset
     const int FIELD = 139; // determine what is being matched (Artist, Album, &c) - Absolute offset
 

@@ -37,7 +37,7 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
             try
             {
                 // try to parse playlist info
-                var playlistInfo = Parser.ParsePlaylistInfo(
+                var playlistInfo = SmartPlaylistDataParser.ParsePlaylistInfo(
                     properties["Smart Info"], properties["Smart Criteria"], true, false
                 );
 
