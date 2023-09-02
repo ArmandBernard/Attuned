@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace iTunesSmartParser;
+namespace iTunesSmartParser.Data;
 
 public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart, string? Filter)
 {
@@ -12,7 +12,11 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
 
         var isSmart = properties.ContainsKey("Smart Info") && properties.ContainsKey("Smart Criteria");
 
-        IEnumerable<Dictionary<string, int>> playlistItemsDictionaries = properties.GetValueOrDefault("Playlist Items", new List<Dictionary<string, dynamic>>());
+        //properties.TryGetValue("Playlist Items", out var playlistItemsDictionaries);
+
+        var playlistItemsDictionaries =
+            ((IEnumerable<object>) properties.GetValueOrDefault("Playlist Items",
+                new List<Dictionary<string, dynamic>>())).Cast<Dictionary<string, dynamic>>();
 
         // The structure of playlistItems here is:
         // <array>
@@ -24,7 +28,7 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
         //   </dict>
         //   ...
         // </array>
-        var playlistItems = playlistItemsDictionaries.Select(x => x.Values.First());
+        var playlistItems = playlistItemsDictionaries.Select(x => (int) x.Values.Single());
 
         string? filter = null;
 
@@ -35,7 +39,7 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
                 // try to parse playlist info
                 var playlistInfo = Parser.ParsePlaylistInfo(
                     properties["Smart Info"], properties["Smart Criteria"], true, false
-                    );
+                );
 
                 filter = playlistInfo?.QueryWhere;
             }
@@ -45,6 +49,6 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
             }
         }
 
-        return new Playlist(name, id, playlistItems, isSmart, filter);
+        return new Playlist(name, (int) id, playlistItems, isSmart, filter);
     }
 }

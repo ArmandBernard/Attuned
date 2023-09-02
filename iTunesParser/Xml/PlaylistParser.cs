@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using iTunesSmartParser.Data;
 
 namespace iTunesSmartParser.Xml;
 
@@ -14,7 +15,9 @@ public class PlaylistParser : IPlaylistsParser
             throw new Exception("Could not find the Playlists node");
         }
 
-        IEnumerable<Dictionary<string, dynamic>> playlistDictionaries = PListParser.ParseValueElement(playlistsArrayElement);
+        var playlistDictionaries =
+            ((IEnumerable<object>) PListParser.ParseValueElement(playlistsArrayElement))
+            .Cast<Dictionary<string, dynamic>>();
 
         return playlistDictionaries.Select(x => Playlist.FromDictionary(x));
     }
