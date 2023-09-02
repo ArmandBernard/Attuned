@@ -2,7 +2,7 @@
 
 public static class Kinds
 {
-    public static readonly Dictionary<string, string> File = new Dictionary<string, string>()
+    public static readonly Dictionary<string, string> File = new()
     {
         {"Protected AAC audio file", ".m4p"},
         {"MPEG audio file", ".mp3"},
@@ -13,7 +13,7 @@ public static class Kinds
         {"AAC audio file", ".m4a"},
     };
 
-    public static readonly Dictionary<int, string> Media = new Dictionary<int, string>()
+    public static readonly Dictionary<int, string> Media = new()
     {
         {0x01, "Music"},
         {0x02, "Movie"},
@@ -32,14 +32,14 @@ public static class Kinds
         {0x20A004, "Undesired Other"}
     };
 
-    public static readonly Dictionary<int, string> Love = new Dictionary<int, string>()
+    public static readonly Dictionary<int, string> Love = new()
     {
         {0x00, "None"},
         {0x02, "Loved"},
         {0x03, "Disliked"}
     };
 
-    public static readonly Dictionary<int, string> Location = new Dictionary<int, string>()
+    public static readonly Dictionary<int, string> Location = new()
     {
         {0x01, "Computer"},
         {0x10, "iCloud"}
