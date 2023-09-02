@@ -1,7 +1,7 @@
 using FluentAssertions;
-using iTunesSmartParser;
 using iTunesSmartParser.Xml;
 using System.Xml.Linq;
+using iTunesSmartParser.Data;
 
 namespace iTunesParserTests.Xml;
 public class TrackListParserTests
@@ -96,7 +96,7 @@ public class TrackListParserTests
                Artist = "TM Revolution",
             Bpm = null,
             BitRate = 128,
-            Channels = 0,
+            Channels = null,
             Codec = null,
             Composer = null,
             CoverArt = null,
@@ -127,7 +127,7 @@ public class TrackListParserTests
             Artist = "Abingdon Boys School",
             Bpm = null,
             BitRate = 320,
-            Channels = 0,
+            Channels = null,
             Codec = null,
             Composer = null,
             CoverArt = null,
@@ -153,12 +153,6 @@ public class TrackListParserTests
             Year = 2009
         }
     };
-
-    [SetUp]
-    public void Setup()
-    {
-
-    }
 
     [Test]
     public void TrackListParser_GivenValidDocument_ShouldReturnExpectedTrackList()

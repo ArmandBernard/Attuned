@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using iTunesSmartParser.Data;
 
 namespace iTunesSmartParser.Xml;
 

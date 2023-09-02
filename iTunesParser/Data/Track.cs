@@ -1,6 +1,6 @@
 ﻿using TagFile = TagLib.File;
 
-namespace iTunesSmartParser;
+namespace iTunesSmartParser.Data;
 
 public class Track
 {
@@ -15,8 +15,6 @@ public class Track
 
     public string MediaKind => "Music";
 
-    public FileInfo FileI { get { return new FileInfo("\\\\?\\" + WellFormattedLocation); } }
-
     /// <summary>
     /// The size of the track in bytes
     /// </summary>
@@ -25,7 +23,7 @@ public class Track
     /// <summary>
     /// The size of the track in MB (where 1kB = 1024 bytes etc.)
     /// </summary>
-    public float? SizeMB { get { return Size.HasValue ? Size / 1024F / 1024F : null; } }
+    public float? SizeMb => Size.HasValue ? Size / 1024F / 1024F : null;
 
     /// <summary>
     /// The file modify date
@@ -70,7 +68,7 @@ public class Track
 
     public string? Codec { get; set; }
 
-    public byte[] CoverArt;
+    public byte[]? CoverArt;
 
     #endregion
 
@@ -179,7 +177,7 @@ public class Track
     /// <summary>
     /// Track Rating in Stars
     /// </summary>
-    public int? Rating { get { return Rating100.HasValue ? (Rating100 * 5) / 100 : null; } }
+    public int? Rating => Rating100.HasValue ? (Rating100 * 5) / 100 : null;
 
     /// <summary>
     /// Has this track been marked as "loved"
@@ -194,13 +192,13 @@ public class Track
     {
     }
 
-    public Track(Dictionary<string, dynamic?> properties)
+    public Track(IReadOnlyDictionary<string, dynamic?> properties)
     {
         // parse all important field
-        Id = (int)properties["Track ID"];
+        Id = (int)properties["Track ID"]!;
         Size = (int?)properties.GetValueOrDefault("Size", null);
-        TotalTime = properties.ContainsKey("Total Time") ?
-            TimeSpan.FromMilliseconds(properties["Total Time"]) : null;
+        TotalTime = properties.TryGetValue("Total Time", out var property) ?
+            TimeSpan.FromMilliseconds(property) : null;
         Year = (int?)properties.GetValueOrDefault("Year", null);
         Bpm = (int?)properties.GetValueOrDefault("BPM", null);
         DiscNumber = (int?)properties.GetValueOrDefault("Disc Number", null);
@@ -228,9 +226,11 @@ public class Track
 
     public void LoadTagInfo()
     {
-        // don't even try if the file doesn't exist
-        if (!FileI.Exists) { return; }
-
+        if (!File.Exists(WellFormattedLocation))
+        {
+            return;
+        }
+        
         using (TagFile file = TagFile.Create(WellFormattedLocation))
         {
             Type = file.MimeType.Replace("taglib/", "");
@@ -241,16 +241,12 @@ public class Track
 
     public void LoadImage()
     {
-        // don't even try if the file doesn't exist
-        if (!FileI.Exists) { return; }
-
-        using (TagFile file = TagFile.Create(WellFormattedLocation))
+        using var file = TagFile.Create(WellFormattedLocation);
+        
+        // if there are any pictures
+        if (file.Tag.Pictures.Length >= 1)
         {
-            // if there are any pictures
-            if (file.Tag.Pictures.Length >= 1)
-            {
-                CoverArt = file.Tag.Pictures[0].Data.Data;
-            }
+            CoverArt = file.Tag.Pictures[0].Data.Data;
         }
     }
 }
