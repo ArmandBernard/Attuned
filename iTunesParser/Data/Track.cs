@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using TagFile = TagLib.File;
+﻿using TagFile = TagLib.File;
 
 namespace iTunesSmartParser;
 
@@ -16,7 +11,7 @@ public class Track
     /// </summary>
     public int TrackID { get; set; }
 
-    public Dictionary<string, string> AllProperties;
+    public Dictionary<string, dynamic?> AllProperties;
 
     #region File
 
@@ -197,39 +192,36 @@ public class Track
 
     #endregion
 
-    public Track(Dictionary<string, string> properties)
+    public Track(Dictionary<string, dynamic?> properties)
     {
-        Dictionary<string, string> p = properties;
-
-        AllProperties = p;
+        AllProperties = properties;
 
         // parse all important field
-        TrackID = int.Parse(p["Track ID"]);
-        Size = p.ContainsKey("Size") ? (int?)int.Parse(p["Size"]) : null;
-        TotalTime = p.ContainsKey("Total Time") ?
-            (TimeSpan?)TimeSpan.FromMilliseconds(int.Parse(p["Total Time"])) : null;
-        Year = p.ContainsKey("Year") ? (int?)int.Parse(p["Year"]) : null;
-        BPM = p.ContainsKey("BPM") ? (int?)int.Parse(p["BPM"]) : null;
-        DiscNumber = p.ContainsKey("Disc Number") ? (int?)int.Parse(p["Track Number"]) : null;
-        DiscCount = p.ContainsKey("Disc Count") ? (int?)int.Parse(p["Disc Count"]) : null;
-        TrackNumber = p.ContainsKey("Track Number") ? (int?)int.Parse(p["Track Number"]) : null;
-        TrackCount = p.ContainsKey("Track Count") ? (int?)int.Parse(p["Track Count"]) : null;
-        DateModified = DateTime.Parse(p["Date Modified"]);
-        DateAdded = DateTime.Parse(p["Date Added"]);
-        BitRate = p.ContainsKey("Bit Rate") ? (int?)int.Parse(p["Bit Rate"]) : null;
-        SampleRate = p.ContainsKey("Sample Rate") ? (int?)int.Parse(p["Sample Rate"]) : null;
-        PlayCount = p.ContainsKey("Play Count") ? int.Parse(p["Play Count"]) : 0;
-        PlayDate = p.ContainsKey("Play Date UTC") ?
-            (DateTime?)DateTime.Parse(p["Play Date UTC"]) : null;
-        SkipCount = p.ContainsKey("Skip Count") ? int.Parse(p["Skip Count"]) : 0;
-        Rating100 = p.ContainsKey("Rating") ? (int?)int.Parse(p["Rating"]) : null;
-        Loved = p.ContainsKey("Loved");
-        Name = p.ContainsKey("Name") ? p["Name"] : null;
-        Artist = p.ContainsKey("Artist") ? p["Artist"] : null;
-        Composer = p.ContainsKey("Composer") ? p["Composer"] : null;
-        Album = p.ContainsKey("Album") ? p["Album"] : null;
-        Genre = p.ContainsKey("Genre") ? p["Genre"] : null;
-        Location = p["Location"];
+        TrackID = properties["Track ID"];
+        Size = properties.GetValueOrDefault("Size", null);
+        TotalTime = properties.ContainsKey("Total Time") ?
+            TimeSpan.FromMilliseconds(properties["Total Time"]) : null;
+        Year = properties.GetValueOrDefault("Year", null);
+        BPM = properties.GetValueOrDefault("BPM", null);
+        DiscNumber = properties.GetValueOrDefault("Disc Number", null);
+        DiscCount = properties.GetValueOrDefault("Disc Count", null);
+        TrackNumber = properties.GetValueOrDefault("Track Number", null);
+        TrackCount = properties.GetValueOrDefault("Track Count", null);
+        DateModified = properties["Date Modified"];
+        DateAdded = properties["Date Added"];
+        BitRate = properties.GetValueOrDefault("Bit Rate", null);
+        SampleRate = properties.GetValueOrDefault("Sample Rate", null);
+        PlayCount = properties.GetValueOrDefault("Play Count", null);
+        PlayDate = properties.GetValueOrDefault("Play Date UTC", null);
+        SkipCount = properties.GetValueOrDefault("Skip Count", null);
+        Rating100 = properties.GetValueOrDefault("Rating", null);
+        Loved = properties.GetValueOrDefault("Loved", false);
+        Name = properties.GetValueOrDefault("Name", null);
+        Artist = properties.GetValueOrDefault("Artist", null);
+        Composer = properties.GetValueOrDefault("Composer", null);
+        Album = properties.GetValueOrDefault("Album", null);
+        Genre = properties.GetValueOrDefault("Genre", null);
+        Location = properties["Location"]!;
 
         LoadTagInfo();
     }
