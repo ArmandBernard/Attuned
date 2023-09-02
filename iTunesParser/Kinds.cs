@@ -44,4 +44,14 @@ public static class Kinds
         {0x01, "Computer"},
         {0x10, "iCloud"}
     };
+
+    public static readonly Dictionary<int, string> iCloudStatus = new()
+    {
+        {0x01, "Purchased"},
+        {0x02, "Matched"},
+        {0x03, "Uploaded"},
+        {0x04, "Ineligible"},
+        {0x05, "Local Only"},
+        {0x07, "Duplicate"}
+    };
 }
