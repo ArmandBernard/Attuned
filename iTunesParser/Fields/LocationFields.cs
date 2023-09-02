@@ -2,5 +2,5 @@
 
 public enum LocationFields
 {
-	Location = 0x85
+    Location = 0x85
 }
