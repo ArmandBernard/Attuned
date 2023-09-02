@@ -11,33 +11,29 @@ public static class Parser
 	/// </summary>
 	/// <param name="info"></param>
 	/// <param name="criteria"></param>
-	/// <param name="useAltneq"></param>
+	/// <param name="useAltNeq"></param>
 	/// <returns></returns>
 	public static PlayListInfo ParsePlaylistInfo(
-		string info, string criteria, bool useAltneq = false, bool useBetween = true
+		byte[] info, byte[] criteria, bool useAltNeq = false, bool useBetween = true
 		)
 	{
-		Regex space = new Regex(@"\s");
 
-		info = space.Replace(info, "");
-		criteria = space.Replace(criteria, "");
-
-		PlayListInfo pinfo = new PlayListInfo()
+		var playlistInfo = new PlayListInfo()
 		{
-			Info = Convert.FromBase64String(info),
-			Criteria = Convert.FromBase64String(criteria),
+			Info = info,
+			Criteria = criteria,
 			UseBetween = useBetween
 		};
 
-		if (useAltneq)
+		if (useAltNeq)
 		{
-			pinfo.Neq = "<>";
+			playlistInfo.Neq = "<>";
 		}
 
 		// parse info and criteria bytes
-		pinfo.ParseBytes();
+		playlistInfo.ParseBytes();
 
-		return pinfo;
+		return playlistInfo;
 	}
 
 	public class PlayListInfo

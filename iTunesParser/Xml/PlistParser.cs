@@ -1,5 +1,6 @@
 
 using System.Reflection.Metadata.Ecma335;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -57,13 +58,15 @@ public static class PListParser
         return dictionary;
     }
 
+    private static readonly Regex SpaceRegex = new(@"\s");
+
     /// <summary>
     /// Parse a 
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    private static dynamic ParseValueElement(XElement element)
+    public static dynamic ParseValueElement(XElement element)
     {
         // the name of the element is its data type
         var type = element.Name.LocalName;
@@ -77,7 +80,8 @@ public static class PListParser
             "true" => true,
             "false" => false,
             "date" => DateTime.Parse(element.Value),
-            "data" => Convert.FromBase64String(element.Value),
+            // get rid of new lines and spaces before parsing base64 string
+            "data" => Convert.FromBase64String(SpaceRegex.Replace(element.Value, "")),
             "array" => element.Elements().Select(ParseValueElement),
             "dict" => ParseDictionary(element),
             _ => throw new NotImplementedException($"Unsupported datatype {type}")

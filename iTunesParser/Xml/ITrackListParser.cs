@@ -4,5 +4,5 @@ namespace iTunesSmartParser.Xml;
 
 public interface ITrackListParser
 {
-    IEnumerable<Track> LoadTracks(XDocument doc);
+    IEnumerable<Track> ParseTracks(XDocument doc);
 }
