@@ -1,8 +1,8 @@
-
-using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Schema;
+
+namespace iTunesSmartParser.Xml;
 
 /// <summary>
 /// Used to parse Apple's proprietary PList format.
@@ -37,7 +37,7 @@ public static class PListParser
         // </dict>
         // It uses key-value pairs of elements
 
-        var enumerator = dictionaryElement.Elements().GetEnumerator();
+        using var enumerator = dictionaryElement.Elements().GetEnumerator();
 
         var dictionary = new Dictionary<string, dynamic>();
 
@@ -76,7 +76,7 @@ public static class PListParser
         {
             "string" => element.Value,
             "real" => float.Parse(element.Value),
-            "integer" => int.Parse(element.Value),
+            "integer" => long.Parse(element.Value),
             "true" => true,
             "false" => false,
             "date" => DateTime.Parse(element.Value),
@@ -96,5 +96,6 @@ public static class PListParser
     /// <param name="element">The dict element</param>
     /// <param name="key">The key to look up</param>
     /// <returns></returns>
-    public static XElement? PlistDictGet(this XElement element, string key) => element.Elements("key").FirstOrDefault(x => x.Value == key);
+    public static XElement? PlistDictGet(this XElement element, string key) =>
+        (XElement?) element.Elements("key").FirstOrDefault(x => x.Value == key)?.NextNode;
 }

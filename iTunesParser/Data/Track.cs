@@ -9,9 +9,7 @@ public class Track
     /// <summary>
     /// The unique ID of this track
     /// </summary>
-    public int TrackID { get; set; }
-
-    public Dictionary<string, dynamic?> AllProperties;
+    public int Id { get; set; }
 
     #region File
 
@@ -66,11 +64,11 @@ public class Track
 
     #region From Tags
 
-    public int Channels { get; set; }
+    public int? Channels { get; set; }
 
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
-    public string Codec { get; set; }
+    public string? Codec { get; set; }
 
     public byte[] CoverArt;
 
@@ -99,7 +97,7 @@ public class Track
     /// <summary>
     /// Tempo of the track in Beats Per Minute
     /// </summary>
-    public int? BPM { get; set; }
+    public int? Bpm { get; set; }
 
     /// <summary>
     /// The disc number this track comes from
@@ -157,7 +155,7 @@ public class Track
     /// <summary>
     /// Times played.
     /// </summary>
-    public int PlayCount { get; set; }
+    public int? PlayCount { get; set; }
 
     /// <summary>
     /// Last played date
@@ -167,7 +165,7 @@ public class Track
     /// <summary>
     /// The number of times as this track has been skipped
     /// </summary>
-    public int SkipCount { get; set; }
+    public int? SkipCount { get; set; }
 
     #endregion
 
@@ -176,7 +174,7 @@ public class Track
     /// <summary>
     /// Track Rating out of 100
     /// </summary>
-    public int? Rating100;
+    public int? Rating100 { get; set; }
 
     /// <summary>
     /// Track Rating in Stars
@@ -192,29 +190,31 @@ public class Track
 
     #endregion
 
+    public Track()
+    {
+    }
+
     public Track(Dictionary<string, dynamic?> properties)
     {
-        AllProperties = properties;
-
         // parse all important field
-        TrackID = properties["Track ID"];
-        Size = properties.GetValueOrDefault("Size", null);
+        Id = (int)properties["Track ID"];
+        Size = (int?)properties.GetValueOrDefault("Size", null);
         TotalTime = properties.ContainsKey("Total Time") ?
             TimeSpan.FromMilliseconds(properties["Total Time"]) : null;
-        Year = properties.GetValueOrDefault("Year", null);
-        BPM = properties.GetValueOrDefault("BPM", null);
-        DiscNumber = properties.GetValueOrDefault("Disc Number", null);
-        DiscCount = properties.GetValueOrDefault("Disc Count", null);
-        TrackNumber = properties.GetValueOrDefault("Track Number", null);
-        TrackCount = properties.GetValueOrDefault("Track Count", null);
+        Year = (int?)properties.GetValueOrDefault("Year", null);
+        Bpm = (int?)properties.GetValueOrDefault("BPM", null);
+        DiscNumber = (int?)properties.GetValueOrDefault("Disc Number", null);
+        DiscCount = (int?)properties.GetValueOrDefault("Disc Count", null);
+        TrackNumber = (int?)properties.GetValueOrDefault("Track Number", null);
+        TrackCount = (int?)properties.GetValueOrDefault("Track Count", null);
         DateModified = properties["Date Modified"];
         DateAdded = properties["Date Added"];
-        BitRate = properties.GetValueOrDefault("Bit Rate", null);
-        SampleRate = properties.GetValueOrDefault("Sample Rate", null);
-        PlayCount = properties.GetValueOrDefault("Play Count", null);
+        BitRate = (int?)properties.GetValueOrDefault("Bit Rate", null);
+        SampleRate = (int?)properties.GetValueOrDefault("Sample Rate", null);
+        PlayCount = (int?)properties.GetValueOrDefault("Play Count", null);
         PlayDate = properties.GetValueOrDefault("Play Date UTC", null);
-        SkipCount = properties.GetValueOrDefault("Skip Count", null);
-        Rating100 = properties.GetValueOrDefault("Rating", null);
+        SkipCount = (int?)properties.GetValueOrDefault("Skip Count", null);
+        Rating100 = (int?)properties.GetValueOrDefault("Rating", null);
         Loved = properties.GetValueOrDefault("Loved", false);
         Name = properties.GetValueOrDefault("Name", null);
         Artist = properties.GetValueOrDefault("Artist", null);
