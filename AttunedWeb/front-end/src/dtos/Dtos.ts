@@ -2,30 +2,31 @@
 //     Changes to this file may cause incorrect behavior and will be lost if
 //     the code is regenerated.
 
-export interface ITrackDto {
-    Id: number;
-    Location: string;
-    Media: "Music";
-    Size: number;
-    DateModified: UTCDateTime;
-    DateAdded: UTCDateTime;
-    BitRate: number;
-    SampleRate: number;
-    TotalTime: any;
-    Year: number;
-    Bpm: number;
-    DiscNumber: number;
-    DiscCount: number;
-    TrackNumber: number;
-    TrackCount: number;
-    Name: string;
-    Artist: string;
-    Composer: string;
-    Album: string;
-    Genre: string;
-    PlayCount: number;
-    PlayDate: UTCDateTime;
-    SkipCount: number;
-    Rating: number;
-    Loved: boolean;
+export interface TrackDto
+{
+	Id: number;
+	Location: string;
+	Media: "Music";
+	Size: number;
+	DateModified: UTCDateTime;
+	DateAdded: UTCDateTime;
+	BitRate: number;
+	SampleRate: number;
+	TotalTime: any;
+	Year: number;
+	Bpm: number;
+	DiscNumber: number;
+	DiscCount: number;
+	TrackNumber: number;
+	TrackCount: number;
+	Name: string;
+	Artist: string;
+	Composer: string;
+	Album: string;
+	Genre: string;
+	PlayCount: number;
+	PlayDate: UTCDateTime;
+	SkipCount: number;
+	Rating: number;
+	Loved: boolean;
 }

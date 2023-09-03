@@ -1,8 +1,8 @@
 using Reinforced.Typings.Ast.TypeNames;
-
-namespace AttunedWebApi;
-
 using Reinforced.Typings.Fluent;
+using ConfigurationBuilder = Reinforced.Typings.Fluent.ConfigurationBuilder;
+
+namespace AttunedWebApi.CodeGen;
 
 public static class ReinforcedTypingsConfiguration
 {

@@ -1,9 +1,10 @@
+using AttunedWebApi.CodeGen;
 using iTunesSmartParser.Data;
 using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.Dtos;
 
-[TsInterface]
+[TsDto]
 public record TrackDto()
 {
     public required int Id { get; init; }
@@ -34,7 +35,6 @@ public record TrackDto()
     public int Rating { get; init; }
     public bool Loved { get; init; }
 
-    [TsIgnore]
     public static TrackDto FromTrack(Track track) =>
         new()
         {
