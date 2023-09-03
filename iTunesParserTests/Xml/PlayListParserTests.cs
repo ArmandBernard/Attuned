@@ -1,9 +1,11 @@
 using System.Xml.Linq;
 using FluentAssertions;
+using iTunesParserTests.Xml.TestPlaylists;
 using iTunesSmartParser;
 using iTunesSmartParser.Data;
 using iTunesSmartParser.Fields;
 using iTunesSmartParser.Xml;
+using Newtonsoft.Json;
 
 namespace iTunesParserTests.Xml;
 
@@ -111,6 +113,36 @@ public class PlayListParserTests
         var result = _playlistParser.ParsePlaylists(doc);
 
         result.Should().BeEquivalentTo(_expectedPlaylists);
+    }
+
+    public static IEnumerable<TestCaseData> TestPlaylistsSource()
+    {
+        yield return new TestCaseData(File.ReadAllText(Path.Combine("Xml", "TestPlaylists", "BestOfWaveshaper.xml")),
+            ExpectedPlaylistOutputs.BestOfWaveshaper);
+        yield return new TestCaseData(File.ReadAllText(Path.Combine("Xml", "TestPlaylists", "FavouriteClassical.xml")),
+            ExpectedPlaylistOutputs.FavouriteClassical);
+        yield return new TestCaseData(File.ReadAllText(Path.Combine("Xml", "TestPlaylists", "MostPlayed.xml")),
+            ExpectedPlaylistOutputs.MostPlayed);
+    }
+
+    [TestCaseSource(nameof(TestPlaylistsSource))]
+    public void PlayListParser_GivenAVarietyOfSmartPlaylists_ParsesAllOfThemCorrectly(string xml,
+        Playlist expectedOutput)
+    {
+        var dictionary = PListParser.ParseDictionary(XElement.Parse(xml));
+
+        var parsedPlaylist = Playlist.FromDictionary(dictionary);
+
+        var converters = new JsonConverter[]
+        {
+            new Newtonsoft.Json.Converters.StringEnumConverter()
+        };
+        
+        // serialization need to ensure recursive equality
+        var parsedPlaylistJson = JsonConvert.SerializeObject(parsedPlaylist, Formatting.Indented, converters);
+        var expectedOutputJson = JsonConvert.SerializeObject(expectedOutput, Formatting.Indented, converters);
+        
+        parsedPlaylistJson.Should().Be(expectedOutputJson);
     }
 
     [Test]
