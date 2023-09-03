@@ -95,10 +95,23 @@ public class PlaylistCriteriaHelper
 
     #region ints
 
-    public int IntA(int offset) => Utils.ByteToInt(Criteria.Skip(offset + INTA).Take(4));
+    public int IntA(int offset) => HandleIntField(offset, INTA);
 
-    public int IntB(int offset) => Utils.ByteToInt(Criteria.Skip(offset + INTA + INTB).Take(4));
+    public int IntB(int offset) => HandleIntField(offset, INTA + INTB);
 
+    private int HandleIntField(int offset, int valueOffset)
+    {
+        var rawValue = Utils.ByteToInt(Criteria.Skip(offset + valueOffset).Take(4));
+        
+        // ratings field requires special attention as it gives weird numbers like 109 for 100%
+        if ((IntFields) Field(offset) == IntFields.Rating)
+        {
+            return rawValue / 20;
+        }
+        
+        return rawValue;
+    } 
+    
     #endregion
 
     #region dates

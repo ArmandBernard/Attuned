@@ -98,7 +98,7 @@ public class PlayListParserTests
                     }),
                     new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
                     {
-                        new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 40, 100)
+                        new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 2, 5)
                     })
                 }, Array.Empty<IRule>()),
                 true

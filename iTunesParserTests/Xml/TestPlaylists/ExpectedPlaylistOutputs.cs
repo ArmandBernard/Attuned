@@ -15,7 +15,7 @@ public static class ExpectedPlaylistOutputs
         });
 
     private static readonly Limit DefaultOffLimit =
-        new(false, LimitUnits.Items, 25, false, SelectionMethods.Random, false);
+        new(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true);
 
     public static Playlist BestOfWaveshaper = new("Best of Waveshaper", 22432, new[] {7914, 7916, 7918}, true,
         new PlaylistInformation(
@@ -26,13 +26,13 @@ public static class ExpectedPlaylistOutputs
                 new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
                 {
                     new StringRule(StringFields.Artist, LogicRule.Contains, LogicSign.StringPositive, "Waveshaper"),
-                    new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 60, 100)
+                    new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 3, 5)
                 })
             }, Array.Empty<IRule>()),
             true
         ));
 
-    public static Playlist FavouriteClassical = new(
+    public static readonly Playlist FavouriteClassical = new(
         "favourite classical",
         22530,
         new[] {1082, 1054, 1042},
@@ -53,13 +53,13 @@ public static class ExpectedPlaylistOutputs
                     })
                 }, new List<IRule>()
                 {
-                    new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 60, 100)
+                    new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 3, 5)
                 })
             }, Array.Empty<IRule>()),
             true
         ));
 
-    public static Playlist MostPlayed = new(
+    public static readonly Playlist MostPlayed = new(
         "Most played",
         22804,
         new[] {724, 2528, 820},
