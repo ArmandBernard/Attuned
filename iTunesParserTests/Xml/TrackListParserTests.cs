@@ -161,7 +161,7 @@ public class TrackListParserTests
     {
         var doc = XDocument.Parse(TEST_DOC);
 
-        var result = _trackListParser.ParseTracks(doc);
+        var result = _trackListParser.ParseDocument(doc);
 
         result.Should().BeEquivalentTo(_expectedTrackList);
     }

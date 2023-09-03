@@ -5,7 +5,7 @@ namespace iTunesSmartParser.Xml;
 
 public class TrackListParser : ITrackListParser
 {
-    public IEnumerable<Track> ParseTracks(XDocument doc)
+    public IEnumerable<Track> ParseDocument(XDocument doc)
     {
         // get the node which contains all tracks
         var tracksDictNode = PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks");

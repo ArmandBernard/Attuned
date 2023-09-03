@@ -20,7 +20,7 @@ public class XmlParser
     /// </summary>
     /// <returns></returns>
     public async Task<IEnumerable<Track>> ParseTracks(string path, CancellationToken? token = null) =>
-        TrackListParser.ParseTracks(await OpenDocument(path, token ?? CancellationToken.None));
+        TrackListParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
 
     public async Task<IEnumerable<Playlist>> ParsePlaylists(string path, CancellationToken? token = null) =>
         PlaylistsParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
