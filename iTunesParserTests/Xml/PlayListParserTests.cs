@@ -86,7 +86,7 @@ public class PlayListParserTests
             },
             true,
             //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
-            new PlaylistInformation(
+            new SmartPlaylistInformation(
                 new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true),
                 new Conjunction(ConjunctionType.And, new List<Conjunction>()
                 {
@@ -110,7 +110,7 @@ public class PlayListParserTests
     {
         var doc = XDocument.Parse(TestDoc);
 
-        var result = _playlistParser.ParsePlaylists(doc);
+        var result = _playlistParser.ParseDocument(doc);
 
         result.Should().BeEquivalentTo(_expectedPlaylists);
     }
@@ -129,9 +129,7 @@ public class PlayListParserTests
     public void PlayListParser_GivenAVarietyOfSmartPlaylists_ParsesAllOfThemCorrectly(string xml,
         Playlist expectedOutput)
     {
-        var dictionary = PListParser.ParseDictionary(XElement.Parse(xml));
-
-        var parsedPlaylist = Playlist.FromDictionary(dictionary);
+        var parsedPlaylist = _playlistParser.ParsePlaylistElement(XElement.Parse(xml));
 
         var converters = new JsonConverter[]
         {

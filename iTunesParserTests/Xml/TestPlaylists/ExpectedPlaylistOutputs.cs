@@ -18,7 +18,7 @@ public static class ExpectedPlaylistOutputs
         new(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true);
 
     public static Playlist BestOfWaveshaper = new("Best of Waveshaper", 22432, new[] {7914, 7916, 7918}, true,
-        new PlaylistInformation(
+        new SmartPlaylistInformation(
             DefaultOffLimit,
             new Conjunction(ConjunctionType.And, new List<Conjunction>()
             {
@@ -37,7 +37,7 @@ public static class ExpectedPlaylistOutputs
         22530,
         new[] {1082, 1054, 1042},
         true,
-        new PlaylistInformation(
+        new SmartPlaylistInformation(
             DefaultOffLimit,
             new Conjunction(ConjunctionType.And, new List<Conjunction>()
             {
@@ -64,7 +64,7 @@ public static class ExpectedPlaylistOutputs
         22804,
         new[] {724, 2528, 820},
         true,
-        new PlaylistInformation(
+        new SmartPlaylistInformation(
             new Limit(true, LimitUnits.Items, 50, false, SelectionMethods.OftenPlayed, true),
             null, true)
     );

@@ -3,22 +3,8 @@ using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Playlists;
 
-public static class PlaylistInformationBuilder
+public static class CriteriaParser
 {
-    public static PlaylistInformation ParsePlaylist(byte[] info, byte[] criteria)
-    {
-        var infoHelper = new PlayListInfoHelper(info);
-
-        var limit = new Limit(infoHelper.IsLimited, infoHelper.LimitUnits,
-            infoHelper.LimitNumber, infoHelper.OnlyChecked, infoHelper.SortBy,
-            infoHelper.SortDescending);
-
-        // perform logical matching
-        var conjunctions = infoHelper.Match ? ProcessMatchRules(criteria) : null;
-
-        return new PlaylistInformation(limit, conjunctions, infoHelper.LiveUpdate);
-    }
-
     private class StackItem
     {
         public int NumberOfSubConjunctions;
@@ -31,11 +17,11 @@ public static class PlaylistInformationBuilder
         }
     }
 
-    private static Conjunction ProcessMatchRules(byte[] criteria)
+    public static Conjunction Parse(byte[] criteria)
     {
-        var criteriaHelper = new PlaylistCriteriaHelper(criteria);
+        var criteriaHelper = new CriteriaHelper(criteria);
 
-        var offset = PlaylistCriteriaHelper.StartingOffset;
+        var offset = CriteriaHelper.StartingOffset;
 
         // is it an "or" (any) or "and" (all) general statement?
         var mainConjunction = new Conjunction(Type: criteriaHelper.LogicIsOr ? ConjunctionType.Or : ConjunctionType.And,
@@ -96,7 +82,7 @@ public static class PlaylistInformationBuilder
                 rule = new StringRule(Field: (StringFields) field, RuleType: logicRule, Sign: logicSign,
                     Value: content);
 
-                offset = PlaylistCriteriaHelper.PostStringOffset(offset, content);
+                offset = CriteriaHelper.PostStringOffset(offset, content);
             }
             else if (Enum.IsDefined(typeof(IntFields), field))
             {
@@ -104,7 +90,7 @@ public static class PlaylistInformationBuilder
                     ValueA: criteriaHelper.IntA(offset), // Only range rule has two values.
                     ValueB: criteriaHelper.IsRangeField(offset) ? criteriaHelper.IntB(offset) : null);
 
-                offset = PlaylistCriteriaHelper.PostFixedLengthFieldOffset(offset);
+                offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
             else if (Enum.IsDefined(typeof(DateFields), field))
             {
@@ -120,7 +106,7 @@ public static class PlaylistInformationBuilder
                         ValueA: criteriaHelper.DateA(offset), // Only range rule has two values.
                         ValueB: criteriaHelper.IsRangeField(offset) ? criteriaHelper.DateB(offset) : null);
 
-                    offset = PlaylistCriteriaHelper.PostFixedLengthFieldOffset(offset);
+                    offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
                 }
             }
             else if (Enum.IsDefined(typeof(BoolFields), field))
@@ -129,7 +115,7 @@ public static class PlaylistInformationBuilder
                     RuleType: LogicRule.Is, // when sign is IntPositive it means true
                     Sign: logicSign);
 
-                offset = PlaylistCriteriaHelper.PostFixedLengthFieldOffset(offset);
+                offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
             else if (Enum.IsDefined(typeof(DictionaryFields), field))
             {
@@ -152,14 +138,14 @@ public static class PlaylistInformationBuilder
                 rule = new DictionaryRule(Field: (DictionaryFields) field, RuleType: logicRule, Sign: logicSign,
                     Value: dictionary[criteriaHelper.IntA(offset)]);
 
-                offset = PlaylistCriteriaHelper.PostFixedLengthFieldOffset(offset);
+                offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
             else if (Enum.IsDefined(typeof(PlaylistFields), field))
             {
                 rule = new PlaylistRule(Field: (PlaylistFields) field, RuleType: logicRule, Sign: logicSign,
                     Value: criteriaHelper.PlaylistId(offset));
 
-                offset = PlaylistCriteriaHelper.PostFixedLengthFieldOffset(offset);
+                offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
 
             if (rule != null)
@@ -194,7 +180,7 @@ public static class PlaylistInformationBuilder
                 currentConjunction = childConjunction;
 
                 // increase offset for next loop
-                offset = PlaylistCriteriaHelper.PostSubExpressionOffset(offset);
+                offset = CriteriaHelper.PostSubExpressionOffset(offset);
             }
             else
             {

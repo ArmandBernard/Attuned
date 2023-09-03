@@ -1,6 +1,6 @@
 namespace iTunesSmartParser.Playlists;
 
-public class PlayListInfoHelper
+public class InfoHelper
 {
     // INFO OFFSETS
     // Offsets for bytes which...
@@ -19,7 +19,7 @@ public class PlayListInfoHelper
 
     private byte[] Info { get; }
 
-    public PlayListInfoHelper(byte[] info)
+    public InfoHelper(byte[] info)
     {
         Info = info;
     }

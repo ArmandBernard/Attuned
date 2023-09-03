@@ -26,7 +26,7 @@ public class XMLParser
         TrackListParser.ParseTracks(await OpenDocument(path, token ?? CancellationToken.None));
 
     public async Task<IEnumerable<Playlist>> LoadSmartPlaylists(string path, CancellationToken? token = null) =>
-        PlaylistsParser.ParsePlaylists(await OpenDocument(path, token ?? CancellationToken.None));
+        PlaylistsParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
 
     private async Task<XDocument> OpenDocument(string path, CancellationToken token)
     {

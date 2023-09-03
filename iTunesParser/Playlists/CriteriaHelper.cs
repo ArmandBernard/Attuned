@@ -3,7 +3,7 @@ using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Playlists;
 
-public class PlaylistCriteriaHelper
+public class CriteriaHelper
 {
     private readonly byte[] Criteria;
 
@@ -154,7 +154,7 @@ public class PlaylistCriteriaHelper
 
     public bool KeepReading(int offset) => offset < Criteria.Length;
 
-    public PlaylistCriteriaHelper(byte[] criteria)
+    public CriteriaHelper(byte[] criteria)
     {
         Criteria = criteria;
     }
