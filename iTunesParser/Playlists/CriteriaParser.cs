@@ -127,10 +127,10 @@ public static class CriteriaParser
 
                 var dictionary = (DictionaryFields) field switch
                 {
-                    DictionaryFields.Love => Kinds.Love,
-                    DictionaryFields.MediaKind => Kinds.Media,
-                    DictionaryFields.Location => Kinds.Location,
-                    DictionaryFields.iCloudStatus => Kinds.iCloudStatus,
+                    DictionaryFields.Love => Dictionaries.Love,
+                    DictionaryFields.MediaKind => Dictionaries.Media,
+                    DictionaryFields.Location => Dictionaries.Location,
+                    DictionaryFields.iCloudStatus => Dictionaries.iCloudStatus,
                     _ => throw new ArgumentOutOfRangeException(
                         $"DictionaryField not recognized: ${(DictionaryFields) field}")
                 };

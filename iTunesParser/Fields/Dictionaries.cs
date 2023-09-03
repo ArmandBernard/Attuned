@@ -1,6 +1,6 @@
-﻿namespace iTunesSmartParser;
+﻿namespace iTunesSmartParser.Fields;
 
-public static class Kinds
+public static class Dictionaries
 {
     public static readonly Dictionary<string, string> File = new()
     {
