@@ -1,5 +1,8 @@
 using iTunesSmartParser;
 using iTunesSmartParser.Data;
+using iTunesSmartParser.Data.Limits;
+using iTunesSmartParser.Data.Logic;
+using iTunesSmartParser.Data.Rules;
 using iTunesSmartParser.Fields;
 
 namespace iTunesParserTests.Xml.TestPlaylists;
@@ -9,8 +12,8 @@ public static class ExpectedPlaylistOutputs
     private static readonly Conjunction MusicMediaConjunction = new(ConjunctionType.Or, Array.Empty<Conjunction>(),
         new List<IRule>
         {
-            new DictionaryRule(DictionaryFields.MediaKind, LogicRule.Is, LogicSign.IntPositive, "Music"),
-            new DictionaryRule(DictionaryFields.MediaKind, LogicRule.Is, LogicSign.IntPositive,
+            new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive, "Music"),
+            new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive,
                 "Music Video")
         });
 
@@ -25,8 +28,8 @@ public static class ExpectedPlaylistOutputs
                 MusicMediaConjunction,
                 new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
                 {
-                    new StringRule(StringFields.Artist, LogicRule.Contains, LogicSign.StringPositive, "Waveshaper"),
-                    new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 3, 5)
+                    new StringRule(StringFields.Artist, Operator.Contains, Sign.StringPositive, "Waveshaper"),
+                    new IntRule(IntFields.Rating, Operator.Other, Sign.IntPositive, 3, 5)
                 })
             }, Array.Empty<IRule>()),
             true
@@ -46,14 +49,14 @@ public static class ExpectedPlaylistOutputs
                 {
                     new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()
                     {
-                        new StringRule(StringFields.Genre, LogicRule.Contains, LogicSign.StringPositive, "Classical"),
-                        new StringRule(StringFields.Artist, LogicRule.Contains, LogicSign.StringPositive, "Einaudi"),
-                        new StringRule(StringFields.Album, LogicRule.Contains, LogicSign.StringPositive,
+                        new StringRule(StringFields.Genre, Operator.Contains, Sign.StringPositive, "Classical"),
+                        new StringRule(StringFields.Artist, Operator.Contains, Sign.StringPositive, "Einaudi"),
+                        new StringRule(StringFields.Album, Operator.Contains, Sign.StringPositive,
                             "classical music"),
                     })
                 }, new List<IRule>()
                 {
-                    new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 3, 5)
+                    new IntRule(IntFields.Rating, Operator.Other, Sign.IntPositive, 3, 5)
                 })
             }, Array.Empty<IRule>()),
             true

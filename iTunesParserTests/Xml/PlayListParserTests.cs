@@ -3,6 +3,9 @@ using FluentAssertions;
 using iTunesParserTests.Xml.TestPlaylists;
 using iTunesSmartParser;
 using iTunesSmartParser.Data;
+using iTunesSmartParser.Data.Limits;
+using iTunesSmartParser.Data.Logic;
+using iTunesSmartParser.Data.Rules;
 using iTunesSmartParser.Fields;
 using iTunesSmartParser.Xml;
 using Newtonsoft.Json;
@@ -92,13 +95,13 @@ public class PlayListParserTests
                 {
                     new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()
                     {
-                        new DictionaryRule(DictionaryFields.MediaKind, LogicRule.Is, LogicSign.IntPositive, "Music"),
-                        new DictionaryRule(DictionaryFields.MediaKind, LogicRule.Is, LogicSign.IntPositive,
+                        new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive, "Music"),
+                        new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive,
                             "Music Video")
                     }),
                     new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
                     {
-                        new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 2, 5)
+                        new IntRule(IntFields.Rating, Operator.Other, Sign.IntPositive, 2, 5)
                     })
                 }, Array.Empty<IRule>()),
                 true

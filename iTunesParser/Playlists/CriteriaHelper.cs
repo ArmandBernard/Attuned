@@ -1,5 +1,6 @@
 using System.Text;
 using iTunesSmartParser.Data;
+using iTunesSmartParser.Data.Logic;
 using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Playlists;
@@ -49,12 +50,12 @@ public class CriteriaHelper
 
     public bool SubLogicIsOr(int offset) => Criteria[offset + SUBLOGICTYPE] == 1;
 
-    public LogicSign GetSign(int offset) => (LogicSign) Criteria[offset + LOGICSIGN];
+    public Sign GetSign(int offset) => (Sign) Criteria[offset + LOGICSIGN];
 
-    public LogicRule GetRule(int offset) => (LogicRule) Criteria[offset + LOGICRULE];
+    public Operator GetRule(int offset) => (Operator) Criteria[offset + LOGICRULE];
 
     public bool IsRangeField(int offset) =>
-        GetRule(offset) == LogicRule.Other && Criteria[offset + LOGICSIGN + 2] == 1;
+        GetRule(offset) == Operator.Other && Criteria[offset + LOGICSIGN + 2] == 1;
 
     public int NumberOfSubExpressions(int offset) => Utils.ByteToInt(Criteria.Skip(offset + SUBINT).Take(4));
 
@@ -122,7 +123,7 @@ public class CriteriaHelper
     public DateTime DateB(int offset) => Utils.BytesToDateTime(Criteria.Skip(offset + INTA + INTB).Take(4));
 
     public bool IsTimeSpanRule(int offset) =>
-        GetRule(offset) == LogicRule.Other && Criteria[offset + LOGICSIGN + 2] == 2;
+        GetRule(offset) == Operator.Other && Criteria[offset + LOGICSIGN + 2] == 2;
 
     public TimeUnits TimeUnits(int offset) =>
         (TimeUnits) Utils.ByteToInt(Criteria.Skip(offset + TIMEMULTIPLE).Take(4));

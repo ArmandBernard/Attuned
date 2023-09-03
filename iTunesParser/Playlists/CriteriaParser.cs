@@ -1,4 +1,6 @@
 using iTunesSmartParser.Data;
+using iTunesSmartParser.Data.Logic;
+using iTunesSmartParser.Data.Rules;
 using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Playlists;
@@ -96,7 +98,7 @@ public static class CriteriaParser
             {
                 if (criteriaHelper.IsTimeSpanRule(offset))
                 {
-                    rule = new TimeSpanRule(Field: (DateFields) field, RuleType: LogicRule.Other, Sign: logicSign,
+                    rule = new TimeSpanRule(Field: (DateFields) field, RuleType: Operator.Other, Sign: logicSign,
                         Value: TimeSpan.FromSeconds(
                             (int) criteriaHelper.TimeUnits(offset) * criteriaHelper.TimeSpanValue(offset)));
                 }
@@ -112,14 +114,14 @@ public static class CriteriaParser
             else if (Enum.IsDefined(typeof(BoolFields), field))
             {
                 rule = new BooleanRule(Field: (BoolFields) field,
-                    RuleType: LogicRule.Is, // when sign is IntPositive it means true
+                    RuleType: Operator.Is, // when sign is IntPositive it means true
                     Sign: logicSign);
 
                 offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
             else if (Enum.IsDefined(typeof(DictionaryFields), field))
             {
-                if (logicRule != LogicRule.Is)
+                if (logicRule != Operator.Is)
                 {
                     throw new Exception(
                         $"{(DictionaryFields) field} had incompatible rule type ${logicRule}");
