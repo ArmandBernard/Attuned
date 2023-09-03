@@ -1,3 +1,5 @@
+using iTunesSmartParser.Data;
+
 namespace iTunesSmartParser.Playlists;
 
 public class InfoHelper
