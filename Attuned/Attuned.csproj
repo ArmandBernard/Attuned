@@ -68,8 +68,6 @@
     <Compile Include="CustomControls\SearchBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SmartPlaylist.cs" />
-    <Compile Include="Track.cs" />
     <Compile Include="TrackDetailsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,7 +83,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32.cs" />
-    <Compile Include="XMLParser.cs" />
     <EmbeddedResource Include="EditColumnsForm.resx">
       <DependentUpon>EditColumnsForm.cs</DependentUpon>
     </EmbeddedResource>

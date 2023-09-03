@@ -1,29 +1,28 @@
 # Attuned
-A chill, personal project attempting to create an iTunes replacement. Built using C# and Winforms.
-In particular, I wanted something with the same smart playlist functionality that could sync with my android phone.
+
+A chill, personal project attempting to create an iTunes replacement.
+In particular, I wanted something with the same smart playlist functionality that could sync with my Android phone.
 
 Currently not even in alpha yet.
 
+Huge kudos to [cvzi](https://github.com/cvzi)'s [itunes_smartplaylist](https://github.com/cvzi/itunes_smartplaylist)
+project, which I based the parsing code on.
 
 ## Main (planned) features
-- Compatibility with their Library.xml.
-- Ability to sync to any device with a filesystem. i.e. will be Android compatible.
 
+- [x] Decode XML into an in-memory data structure.
+- [ ] Create a GUI to show this data.
+- [ ] Generate non-smart playlist files for Android.
 
-## Eventual features
-- Editing file properties and saving to xml
-- Ability to create smart playlists
-- drag and drop addition of files/albums
+## Not planned potential features
 
-## May happen
-- Coexistence with regular iTunes by editing .itl file
 - Media Player
-- Album Art
-- Grid view
+- Enable syncing files to Android.
+- Write code to allow generation of XML file.
+- Enable editing of track data via the GUI.
+- Enable editing of smart playlists via the GUI
 
-# Stages of Developement
-1) Decode XML and show all data in a gui - In Progress
-2) Enable syncing to Android and the like
-3) Enable creation of smart playlists
-4) Enable editing of values and xml for iTunes re-import
-5) Enable adding of new tracks/albums
+## Tech stack
+
+My first attempt at this project was with .NET Framework 4 and WinForms. Now I'm targeting .NET Core and planning a
+WebAPI + React front-end.
