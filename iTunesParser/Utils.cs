@@ -1,8 +1,8 @@
-namespace iTunesSmartParser.Playlists;
+namespace iTunesSmartParser;
 
 public static class Utils
 {
-    const int UNIXDELTA = -2082844800; // iTunes/Unix time stamp 0 difference
+    private const int UNIXDELTA = -2082844800; // iTunes/Unix time stamp 0 difference
 
     /// <summary>
     /// Convert bytes to integer.
@@ -21,8 +21,8 @@ public static class Utils
     }
 
     /// <summary>
-    /// Convert Unix time value to a DateTime object.
+    /// Convert Unix milliseconds time value to a DateTime object.
     /// </summary>
-    private static DateTime UnixToDateTime(long unixtime) => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-        .AddMilliseconds(unixtime).ToLocalTime();
+    private static DateTime UnixToDateTime(long unixMilliseconds) => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+        .AddMilliseconds(unixMilliseconds).ToLocalTime();
 }
