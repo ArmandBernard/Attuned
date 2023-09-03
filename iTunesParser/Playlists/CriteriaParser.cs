@@ -107,9 +107,8 @@ public static class CriteriaParser
                     rule = new DateRule(Field: (DateFields) field, RuleType: logicRule, Sign: logicSign,
                         ValueA: criteriaHelper.DateA(offset), // Only range rule has two values.
                         ValueB: criteriaHelper.IsRangeField(offset) ? criteriaHelper.DateB(offset) : null);
-
-                    offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
                 }
+                offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
             else if (Enum.IsDefined(typeof(BoolFields), field))
             {
