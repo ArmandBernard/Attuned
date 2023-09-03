@@ -3,29 +3,26 @@ using iTunesSmartParser.Data;
 
 namespace iTunesSmartParser.Xml;
 
-public class XMLParser
+public class XmlParser
 {
-    private ITrackListParser TrackListParser { get; init; }
-    public IPlaylistsParser PlaylistsParser { get; }
+    private ITrackListParser TrackListParser { get; }
+    private IPlaylistsParser PlaylistsParser { get; }
 
-    public XMLParser(ILogger logger, ITrackListParser trackListParser, IPlaylistsParser playlistsParser)
+    public XmlParser(ITrackListParser trackListParser, IPlaylistsParser playlistsParser)
     {
-        Logger = logger;
+
         TrackListParser = trackListParser;
         PlaylistsParser = playlistsParser;
     }
 
-    private ILogger Logger { get; init; }
-
     /// <summary>
     /// Load all tracks from the iTunes library XML using the XDoc method
     /// </summary>
-    /// <param name="path"></param>
     /// <returns></returns>
-    public async Task<IEnumerable<Track>> LoadTracks(string path, CancellationToken? token = null) =>
+    public async Task<IEnumerable<Track>> ParseTracks(string path, CancellationToken? token = null) =>
         TrackListParser.ParseTracks(await OpenDocument(path, token ?? CancellationToken.None));
 
-    public async Task<IEnumerable<Playlist>> LoadSmartPlaylists(string path, CancellationToken? token = null) =>
+    public async Task<IEnumerable<Playlist>> ParsePlaylists(string path, CancellationToken? token = null) =>
         PlaylistsParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
 
     private async Task<XDocument> OpenDocument(string path, CancellationToken token)

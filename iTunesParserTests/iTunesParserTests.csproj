@@ -10,7 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Xml\TestPlaylists\*">
+    <Content Include="Xml\TestPlaylists\*.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="*.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
