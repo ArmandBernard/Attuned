@@ -1,3 +1,4 @@
+using AttunedWebApi.Dtos;
 using iTunesSmartParser.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,11 +17,12 @@ public class TrackController : ControllerBase
 
     [HttpGet]
     [Route("")]
-    public IEnumerable<Track> Get()
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
+    public IActionResult Get()
     {
-        return new[]
+        return Ok(new[]
         {
-            new Track()
+            TrackDto.FromTrack(new Track()
             {
                 Id = 1,
                 Name = "Name",
@@ -39,7 +41,7 @@ public class TrackController : ControllerBase
                 DiscNumber = 1,
                 Rating = 3,
                 Size = 4000
-            }
-        };
+            })
+        });
     }
 }
