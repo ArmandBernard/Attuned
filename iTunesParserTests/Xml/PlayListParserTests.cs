@@ -85,7 +85,7 @@ public class PlayListParserTests
             true,
             //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
             new PlaylistInformation(
-                new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, false),
+                new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true),
                 new Conjunction(ConjunctionType.And, new List<Conjunction>()
                 {
                     new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()

@@ -30,7 +30,7 @@ public class PlayListInfoHelper
 
     public SelectionMethods SortBy => (SelectionMethods) Info[SELECTIONMETHOD];
 
-    public bool SortDescending => Info[SELECTIONMETHODSIGN] == 1;
+    public bool SortDescending => Info[SELECTIONMETHODSIGN] == 0;
 
     public LimitUnits LimitUnits => (LimitUnits) Convert.ToInt32(Info[LIMITMETHOD]);
 
