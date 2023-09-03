@@ -8,6 +8,7 @@ public class XmlParserTests
     private readonly XmlParser _xmlParser = new(new TrackListParser(), new PlaylistParser());
 
     [Test]
+    [Explicit]
     [Category("LocalOnly")]
     // This test can only be run locally as a library is private
     public void ParseTracks_WorksWithARealLibrary()
@@ -18,6 +19,7 @@ public class XmlParserTests
     }
     
     [Test]
+    [Explicit]
     [Category("LocalOnly")]
     // This test can only be run locally as a library is private
     public void ParsePlaylists_WorksWithARealLibrary()

@@ -20,4 +20,4 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Test
-        run: dotnet test --filter "TestCategory!=LocalOnly" --verbosity normal
+        run: dotnet test --verbosity normal
