@@ -4,7 +4,9 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunesSmartParser", "iTunesParser\iTunesSmartParser.csproj", "{00742C0B-7045-4D33-899B-114385B7884C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTunesParserTests", "iTunesParserTests\iTunesParserTests.csproj", "{5A65026A-0F4F-4481-A70A-30A1F2D00326}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttunedWebApi", "AttunedWeb\AttunedWebApi\AttunedWebApi.csproj", "{BEA35BF4-A029-4A7E-9C0B-6E11E69BB639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTunesParserTests", "iTunesParserTests\iTunesParserTests.csproj", "{7ECDCD0C-5C8F-4FAF-A632-C783946A251A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,14 @@ Global
 		{5A65026A-0F4F-4481-A70A-30A1F2D00326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A65026A-0F4F-4481-A70A-30A1F2D00326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A65026A-0F4F-4481-A70A-30A1F2D00326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEA35BF4-A029-4A7E-9C0B-6E11E69BB639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEA35BF4-A029-4A7E-9C0B-6E11E69BB639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEA35BF4-A029-4A7E-9C0B-6E11E69BB639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEA35BF4-A029-4A7E-9C0B-6E11E69BB639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ECDCD0C-5C8F-4FAF-A632-C783946A251A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ECDCD0C-5C8F-4FAF-A632-C783946A251A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ECDCD0C-5C8F-4FAF-A632-C783946A251A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ECDCD0C-5C8F-4FAF-A632-C783946A251A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
