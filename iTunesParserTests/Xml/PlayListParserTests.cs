@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using FluentAssertions;
 using iTunesParserTests.Xml.TestPlaylists;
 using iTunesSmartParser.Data;
 using iTunesSmartParser.Data.Limits;

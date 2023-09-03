@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using FluentAssertions;
 using iTunesSmartParser.Xml;
 
 namespace iTunesParserTests.Xml;

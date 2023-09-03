@@ -1,4 +1,3 @@
-using iTunesSmartParser;
 using iTunesSmartParser.Data;
 using iTunesSmartParser.Data.Limits;
 using iTunesSmartParser.Data.Logic;
