@@ -1,13 +1,16 @@
 using iTunesSmartParser.Data;
+using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.Dtos;
 
+[TsInterface]
 public record TrackDto()
 {
     public required int Id { get; init; }
     public required string Location { get; init; }
 
-    public string MediaKind => "Music";
+    [TsProperty(Type= "\"Music\"")]
+    public string Media => "Music";
     public int? Size { get; init; }
     public DateTime DateModified { get; init; }
     public DateTime DateAdded { get; init; }
@@ -31,6 +34,7 @@ public record TrackDto()
     public int Rating { get; init; }
     public bool Loved { get; init; }
 
+    [TsIgnore]
     public static TrackDto FromTrack(Track track) =>
         new()
         {
