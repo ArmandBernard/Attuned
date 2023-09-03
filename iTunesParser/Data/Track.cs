@@ -1,15 +1,13 @@
-﻿using TagFile = TagLib.File;
+﻿namespace iTunesSmartParser.Data;
 
-namespace iTunesSmartParser.Data;
-
-public class Track
+public record Track
 {
     #region Properties
 
     /// <summary>
     /// The unique ID of this track
     /// </summary>
-    public int Id { get; set; }
+    public required int Id { get; init; }
 
     #region File
 
@@ -18,7 +16,7 @@ public class Track
     /// <summary>
     /// The size of the track in bytes
     /// </summary>
-    public int? Size { get; set; }
+    public int? Size { get; init; }
 
     /// <summary>
     /// The size of the track in MB (where 1kB = 1024 bytes etc.)
@@ -28,33 +26,41 @@ public class Track
     /// <summary>
     /// The file modify date
     /// </summary>
-    public DateTime DateModified { get; set; }
+    public DateTime DateModified { get; init; }
 
     /// <summary>
     /// The date the file was added to iTunes
     /// </summary>
-    public DateTime DateAdded { get; set; }
+    public DateTime DateAdded { get; init; }
 
     /// <summary>
     /// The location on disk for this track
     /// </summary>
-    public string Location { get; set; }
+    public required string Location { get; init; }
 
     /// <summary>
     /// Get a filepath that windows will actually recognize
     /// </summary>
-    public string WellFormattedLocation
+    public string? LocalLocation
     {
         get
         {
-            string reformatted = Location.Replace("/", "\\");
-            // remove "file:" prefix
-            reformatted = reformatted.Replace("file:", "");
-            // spaces are denoted by %20 in Apple's filepaths
-            reformatted = reformatted.Replace("%20", " ");
-            // remove localhost prefix
-            reformatted = reformatted.Replace("\\\\localhost\\", "");
-            return reformatted;
+            // not a local location
+            if (!Location.Contains("//localhost/"))
+            {
+                return null;
+            }
+
+            var locationWithUnixSlashes = Location
+                // remove "file:" prefix
+                .Replace("file:", "")
+                // remove localhost prefix
+                .Replace(@"//localhost/", "")
+                // spaces are denoted by %20 in Apple's filepaths
+                .Replace("%20", " ");
+
+            // Replace forward slashes with environment-respecting delimiters
+            return Path.Combine(locationWithUnixSlashes.Split("/"));
         }
     }
 
@@ -68,15 +74,15 @@ public class Track
 
     public string? Codec { get; set; }
 
-    public byte[]? CoverArt;
+    public byte[]? CoverArt { get; set; }
 
     #endregion
 
     #region Encoding
 
-    public int? BitRate { get; set; }
+    public int? BitRate { get; init; }
 
-    public int? SampleRate { get; set; }
+    public int? SampleRate { get; init; }
 
     #endregion
 
@@ -85,66 +91,64 @@ public class Track
     /// <summary>
     /// The total duration of the track
     /// </summary>
-    public TimeSpan? TotalTime { get; set; }
+    public TimeSpan? TotalTime { get; init; }
 
     /// <summary>
     /// Year of release of the track
     /// </summary>
-    public int? Year { get; set; }
+    public int? Year { get; init; }
 
     /// <summary>
     /// Tempo of the track in Beats Per Minute
     /// </summary>
-    public int? Bpm { get; set; }
+    public int? Bpm { get; init; }
 
     /// <summary>
     /// The disc number this track comes from
     /// </summary>
-    public int? DiscNumber { get; set; }
+    public int? DiscNumber { get; init; }
 
     /// <summary>
     /// The total number of discs in this album
     /// </summary>
-    public int? DiscCount { get; set; }
+    public int? DiscCount { get; init; }
 
     /// <summary>
     /// This tracks number in the album. For multi-disc albums, this is the number of track on
     /// that disc
     /// </summary>
-    public int? TrackNumber { get; set; }
+    public int? TrackNumber { get; init; }
 
     /// <summary>
     /// Total Tracks in this tracks containing album. For multi-disc albums, this is the number
     /// of tracks on that disc
     /// </summary>
-    public int? TrackCount { get; set; }
+    public int? TrackCount { get; init; }
 
     /// <summary>
     /// The Track's name / title
     /// </summary>
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// The Track's Artist(s) (usually semicolon delimited)
     /// </summary>
-    public string? Artist { get; set; }
+    public string? Artist { get; init; }
 
     /// <summary>
     /// The Track's Composer
     /// </summary>
-    public string? Composer { get; set; }
+    public string? Composer { get; init; }
 
     /// <summary>
     /// The album this track belongs to
     /// </summary>
-    public string? Album { get; set; }
+    public string? Album { get; init; }
 
     /// <summary>
     /// The genre of music this track best fits
     /// </summary>
-    public string? Genre { get; set; }
-
-
+    public string? Genre { get; init; }
 
     #endregion
 
@@ -153,100 +157,33 @@ public class Track
     /// <summary>
     /// Times played.
     /// </summary>
-    public int? PlayCount { get; set; }
+    public int? PlayCount { get; init; }
 
     /// <summary>
     /// Last played date
     /// </summary>
-    public DateTime? PlayDate { get; set; }
+    public DateTime? PlayDate { get; init; }
 
     /// <summary>
     /// The number of times as this track has been skipped
     /// </summary>
-    public int? SkipCount { get; set; }
+    public int? SkipCount { get; init; }
 
     #endregion
 
     #region Rating
 
     /// <summary>
-    /// Track Rating out of 100
+    /// Track Rating out of 5. 0 is unrated.
     /// </summary>
-    public int? Rating100 { get; set; }
-
-    /// <summary>
-    /// Track Rating in Stars
-    /// </summary>
-    public int? Rating => Rating100.HasValue ? (Rating100 * 5) / 100 : null;
+    public int Rating { get; init; }
 
     /// <summary>
     /// Has this track been marked as "loved"
     /// </summary>
-    public bool Loved { get; set; }
+    public bool Loved { get; init; }
 
     #endregion
 
     #endregion
-
-    public Track()
-    {
-    }
-
-    public Track(IReadOnlyDictionary<string, dynamic?> properties)
-    {
-        // parse all important field
-        Id = (int)properties["Track ID"]!;
-        Size = (int?)properties.GetValueOrDefault("Size", null);
-        TotalTime = properties.TryGetValue("Total Time", out var property) ?
-            TimeSpan.FromMilliseconds(property) : null;
-        Year = (int?)properties.GetValueOrDefault("Year", null);
-        Bpm = (int?)properties.GetValueOrDefault("BPM", null);
-        DiscNumber = (int?)properties.GetValueOrDefault("Disc Number", null);
-        DiscCount = (int?)properties.GetValueOrDefault("Disc Count", null);
-        TrackNumber = (int?)properties.GetValueOrDefault("Track Number", null);
-        TrackCount = (int?)properties.GetValueOrDefault("Track Count", null);
-        DateModified = properties["Date Modified"];
-        DateAdded = properties["Date Added"];
-        BitRate = (int?)properties.GetValueOrDefault("Bit Rate", null);
-        SampleRate = (int?)properties.GetValueOrDefault("Sample Rate", null);
-        PlayCount = (int?)properties.GetValueOrDefault("Play Count", null);
-        PlayDate = properties.GetValueOrDefault("Play Date UTC", null);
-        SkipCount = (int?)properties.GetValueOrDefault("Skip Count", null);
-        Rating100 = (int?)properties.GetValueOrDefault("Rating", null);
-        Loved = properties.GetValueOrDefault("Loved", false);
-        Name = properties.GetValueOrDefault("Name", null);
-        Artist = properties.GetValueOrDefault("Artist", null);
-        Composer = properties.GetValueOrDefault("Composer", null);
-        Album = properties.GetValueOrDefault("Album", null);
-        Genre = properties.GetValueOrDefault("Genre", null);
-        Location = properties["Location"]!;
-
-        LoadTagInfo();
-    }
-
-    public void LoadTagInfo()
-    {
-        if (!File.Exists(WellFormattedLocation))
-        {
-            return;
-        }
-        
-        using (TagFile file = TagFile.Create(WellFormattedLocation))
-        {
-            Type = file.MimeType.Replace("taglib/", "");
-            Codec = file.Properties.Description;
-            Channels = file.Properties.AudioChannels;
-        }
-    }
-
-    public void LoadImage()
-    {
-        using var file = TagFile.Create(WellFormattedLocation);
-        
-        // if there are any pictures
-        if (file.Tag.Pictures.Length >= 1)
-        {
-            CoverArt = file.Tag.Pictures[0].Data.Data;
-        }
-    }
 }

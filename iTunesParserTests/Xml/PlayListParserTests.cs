@@ -1,7 +1,6 @@
 using System.Xml.Linq;
 using FluentAssertions;
 using iTunesParserTests.Xml.TestPlaylists;
-using iTunesSmartParser;
 using iTunesSmartParser.Data;
 using iTunesSmartParser.Data.Limits;
 using iTunesSmartParser.Data.Logic;
@@ -18,7 +17,7 @@ public class PlayListParserTests
     private readonly PlaylistParser _playlistParser = new();
 
     // lang=XML
-    private const string TestDoc =
+    private const string TEST_DOC =
         """
         <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -111,7 +110,7 @@ public class PlayListParserTests
     [Test]
     public void PlayListParser_GivenValidDocument_ShouldReturnExpectedTrackList()
     {
-        var doc = XDocument.Parse(TestDoc);
+        var doc = XDocument.Parse(TEST_DOC);
 
         var result = _playlistParser.ParseDocument(doc);
 

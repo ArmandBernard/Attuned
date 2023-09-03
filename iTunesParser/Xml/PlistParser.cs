@@ -98,4 +98,7 @@ public static class PListParser
     /// <returns></returns>
     public static XElement? PlistDictGet(this XElement element, string key) =>
         (XElement?) element.Elements("key").FirstOrDefault(x => x.Value == key)?.NextNode;
+
+    public static IEnumerable<XElement> PlistDictKeys(this XElement element) =>
+        element.Elements("key").Select(x => (XElement?) x.NextNode).Where(x => x != null).Select(x => x!);
 }
