@@ -1,16 +1,15 @@
 ﻿using System.Xml;
+using iTunesSmartParser.Playlists;
 
 namespace iTunesSmartParser.Data;
 
-public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart, string? Filter)
+public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart, PlaylistInformation? Filters)
 {
     public static Playlist FromDictionary(Dictionary<string, dynamic> properties)
     {
         var name = properties["Name"];
 
         var id = properties["Playlist ID"];
-
-        var isSmart = properties.ContainsKey("Smart Info") && properties.ContainsKey("Smart Criteria");
 
         //properties.TryGetValue("Playlist Items", out var playlistItemsDictionaries);
 
@@ -30,18 +29,18 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
         // </array>
         var playlistItems = playlistItemsDictionaries.Select(x => (int) x.Values.Single());
 
-        string? filter = null;
+        var isSmart = properties.ContainsKey("Smart Info") && properties.ContainsKey("Smart Criteria");
 
+        PlaylistInformation? playlistInfo = null;
+        
         if (isSmart)
         {
             try
             {
                 // try to parse playlist info
-                var playlistInfo = SmartPlaylistDataParser.ParsePlaylistInfo(
-                    properties["Smart Info"], properties["Smart Criteria"], true, false
+                playlistInfo = PlaylistInformationBuilder.ParsePlaylist(
+                    (byte[])properties["Smart Info"], (byte[])properties["Smart Criteria"]
                 );
-
-                filter = playlistInfo?.QueryWhere;
             }
             catch (Exception ex)
             {
@@ -49,6 +48,6 @@ public record Playlist(string Name, int Id, IEnumerable<int> Items, bool IsSmart
             }
         }
 
-        return new Playlist(name, (int) id, playlistItems, isSmart, filter);
+        return new Playlist(name, (int) id, playlistItems, isSmart, playlistInfo);
     }
 }

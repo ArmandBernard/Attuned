@@ -1,6 +1,8 @@
 using System.Xml.Linq;
 using FluentAssertions;
+using iTunesSmartParser;
 using iTunesSmartParser.Data;
+using iTunesSmartParser.Fields;
 using iTunesSmartParser.Xml;
 
 namespace iTunesParserTests.Xml;
@@ -61,18 +63,6 @@ public class PlayListParserTests
                         <dict>
                             <key>Track ID</key><integer>3696</integer>
                         </dict>
-                        <dict>
-                            <key>Track ID</key><integer>3716</integer>
-                        </dict>
-                        <dict>
-                            <key>Track ID</key><integer>3712</integer>
-                        </dict>
-                        <dict>
-                            <key>Track ID</key><integer>3698</integer>
-                        </dict>
-                        <dict>
-                            <key>Track ID</key><integer>3704</integer>
-                        </dict>
                     </array>
                 </dict>
             </array>
@@ -91,13 +81,26 @@ public class PlayListParserTests
                 3702,
                 3694,
                 3696,
-                3716,
-                3712,
-                3698,
-                3704
             },
             true,
-            "( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
+            //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
+            new PlaylistInformation(
+                new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, false),
+                new Conjunction(ConjunctionType.And, new List<Conjunction>()
+                {
+                    new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()
+                    {
+                        new DictionaryRule(DictionaryFields.MediaKind, LogicRule.Is, LogicSign.IntPositive, "Music"),
+                        new DictionaryRule(DictionaryFields.MediaKind, LogicRule.Is, LogicSign.IntPositive,
+                            "Music Video")
+                    }),
+                    new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
+                    {
+                        new IntRule(IntFields.Rating, LogicRule.Other, LogicSign.IntPositive, 40, 100)
+                    })
+                }, Array.Empty<IRule>()),
+                true
+            ))
     };
 
     [Test]
@@ -108,5 +111,17 @@ public class PlayListParserTests
         var result = _playlistParser.ParsePlaylists(doc);
 
         result.Should().BeEquivalentTo(_expectedPlaylists);
+    }
+
+    [Test]
+    public void SmartPlaylistDataParser_CanParseAPlaylist()
+    {
+        var doc = XDocument.Parse(TestDoc);
+
+        var smartPlaylistInfo =
+            ((IEnumerable<dynamic>) PListParser.ParseValueElement(PListParser.GetTopLevelDictionaryElement(doc)
+                .PlistDictGet("Playlists"))).Select(x =>
+                SmartPlaylistDataParser.ParsePlaylistInfo((byte[]) x["Smart Info"], (byte[]) x["Smart Criteria"]))
+            .ToArray();
     }
 }

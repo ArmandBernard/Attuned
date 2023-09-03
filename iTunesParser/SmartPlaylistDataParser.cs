@@ -329,21 +329,13 @@ public static class SmartPlaylistDataParser
                 {
                     ProcessBoolField();
                 }
-                else if (Enum.IsDefined(typeof(MediaKindFields), Field))
+                else if (Enum.IsDefined(typeof(DictionaryFields), Field))
                 {
-                    ProcessDictField(Kinds.Media, (MediaKindFields) Field);
+                    throw new Exception($"Unhandled field code: {(DictionaryFields) Field}");
                 }
                 else if (Enum.IsDefined(typeof(PlaylistFields), Field))
                 {
                     throw new Exception($"Unhandled field code: {(PlaylistFields) Field}");
-                }
-                else if (Enum.IsDefined(typeof(LoveFields), Field))
-                {
-                    throw new Exception($"Unhandled field code: {(LoveFields) Field}");
-                }
-                else if (Enum.IsDefined(typeof(LocationFields), Field))
-                {
-                    ProcessDictField(Kinds.Location, (LocationFields) Field);
                 }
                 // if reached the statement 
                 else if (Field == 0)

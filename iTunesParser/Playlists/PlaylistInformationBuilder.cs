@@ -3,7 +3,7 @@ using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Playlists;
 
-public class PlaylistInformationBuilder
+public static class PlaylistInformationBuilder
 {
     public static PlaylistInformation ParsePlaylist(byte[] info, byte[] criteria)
     {
@@ -55,8 +55,17 @@ public class PlaylistInformationBuilder
                 {
                     subStack.Pop();
 
-                    // move onto the next one
-                    currentConjunction = subStack.Peek().Conjunction;
+                    // if there are more subconjunctions to handle
+                    if (subStack.Count > 0)
+                    {
+                        // move onto the next one
+                        currentConjunction = subStack.Peek().Conjunction;
+                    }
+                    else
+                    {
+                        // move back up to the main conjunction
+                        currentConjunction = mainConjunction;
+                    }
                 }
                 else
                 {
@@ -156,6 +165,8 @@ public class PlaylistInformationBuilder
             if (rule != null)
             {
                 currentConjunction.Rules.Add(rule);
+
+                continue;
             }
 
             if (!criteriaHelper.KeepReading(offset))
