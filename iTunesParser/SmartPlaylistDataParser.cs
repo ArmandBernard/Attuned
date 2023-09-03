@@ -331,7 +331,7 @@ public static class SmartPlaylistDataParser
                 }
                 else if (Enum.IsDefined(typeof(DictionaryFields), Field))
                 {
-                    throw new Exception($"Unhandled field code: {(DictionaryFields) Field}");
+                    Offset += INTA + INTLENGTH;
                 }
                 else if (Enum.IsDefined(typeof(PlaylistFields), Field))
                 {
