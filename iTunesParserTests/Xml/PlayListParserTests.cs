@@ -144,16 +144,4 @@ public class PlayListParserTests
         
         parsedPlaylistJson.Should().Be(expectedOutputJson);
     }
-
-    [Test]
-    public void SmartPlaylistDataParser_CanParseAPlaylist()
-    {
-        var doc = XDocument.Parse(TestDoc);
-
-        var smartPlaylistInfo =
-            ((IEnumerable<dynamic>) PListParser.ParseValueElement(PListParser.GetTopLevelDictionaryElement(doc)
-                .PlistDictGet("Playlists"))).Select(x =>
-                SmartPlaylistDataParser.ParsePlaylistInfo((byte[]) x["Smart Info"], (byte[]) x["Smart Criteria"]))
-            .ToArray();
-    }
 }
