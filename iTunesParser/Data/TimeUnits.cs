@@ -1,4 +1,4 @@
-namespace iTunesSmartParser;
+namespace iTunesSmartParser.Data;
 
 public enum TimeUnits
 {
