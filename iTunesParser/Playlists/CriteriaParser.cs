@@ -121,12 +121,6 @@ public static class CriteriaParser
             }
             else if (Enum.IsDefined(typeof(DictionaryFields), field))
             {
-                if (logicRule != Operator.Is)
-                {
-                    throw new Exception(
-                        $"{(DictionaryFields) field} had incompatible rule type ${logicRule}");
-                }
-
                 var dictionary = (DictionaryFields) field switch
                 {
                     DictionaryFields.Love => Dictionaries.Love,
@@ -136,7 +130,7 @@ public static class CriteriaParser
                     _ => throw new ArgumentOutOfRangeException(
                         $"DictionaryField not recognized: ${(DictionaryFields) field}")
                 };
-
+                
                 rule = new DictionaryRule(Field: (DictionaryFields) field, RuleType: logicRule, Sign: logicSign,
                     Value: dictionary[criteriaHelper.IntA(offset)]);
 
