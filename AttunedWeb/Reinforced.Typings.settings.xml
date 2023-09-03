@@ -17,7 +17,7 @@
             It is not used if RtDivideTypesAmongFiles='true' specified.
             Important! Do not forget to include generated file to solution.
         -->
-        <RtTargetFile>$(ProjectDir)Scripts\project.ts</RtTargetFile>
+        <RtTargetFile>$(ProjectDir)front-end\src\dtos\Dtos.ts</RtTargetFile>
 
         <!--
             This property sets RT configuration method for fluent configuration.
@@ -34,7 +34,7 @@
             in attributes and in fluent methods then configuration from fluent methods will
             be used.
         -->
-        <RtConfigurationMethod></RtConfigurationMethod>
+        <RtConfigurationMethod>AttunedWebApi.ReinforcedTypingsConfiguration.Configure</RtConfigurationMethod>
 
         <!--
             By default all of your typings will be located in single file specified by RtTargetFile.
