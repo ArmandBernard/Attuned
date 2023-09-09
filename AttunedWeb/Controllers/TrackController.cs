@@ -1,5 +1,6 @@
 using AttunedWebApi.Dtos;
 using iTunesSmartParser.Data;
+using iTunesSmartParser.Xml;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AttunedWebApi.Controllers;
@@ -9,39 +10,19 @@ namespace AttunedWebApi.Controllers;
 public class TrackController : ControllerBase
 {
     private readonly ILogger<TrackController> _logger;
+    private readonly IXmlParser _xmlParser;
 
-    public TrackController(ILogger<TrackController> logger)
+    public TrackController(ILogger<TrackController> logger, IXmlParser xmlParser)
     {
         _logger = logger;
+        _xmlParser = xmlParser;
     }
 
     [HttpGet]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        return Ok(new[]
-        {
-            TrackDto.FromTrack(new Track()
-            {
-                Id = 1,
-                Name = "Name",
-                Location = "Nowhere",
-                Album = "Album",
-                Artist = "Artist",
-                Bpm = 128,
-                Genre = "Genre",
-                Channels = 2,
-                Composer = "Composer",
-                DateAdded = DateTime.Today,
-                DateModified = DateTime.UtcNow,
-                Year = 1980,
-                DiscCount = 1,
-                TrackCount = 4,
-                DiscNumber = 1,
-                Rating = 3,
-                Size = 4000
-            })
-        });
+        return Ok(await _xmlParser.ParseTracks());
     }
 }
