@@ -55,7 +55,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
     <table
       aria-label="Tracks"
       style={{ gridTemplateColumns: fieldsToShow.map(() => "auto").join(" ") }}
-      className="grid"
+      className="grid min-w-[72rem]"
     >
       <thead className="contents">
         <tr className="contents">
