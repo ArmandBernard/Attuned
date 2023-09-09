@@ -21,12 +21,12 @@ export const TracksView = () => {
     : data;
 
   return (
-    <div className="p-4">
-      <div className="mb-2">
+    <div className="p-4 max-sm:h-full flex flex-col gap-2">
+      <div>
         <h1 className="text-2xl inline-block">Tracks</h1>{" "}
         {isFetching && <span aria-hidden>Loading...</span>}
       </div>
-      <div aria-busy={isFetching} aria-live="polite">
+      <div className="max-sm:flex-1 max-sm:overflow-x-scroll max-sm:h-44" aria-busy={isFetching} aria-live="polite">
         <TracksGrid
           tracks={sorted}
           sortOrder={sortOrder}

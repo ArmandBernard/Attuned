@@ -8,7 +8,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeLayer>
-        <main>
+        <main className="max-sm:h-full">
           <TracksView />
         </main>
       </ThemeLayer>

@@ -4,6 +4,11 @@
 
 body {
     @apply bg-background text-text-color;
+    @apply max-sm:h-full;
+}
+
+html, #root, body {
+    @apply max-sm:h-full;
 }
 
 html:not(.dark) {
