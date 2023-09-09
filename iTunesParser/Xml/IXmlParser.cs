@@ -4,7 +4,7 @@ namespace iTunesSmartParser.Xml;
 
 public interface IXmlParser
 {
-    Task<IEnumerable<Track>> ParseTracks(string path, CancellationToken? token = null);
+    Task<IEnumerable<Track>> ParseTracks(CancellationToken? token = null);
 
-    Task<IEnumerable<Playlist>> ParsePlaylists(string path, CancellationToken? token = null);
+    Task<IEnumerable<Playlist>> ParsePlaylists(CancellationToken? token = null);
 }
