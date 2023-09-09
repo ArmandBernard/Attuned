@@ -21,14 +21,19 @@ export const TracksView = () => {
     : data;
 
   return (
-    <>
-      {isFetching && <>Loading...</>}
-      <TracksGrid
-        tracks={sorted}
-        sortOrder={sortOrder}
-        setSortOrder={(field) => setSortOrder(field)}
-      />
-    </>
+    <div className="p-4">
+      <div className="mb-2">
+        <h1 className="text-2xl inline-block">Tracks</h1>{" "}
+        {isFetching && <span aria-hidden>Loading...</span>}
+      </div>
+      <div aria-busy={isFetching} aria-live="polite">
+        <TracksGrid
+          tracks={sorted}
+          sortOrder={sortOrder}
+          setSortOrder={(field) => setSortOrder(field)}
+        />
+      </div>
+    </div>
   );
 };
 
