@@ -5,6 +5,7 @@ import { CellComponent } from "./Cells/CellComponent.ts";
 import { TimeSpanCell } from "./Cells/TimeSpanCell.tsx";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
 import { NumberCell } from "./Cells/NumberCell.tsx";
+import {DateTimeCell} from "./Cells/DateTimeCell.tsx";
 
 type CellTypes =
   | "string"
@@ -51,7 +52,7 @@ const CellTypeElementDictionary: Record<
   | CellComponent<number | undefined>
   | CellComponent<TimeSpan | undefined>
 > = {
-  date: TextCell,
+  date: DateTimeCell,
   loved: TextCell,
   none: TextCell,
   number: NumberCell,
