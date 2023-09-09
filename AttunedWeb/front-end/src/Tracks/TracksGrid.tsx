@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import { TrackDto } from "../dtos/Dtos.ts";
 import { GetCellElement } from "./GetCellElement.ts";
 import { CellComponent } from "./Cells/CellComponent.ts";
+import {trackFieldNameDictionary} from "./trackFieldNameDictionary.ts";
 
 interface TracksGridProps {
   tracks: TrackDto[] | undefined;
@@ -25,7 +26,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
         <tr className="contents">
           {fieldsToShow.map((field) => (
             <th className="border px-2" key={field}>
-              {field}
+              {trackFieldNameDictionary[field]}
             </th>
           ))}
         </tr>
