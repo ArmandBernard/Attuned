@@ -2,5 +2,5 @@ namespace iTunesSmartParser.Fields;
 
 public enum PlaylistFields
 {
-    PlaylistPersistentID = 0x28
+    PlaylistPersistentId = 0x28
 }
