@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
 using iTunesSmartParser.Xml;
+using Microsoft.OpenApi.Models;
 
 namespace AttunedWebApi;
 
@@ -36,7 +37,12 @@ internal static class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options => {
+            options.MapType<TimeSpan>(() => new OpenApiSchema
+            {
+                Type = "number"
+            });
+        });
 
         var xmlPath = builder.Configuration["LibraryXml"];
 
