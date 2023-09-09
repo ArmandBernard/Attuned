@@ -8,7 +8,9 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeLayer>
-        <TracksView />
+        <main>
+          <TracksView />
+        </main>
       </ThemeLayer>
     </QueryClientProvider>
   );
