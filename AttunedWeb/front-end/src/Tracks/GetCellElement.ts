@@ -45,7 +45,7 @@ const FieldCellTypeDictionary: Record<keyof TrackDto, CellTypes> = {
 
 const CellTypeElementDictionary: Record<
   CellTypes,
-  CellComponent<string> | CellComponent<number> | CellComponent<TimeSpan | undefined>
+  CellComponent<string | undefined> | CellComponent<number> | CellComponent<TimeSpan | undefined>
 > = {
   date: TextCell,
   loved: TextCell,

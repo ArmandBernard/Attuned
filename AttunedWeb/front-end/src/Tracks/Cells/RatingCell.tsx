@@ -1,8 +1,6 @@
-import { FunctionComponent, HTMLProps } from "react";
+import { CellComponent } from "./CellComponent.ts";
 
-export const RatingCell: FunctionComponent<
-  Omit<HTMLProps<HTMLTableCellElement>, "children"> & { value: number }
-> = (props) => {
+export const RatingCell: CellComponent<number> = (props) => {
   const { className, value, ...rest } = props;
 
   const classNames = ["px-2 whitespace-nowrap text-primary text-lg", className]
