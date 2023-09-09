@@ -4,6 +4,7 @@ import { RatingCell } from "./Cells/RatingCell.tsx";
 import { CellComponent } from "./Cells/CellComponent.ts";
 import { TimeSpanCell } from "./Cells/TimeSpanCell.tsx";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
+import { NumberCell } from "./Cells/NumberCell.tsx";
 
 type CellTypes =
   | "string"
@@ -45,12 +46,15 @@ const FieldCellTypeDictionary: Record<keyof TrackDto, CellTypes> = {
 
 const CellTypeElementDictionary: Record<
   CellTypes,
-  CellComponent<string | undefined> | CellComponent<number> | CellComponent<TimeSpan | undefined>
+  | CellComponent<string | undefined>
+  | CellComponent<number>
+  | CellComponent<number | undefined>
+  | CellComponent<TimeSpan | undefined>
 > = {
   date: TextCell,
   loved: TextCell,
   none: TextCell,
-  number: TextCell,
+  number: NumberCell,
   rating: RatingCell,
   size: TextCell,
   string: TextCell,

@@ -13,8 +13,11 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
     "Name",
     "Artist",
     "Album",
+    "TotalTime",
     "Rating",
-    "TotalTime"
+    "Genre",
+    "PlayCount",
+    "DateAdded"
   ];
 
   return (
