@@ -3,7 +3,10 @@ import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 import { TrackDto } from "../dtos/Dtos.ts";
 
 export const TracksView = () => {
-  const { data, isFetching } = useRouteQuery<TrackDto[]>({ url: "track" });
+  const { data, isFetching } = useRouteQuery<TrackDto[]>({
+    url: "track",
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
