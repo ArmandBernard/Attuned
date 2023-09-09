@@ -61,7 +61,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
         <tr className="contents">
           {fieldsToShow.map((field) => (
             <th
-              className="border flex"
+              className="border flex sticky top-0 bg-background"
               aria-sort={
                 props.sortOrder && props.sortOrder.field === field
                   ? props.sortOrder.direction
