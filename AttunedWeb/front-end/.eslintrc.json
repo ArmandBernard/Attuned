@@ -30,5 +30,11 @@
       "error",
       "always"
     ]
-  }
+  },
+  "overrides": [{
+    "files": ["src/dtos/Dtos.ts"],
+    "rules": {
+      "quotes": "off"
+    }
+  }]
 }
