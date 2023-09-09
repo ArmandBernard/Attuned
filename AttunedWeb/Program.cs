@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using AttunedWebApi.Converters;
 using iTunesSmartParser.Xml;
 
 namespace AttunedWebApi;
@@ -27,6 +28,7 @@ internal static class Program
         // Add services to the container.
         builder.Services.AddControllers().AddJsonOptions(options =>
         {
+            options.JsonSerializerOptions.Converters.Add(new TimeSpanJsonConverter());
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             options.JsonSerializerOptions.PropertyNamingPolicy = null;
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
