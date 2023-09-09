@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-background text-text-color;
+    @apply max-sm:h-full;
+}
+
+html, #root, body {
+    @apply max-sm:h-full;
+}
+
+html:not(.dark) {
+    --text-color: black;
+    --background: white;
+    --primary: #0ea5e9; /* sky-500 */
+}
+
+html.dark {
+    --text-color: white;
+    --background: #262626;
+    --primary: #38bdf8; /* sky-400 */
+}
