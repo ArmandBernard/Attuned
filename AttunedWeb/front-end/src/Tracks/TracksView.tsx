@@ -1,32 +1,41 @@
 import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 import { TrackDto } from "../dtos/Dtos.ts";
-import { useState } from "react";
+import { FunctionComponent, useState } from "react";
 
 interface SortOrder {
   field: keyof TrackDto;
   direction: "ascending" | "descending";
 }
 
-export const TracksView = () => {
-  const { data, isFetching } = useRouteQuery<TrackDto[]>({
+export const TracksView: FunctionComponent<{
+  title: string;
+  idFilter: number[] | undefined;
+}> = (props) => {
+  const { data: tracks, isFetching } = useRouteQuery<TrackDto[]>({
     url: "track",
     refetchOnWindowFocus: false,
   });
 
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
+  const filtered = tracks?.filter(x => props.idFilter ? props.idFilter.indexOf(x.Id) !== -1 : true);
+  
   const sorted = sortOrder
-    ? data?.sort((a, b) => sortComparer(a, b, sortOrder))
-    : data;
+    ? filtered?.sort((a, b) => sortComparer(a, b, sortOrder))
+    : filtered;
 
   return (
     <div className="p-4 max-sm:h-full flex flex-col gap-2">
       <div>
-        <h1 className="text-2xl inline-block">Tracks</h1>{" "}
+        <h1 className="text-2xl inline-block">{props.title}</h1>{" "}
         {isFetching && <span aria-hidden>Loading...</span>}
       </div>
-      <div className="max-sm:flex-1 max-sm:overflow-x-scroll max-sm:h-44" aria-busy={isFetching} aria-live="polite">
+      <div
+        className="max-sm:flex-1 max-sm:overflow-x-scroll max-sm:h-44"
+        aria-busy={isFetching}
+        aria-live="polite"
+      >
         <TracksGrid
           tracks={sorted}
           sortOrder={sortOrder}
