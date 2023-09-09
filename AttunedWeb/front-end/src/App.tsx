@@ -16,14 +16,14 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeLayer>
-        <div className="flex">
+        <div className="flex h-full">
           <Navigation
             selectedTrackList={selectedTrackList}
             setSelectedTrackList={(trackList) =>
               setSelectedTrackList(trackList)
             }
           />
-          <main className="max-sm:h-full">
+          <main className="h-full min-w-0 flex-1">
             <TracksView
               title={selectedTrackList?.playListName ?? "All tracks"}
               idFilter={selectedTrackList?.trackIds}

@@ -26,13 +26,13 @@ export const TracksView: FunctionComponent<{
     : filtered;
 
   return (
-    <div className="p-4 max-sm:h-full flex flex-col gap-2">
+    <div className="p-4 h-full flex flex-col gap-2">
       <div>
         <h1 className="text-2xl inline-block">{props.title}</h1>{" "}
         {isFetching && <span aria-hidden>Loading...</span>}
       </div>
       <div
-        className="max-sm:flex-1 max-sm:overflow-x-scroll max-sm:h-44"
+        className="flex-1 overflow-scroll"
         aria-busy={isFetching}
         aria-live="polite"
       >
