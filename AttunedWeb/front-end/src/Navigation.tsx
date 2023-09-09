@@ -1,4 +1,4 @@
-import {FunctionComponent, useRef, useState} from "react";
+import { FunctionComponent, useRef, useState } from "react";
 import { useRouteQuery } from "./Queries/useRouteQuery.ts";
 import { PlaylistDto } from "./dtos/Dtos.ts";
 
@@ -45,19 +45,28 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
     "flex flex-col border-r min-w-[16rem] max-sm:fixed z-20 h-full bg-background pb-4",
     !isOpen && "max-sm:hidden",
   ];
-  
+
   const navRef = useRef<HTMLDivElement>(null);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
+
+  const close = () => {
+    setIsOpen(false);
+    setTimeout(() => openButtonRef.current?.focus());
+  };
+
+  const open = () => {
+    setIsOpen(true);
+    setTimeout(() => navRef.current?.focus());
+  };
 
   return (
     <>
       {!isOpen && (
         <button
+          ref={openButtonRef}
           className="sm:hidden p-2 m-2 mr-0 self-start text-2xl"
           aria-label="open nav"
-          onClick={() => {
-            setIsOpen(true);
-            setTimeout(() => navRef.current?.focus());
-          }}
+          onClick={open}
         >
           ☰
         </button>
@@ -65,17 +74,24 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
       {isOpen && (
         <div
           className="fixed sm:hidden w-full h-full bg-black z-10 opacity-50"
-          onClick={() => setIsOpen(false)}
+          onClick={close}
         />
       )}
       <nav
         ref={navRef}
         tabIndex={0}
         className={classNames.filter(Boolean).join(" ")}
-        onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
+        onKeyDown={(e) => e.key === "Escape" && close()}
       >
-        <div className="flex px-4 pt-4 pb-2 bg-background gap-2">
+        <div className="flex px-4 pt-4 pb-2 bg-background justify-between">
           <h2 className="text-2xl">Navigation</h2>
+          <button
+            className="sm:hidden text-2xl"
+            aria-label="close nav"
+            onClick={close}
+          >
+            ✕
+          </button>
         </div>
         <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
           <ul>
