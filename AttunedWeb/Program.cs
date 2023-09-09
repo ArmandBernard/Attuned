@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
+using iTunesSmartParser.Xml;
 
 namespace AttunedWebApi;
 
 internal static class Program
 {
-    private static string _corsPolicy = "corsPolicy";
+    private const string CORS_POLICY = "corsPolicy";
 
     public static void Main(string[] args)
     {
@@ -12,7 +13,7 @@ internal static class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(_corsPolicy, policy =>
+            options.AddPolicy(CORS_POLICY, policy =>
             {
                 //policy.AllowAnyOrigin();
                 policy
@@ -35,6 +36,19 @@ internal static class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        var xmlPath = builder.Configuration["LibraryXml"];
+
+        if (xmlPath == null)
+        {
+            throw new Exception("LibraryXml prop in appsettings.json needs to be set to the library xml location.");
+        }
+
+        builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
+        builder.Services.AddSingleton<IPlaylistsParser, PlaylistParser>();
+        builder.Services.AddSingleton<IXmlParser>(provider =>
+            new XmlParserCacheProxy(new XmlParser(provider.GetService<ITrackListParser>()!,
+                provider.GetService<IPlaylistsParser>()!, xmlPath)));
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -46,7 +60,7 @@ internal static class Program
 
         app.UseHttpsRedirection();
 
-        app.UseCors(_corsPolicy);
+        app.UseCors(CORS_POLICY);
 
         app.UseAuthorization();
 
