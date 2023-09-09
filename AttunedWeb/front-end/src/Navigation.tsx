@@ -11,17 +11,33 @@ interface NavigationProps {
   setSelectedTrackList: (selectedTrackList: SelectedTrackList) => void;
 }
 
+const mediaPlaylistNames = [
+  "Music",
+  "Films",
+  "TV Programmes",
+  "Podcasts",
+  "Audiobooks",
+];
+
 export const Navigation: FunctionComponent<NavigationProps> = (props) => {
   const { data, isFetching } = useRouteQuery<PlaylistDto[]>({
     url: "playlist",
     refetchOnWindowFocus: false,
   });
 
-  const playlistNames = data?.map((x) => ({
+  const allPlaylists = data?.map((x) => ({
     id: x.Id,
     name: x.Name,
     trackList: x.Items,
   }));
+
+  const mediaPlaylists = allPlaylists?.filter(
+    (x) => mediaPlaylistNames.indexOf(x.name) !== -1,
+  );
+
+  const playlists = allPlaylists?.filter(
+    (x) => mediaPlaylistNames.indexOf(x.name) === -1,
+  );
 
   return (
     <nav className="p-4 border-r">
@@ -35,13 +51,37 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
           </h3>
         </li>
         <li>
+          <h3 className="text-xl">Media categories</h3>
+          <ul className="pl-2">
+            {isFetching && <span>Loading...</span>}
+            {mediaPlaylists &&
+              mediaPlaylists.map((x) => (
+                <li key={x.id}>
+                  <button
+                    className="truncate"
+                    onClick={() =>
+                      props.setSelectedTrackList({
+                        playListId: x.id,
+                        playListName: x.name,
+                        trackIds: x.trackList,
+                      })
+                    }
+                  >
+                    {x.name}
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </li>
+        <li>
           <h3 className="text-xl">Playlists</h3>
           <ul className="pl-2">
             {isFetching && <span>Loading...</span>}
-            {playlistNames &&
-              playlistNames.map((x) => (
+            {playlists &&
+              playlists.map((x) => (
                 <li key={x.id}>
-                  <button className="truncate"
+                  <button
+                    className="truncate"
                     onClick={() =>
                       props.setSelectedTrackList({
                         playListId: x.id,
