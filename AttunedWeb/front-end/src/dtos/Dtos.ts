@@ -2,6 +2,9 @@
 //     Changes to this file may cause incorrect behavior and will be lost if
 //     the code is regenerated.
 
+import { UTCDateTime } from './UTCDateTime.ts';
+import { TimeSpan } from './TimeSpan.ts';
+
 export interface TrackDto
 {
 	Id: number;
@@ -12,7 +15,7 @@ export interface TrackDto
 	DateAdded: UTCDateTime;
 	BitRate: number | undefined;
 	SampleRate: number | undefined;
-	TotalTime: any | undefined;
+	TotalTime: TimeSpan | undefined;
 	Year: number | undefined;
 	Bpm: number | undefined;
 	DiscNumber: number | undefined;

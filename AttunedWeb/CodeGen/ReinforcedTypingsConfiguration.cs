@@ -8,10 +8,22 @@ namespace AttunedWebApi.CodeGen;
 // ReSharper disable once UnusedType.Global
 public static class ReinforcedTypingsConfiguration
 {
+    private  record Import(string Imports, string From);
+
+    private static readonly Import[] _customImports = {
+        new("{ UTCDateTime }", "./UTCDateTime.ts"),
+        new("{ TimeSpan }", "./TimeSpan.ts"),
+    };
+
     public static void Configure(ConfigurationBuilder builder)
     {
         builder.Global(config => config.UseModules());
+        foreach (var import in _customImports)
+        {
+            builder.AddImport(import.Imports, import.From);
+        }
         builder.Substitute(typeof(DateTime), new RtSimpleTypeName("UTCDateTime"));
+        builder.Substitute(typeof(TimeSpan), new RtSimpleTypeName("TimeSpan"));
         // if a type is nullable, use "type | undefined"
         builder.SubstituteGeneric(typeof(Nullable<>),
             (type, resolver) =>
