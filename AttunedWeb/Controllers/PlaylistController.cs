@@ -22,6 +22,7 @@ public class PlaylistController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
     public async Task<IActionResult> Get()
     {
-        return Ok((await _xmlParser.ParsePlaylists()).Select(PlaylistDto.FromPlaylist));
+        return Ok((await _xmlParser.ParsePlaylists()).Where(x => x.Name != "Downloaded" && x.Name != "Library")
+            .Select(PlaylistDto.FromPlaylist));
     }
 }
