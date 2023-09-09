@@ -8,7 +8,7 @@ export const RatingCell: CellComponent<number> = (props) => {
     .join(" ");
 
   return (
-    <td className={classNames} {...rest}>
+    <td aria-label={`${value} stars`} className={classNames} {...rest}>
       {Array(value).fill("★")}
       {Array(5 - value).fill("☆")}
     </td>
