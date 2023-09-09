@@ -5,7 +5,7 @@ export const TextCell: FunctionComponent<HTMLProps<HTMLTableCellElement>> = (
 ) => {
   const { className, ...rest } = props;
 
-  const classNames = ["px-2",className].filter(Boolean).join(" ");
+  const classNames = ["px-2 truncate",className].filter(Boolean).join(" ");
 
   return <td className={classNames} {...rest}></td>;
 };
