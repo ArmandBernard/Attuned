@@ -2,6 +2,8 @@ import { TrackDto } from "../dtos/Dtos.ts";
 import { TextCell } from "./Cells/TextCell.tsx";
 import { RatingCell } from "./Cells/RatingCell.tsx";
 import { CellComponent } from "./Cells/CellComponent.ts";
+import { TimeSpanCell } from "./Cells/TimeSpanCell.tsx";
+import { TimeSpan } from "../dtos/TimeSpan.ts";
 
 type CellTypes =
   | "string"
@@ -43,7 +45,7 @@ const FieldCellTypeDictionary: Record<keyof TrackDto, CellTypes> = {
 
 const CellTypeElementDictionary: Record<
   CellTypes,
-  CellComponent<string> | CellComponent<number>
+  CellComponent<string> | CellComponent<number> | CellComponent<TimeSpan | undefined>
 > = {
   date: TextCell,
   loved: TextCell,
@@ -52,7 +54,7 @@ const CellTypeElementDictionary: Record<
   rating: RatingCell,
   size: TextCell,
   string: TextCell,
-  time: TextCell,
+  time: TimeSpanCell,
 };
 
 export const GetCellElement = (field: keyof TrackDto) => {
