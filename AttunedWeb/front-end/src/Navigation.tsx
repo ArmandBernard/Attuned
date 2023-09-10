@@ -85,7 +85,7 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
         </div>
         <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
           <ul>
-            <li aria-selected={props.selectedPlaylist === undefined}>
+            <li aria-current={props.selectedPlaylist === undefined}>
               <h3 className="text-xl flex">
                 <button
                   className={[
@@ -125,7 +125,7 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {playlists &&
                   playlists.map((x) => (
                     <li
-                      aria-selected={x.Id === props.selectedPlaylist?.Id}
+                      aria-current={x.Id === props.selectedPlaylist?.Id}
                       className="flex"
                       key={x.Id}
                     >
