@@ -147,7 +147,7 @@ const valueFormatter = (
     case "Playlist":
     case "Dictionary":
     case "String":
-      return property === "A" ? rule.ValueA : undefined;
+      return property === "A" ? `"${rule.ValueA}"` : undefined;
     default:
       rule satisfies never;
   }
