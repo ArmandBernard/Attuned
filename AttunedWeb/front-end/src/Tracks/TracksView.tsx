@@ -2,6 +2,8 @@ import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 import { TrackDto } from "../dtos/Dtos.ts";
 import { FunctionComponent, useState } from "react";
+import { getDurationString } from "../getDurationString.ts";
+import { TimeSpan } from "../dtos/TimeSpan.ts";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -19,8 +21,10 @@ export const TracksView: FunctionComponent<{
 
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
-  const filtered = tracks?.filter(x => props.idFilter ? props.idFilter.indexOf(x.Id) !== -1 : true);
-  
+  const filtered = tracks?.filter((x) =>
+    props.idFilter ? props.idFilter.indexOf(x.Id) !== -1 : true,
+  );
+
   const sorted = sortOrder
     ? filtered?.sort((a, b) => sortComparer(a, b, sortOrder))
     : filtered;
@@ -31,6 +35,16 @@ export const TracksView: FunctionComponent<{
         <h1 className="text-2xl inline-block">{props.title}</h1>{" "}
         {isFetching && <span aria-hidden>Loading...</span>}
       </div>
+      {filtered && (
+        <div>
+          {filtered.length} tracks •{" "}
+          {getDurationString(
+            filtered
+              .map((x) => x.TotalTime)
+              .reduce((agg, curr) => agg + (curr ?? 0), 0) as TimeSpan,
+          )}
+        </div>
+      )}
       <div
         className="flex-1 overflow-scroll"
         aria-busy={isFetching}
