@@ -7,11 +7,13 @@ import {
   IntRuleDto,
   OperatorDto,
   PlaylistRuleDto,
+  RatingRuleDto,
   SignDto,
   StringRuleDto,
   TimeSpanRuleDto,
 } from "../dtos/Dtos.ts";
 import { timeSpanToTimeString } from "../timeSpanToTimeString.ts";
+import { getRatingString } from "../getRatingString.ts";
 
 export const Conjunctions: FunctionComponent<{
   conjunction: ConjunctionDto;
@@ -48,6 +50,7 @@ const Rule: FunctionComponent<{
     | DateRuleDto
     | DictionaryRuleDto
     | IntRuleDto
+    | RatingRuleDto
     | PlaylistRuleDto
     | StringRuleDto
     | TimeSpanRuleDto;
@@ -68,6 +71,7 @@ const FieldText = (
     | DateRuleDto
     | DictionaryRuleDto
     | IntRuleDto
+    | RatingRuleDto
     | PlaylistRuleDto
     | StringRuleDto
     | TimeSpanRuleDto,
@@ -81,13 +85,15 @@ const ValueRuleText = (
     | DateRuleDto
     | DictionaryRuleDto
     | IntRuleDto
+    | RatingRuleDto
     | PlaylistRuleDto
     | StringRuleDto
     | TimeSpanRuleDto,
 ) =>
-  `${GetValueRuleOperatorText(rule.Operator, rule.Sign)} ${
-    valueFormatter(rule, "A")
-  } ${valueFormatter(rule, "B") && `and ${valueFormatter(rule, "B")}`}`;
+  `${GetValueRuleOperatorText(rule.Operator, rule.Sign)} ${valueFormatter(
+    rule,
+    "A",
+  )} ${valueFormatter(rule, "B") && `and ${valueFormatter(rule, "B")}`}`;
 
 const GetValueRuleOperatorText = (operator: OperatorDto, sign: SignDto) => {
   switch (operator) {
@@ -115,6 +121,7 @@ const valueFormatter = (
     | DateRuleDto
     | DictionaryRuleDto
     | IntRuleDto
+    | RatingRuleDto
     | PlaylistRuleDto
     | StringRuleDto
     | TimeSpanRuleDto,
@@ -127,6 +134,10 @@ const valueFormatter = (
     }
     case "TimeSpan":
       return timeSpanToTimeString(rule.ValueA);
+    case "Rating": {
+      const value = property === "A" ? rule.ValueA : rule.ValueB;
+      return value !== undefined ? getRatingString(value) : undefined;
+    }
     case "Int":
       return (property === "A" ? rule.ValueA : rule.ValueB)?.toFixed(0);
     case "Playlist":
