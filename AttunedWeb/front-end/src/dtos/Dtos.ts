@@ -11,8 +11,8 @@ export interface PlaylistDto
 	Name: string;
 	Items: number[];
 	IsSmart: boolean;
-	Limit: LimitDto;
-	RuleConjunction: ConjunctionDto;
+	Limit: LimitDto | undefined;
+	RuleConjunction: ConjunctionDto | undefined;
 	LiveUpdating: boolean;
 }
 export interface TrackDto
