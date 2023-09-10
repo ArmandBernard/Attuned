@@ -11,6 +11,7 @@ import {
   StringRuleDto,
   TimeSpanRuleDto,
 } from "../dtos/Dtos.ts";
+import { timeSpanToTimeString } from "../timeSpanToTimeString.ts";
 
 export const Conjunctions: FunctionComponent<{
   conjunction: ConjunctionDto;
@@ -85,8 +86,8 @@ const ValueRuleText = (
     | TimeSpanRuleDto,
 ) =>
   `${GetValueRuleOperatorText(rule.Operator, rule.Sign)} ${
-    "ValueA" in rule && rule.ValueA
-  } ${"ValueB" in rule && `and ${rule.ValueB}`}`;
+    valueFormatter(rule, "A")
+  } ${valueFormatter(rule, "B") && `and ${valueFormatter(rule, "B")}`}`;
 
 const GetValueRuleOperatorText = (operator: OperatorDto, sign: SignDto) => {
   switch (operator) {
@@ -106,5 +107,33 @@ const GetValueRuleOperatorText = (operator: OperatorDto, sign: SignDto) => {
       return "is in the range";
     default:
       operator satisfies never;
+  }
+};
+
+const valueFormatter = (
+  rule:
+    | DateRuleDto
+    | DictionaryRuleDto
+    | IntRuleDto
+    | PlaylistRuleDto
+    | StringRuleDto
+    | TimeSpanRuleDto,
+  property: "A" | "B",
+): string | undefined => {
+  switch (rule.RuleType) {
+    case "Date": {
+      const value = property === "A" ? rule.ValueA : rule.ValueB;
+      return value && new Date(value).toLocaleDateString();
+    }
+    case "TimeSpan":
+      return timeSpanToTimeString(rule.ValueA);
+    case "Int":
+      return (property === "A" ? rule.ValueA : rule.ValueB)?.toFixed(0);
+    case "Playlist":
+    case "Dictionary":
+    case "String":
+      return rule.ValueA;
+    default:
+      rule satisfies never;
   }
 };
