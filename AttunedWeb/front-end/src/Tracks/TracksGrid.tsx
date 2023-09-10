@@ -44,7 +44,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
     props.setSortOrder((value) => ({
       field: clickedField,
       direction:
-        value && value.field == clickedField
+        value && value.field === clickedField
           ? value.direction === "ascending"
             ? "descending"
             : "ascending"
