@@ -1,6 +1,6 @@
 import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
-import { TrackDto } from "../dtos/Dtos.ts";
+import { PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
 import { FunctionComponent, useState } from "react";
 import { getDurationString } from "../getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
@@ -12,7 +12,7 @@ interface SortOrder {
 
 export const TracksView: FunctionComponent<{
   title: string;
-  idFilter: number[] | undefined;
+  playlist: PlaylistDto | undefined;
 }> = (props) => {
   const { data: tracks, isFetching } = useRouteQuery<TrackDto[]>({
     url: "track",
@@ -22,7 +22,7 @@ export const TracksView: FunctionComponent<{
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
   const filtered = tracks?.filter((x) =>
-    props.idFilter ? props.idFilter.indexOf(x.Id) !== -1 : true,
+    props.playlist?.Items ? props.playlist.Items.indexOf(x.Id) !== -1 : true,
   );
 
   const sorted = sortOrder
@@ -36,12 +36,17 @@ export const TracksView: FunctionComponent<{
         {isFetching && <span aria-hidden>Loading...</span>}
       </div>
       {filtered && (
-        <div>
-          {filtered.length} tracks •{" "}
-          {getDurationString(
-            filtered
-              .map((x) => x.TotalTime)
-              .reduce((agg, curr) => agg + (curr ?? 0), 0) as TimeSpan,
+        <div className="flex gap-4">
+          <span>
+            {filtered.length} tracks •{" "}
+            {getDurationString(
+              filtered
+                .map((x) => x.TotalTime)
+                .reduce((agg, curr) => agg + (curr ?? 0), 0) as TimeSpan,
+            )}
+          </span>
+          {props.playlist?.IsSmart && (
+            <button className="inline-block text-primary">View rules</button>
           )}
         </div>
       )}
