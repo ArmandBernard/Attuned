@@ -27,18 +27,12 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
     refetchOnWindowFocus: false,
   });
 
-  const allPlaylists = data?.map((x) => ({
-    id: x.Id,
-    name: x.Name,
-    trackList: x.Items,
-  }));
-
-  const mediaPlaylists = allPlaylists?.filter(
-    (x) => mediaPlaylistNames.indexOf(x.name) !== -1,
+  const mediaPlaylists = data?.filter(
+    (x) => mediaPlaylistNames.indexOf(x.Name) !== -1,
   );
 
-  const playlists = allPlaylists?.filter(
-    (x) => mediaPlaylistNames.indexOf(x.name) === -1,
+  const playlists = data?.filter(
+    (x) => mediaPlaylistNames.indexOf(x.Name) === -1,
   );
 
   const classNames = [
@@ -108,18 +102,19 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {isFetching && <span>Loading...</span>}
                 {mediaPlaylists &&
                   mediaPlaylists.map((x) => (
-                    <li key={x.id}>
+                    <li key={x.Id}>
                       <button
+                        aria-label={x.Name}
                         className="truncate"
                         onClick={() =>
                           props.setSelectedTrackList({
-                            playListId: x.id,
-                            playListName: x.name,
-                            trackIds: x.trackList,
+                            playListId: x.Id,
+                            playListName: x.Name,
+                            trackIds: x.Items,
                           })
                         }
                       >
-                        {x.name}
+                        {x.Name}
                       </button>
                     </li>
                   ))}
@@ -131,18 +126,24 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {isFetching && <span>Loading...</span>}
                 {playlists &&
                   playlists.map((x) => (
-                    <li key={x.id}>
+                    <li key={x.Id}>
                       <button
                         className="truncate"
                         onClick={() =>
                           props.setSelectedTrackList({
-                            playListId: x.id,
-                            playListName: x.name,
-                            trackIds: x.trackList,
+                            playListId: x.Id,
+                            playListName: x.Name,
+                            trackIds: x.Items,
                           })
                         }
                       >
-                        {x.name}
+                        <span
+                          aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
+                          className="inline-block w-[2rem]"
+                        >
+                          {x.IsSmart ? "⛭" : "♫"}
+                        </span>
+                        {x.Name}
                       </button>
                     </li>
                   ))}
