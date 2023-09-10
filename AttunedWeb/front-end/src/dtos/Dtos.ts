@@ -5,6 +5,16 @@
 import { UTCDateTime } from './UTCDateTime.ts';
 import { TimeSpan } from './TimeSpan.ts';
 
+export interface PlaylistDto
+{
+	Id: number;
+	Name: string;
+	Items: number[];
+	IsSmart: boolean;
+	Limit: LimitDto;
+	RuleConjunction: ConjunctionDto;
+	LiveUpdating: boolean;
+}
 export interface TrackDto
 {
 	Id: number;
@@ -32,4 +42,193 @@ export interface TrackDto
 	SkipCount: number | undefined;
 	Rating: number;
 	Loved: boolean;
+}
+export interface BooleanRuleDto
+{
+	Field: BoolFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+}
+export interface DateRuleDto
+{
+	Field: DateFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+	ValueA: UTCDateTime;
+	ValueB: UTCDateTime | undefined;
+}
+export interface DictionaryRuleDto
+{
+	Field: DictionaryFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+	Value: string;
+}
+export interface IntRuleDto
+{
+	Field: IntFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+	ValueA: number;
+	ValueB: number | undefined;
+}
+export interface PlaylistRuleDto
+{
+	FieldDto: PlaylistFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+	Value: string;
+}
+export interface StringRuleDto
+{
+	Field: StringFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+	Value: string;
+}
+export interface TimeSpanRuleDto
+{
+	Field: DateFieldsDto;
+	RuleType: OperatorDto;
+	Sign: SignDto;
+	Value: TimeSpan;
+}
+export enum OperatorDto {
+	Is = "Is",
+	Contains = "Contains",
+	Starts = "Starts",
+	Ends = "Ends",
+	Greater = "Greater",
+	Less = "Less",
+	Between = "Between"
+}
+export enum SignDto {
+	Positive = "Positive",
+	Negative = "Negative"
+}
+export interface LimitDto
+{
+	IsLimited: boolean;
+	OnlyChecked: boolean;
+	SortField: SortFieldDto;
+	SortDirection: SortDirection;
+	Units: LimitUnitsDto;
+	Amount: number;
+}
+export enum LimitUnitsDto {
+	Minutes = "Minutes",
+	MB = "MB",
+	Items = "Items",
+	Hours = "Hours",
+	GB = "GB"
+}
+export enum SortDirection {
+	Ascending = "Ascending",
+	Descending = "Descending"
+}
+export enum SortFieldDto {
+	Random = "Random",
+	Name = "Name",
+	Album = "Album",
+	Artist = "Artist",
+	Genre = "Genre",
+	Rating = "Rating",
+	LastPlayed = "LastPlayed",
+	PlayCount = "PlayCount",
+	DateAdded = "DateAdded"
+}
+export enum iCloudStatusDto {
+	Purchased = "Purchased",
+	Matched = "Matched",
+	Uploaded = "Uploaded",
+	Ineligible = "Ineligible",
+	LocalOnly = "Local Only",
+	Duplicate = "Duplicate"
+}
+export enum LocationDto {
+	Computer = "Computer",
+	iCloud = "iCloud"
+}
+export enum LoveDto {
+	None = "None",
+	Loved = "Loved",
+	Dislike = "Dislike"
+}
+export enum MediaDto {
+	Music = "Music",
+	Movie = "Movie",
+	Podcast = "Podcast",
+	Audiobook = "Audiobook",
+	MusicVideo = "Music Video",
+	TvShow = "TV Show",
+	HomeVideo = "Home Video",
+	iTunesExtras = "iTunes Extras",
+	VoiceMemo = "Voice Memo",
+	iTunesU = "iTunes U",
+	Book = "Book",
+	BookOrAudiobook = "Book or Audiobook",
+	UndesiredMusic = "Undesired Music",
+	UndesiredOther = "Undesired Other"
+}
+export enum BoolFieldsDto {
+	HasArtwork = "HasArtwork",
+	Purchased = "Purchased",
+	Checked = "Checked"
+}
+export enum DateFieldsDto {
+	DateAdded = "DateAdded",
+	DateModified = "DateModified",
+	LastPlayed = "LastPlayed",
+	LastSkipped = "LastSkipped"
+}
+export enum DictionaryFieldsDto {
+	MediaKind = "MediaKind",
+	Location = "Location",
+	iCloudStatus = "iCloudStatus",
+	Love = "Love"
+}
+export enum IntFieldsDto {
+	Bpm = "Bpm",
+	BitRate = "BitRate",
+	Compilation = "Compilation",
+	DiskNumber = "DiskNumber",
+	Plays = "Plays",
+	Rating = "Rating",
+	Podcast = "Podcast",
+	SampleRate = "SampleRate",
+	Season = "Season",
+	Size = "Size",
+	Skips = "Skips",
+	Duration = "Duration",
+	TrackNumber = "TrackNumber",
+	Year = "Year"
+}
+export enum PlaylistFieldsDto {
+	PlaylistPersistentID = "PlaylistPersistentID"
+}
+export enum StringFieldsDto {
+	Album = "Album",
+	AlbumArtist = "AlbumArtist",
+	Artist = "Artist",
+	Category = "Category",
+	Comments = "Comments",
+	Composer = "Composer",
+	Description = "Description",
+	Genre = "Genre",
+	Grouping = "Grouping",
+	Kind = "Kind",
+	Name = "Name",
+	Show = "Show",
+	SortAlbum = "SortAlbum",
+	SortAlbumArtist = "SortAlbumArtist",
+	SortComposer = "SortComposer",
+	SortName = "SortName",
+	SortShow = "SortShow",
+	VideoRating = "VideoRating"
+}
+export interface ConjunctionDto
+{
+	Type: number;
+	SubConjunctions: ConjunctionDto[];
+	Rules: (BooleanRuleDto | DateRuleDto | DictionaryRuleDto | IntRuleDto | PlaylistRuleDto | StringRuleDto | TimeSpanRuleDto)[];
 }

@@ -4,8 +4,8 @@ using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.Dtos;
 
-[TsDto]
-public record TrackDto()
+[TypescriptDto]
+public record TrackDto
 {
     public required int Id { get; init; }
     public required string Location { get; init; }

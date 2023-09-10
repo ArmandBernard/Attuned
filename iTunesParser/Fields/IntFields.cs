@@ -2,7 +2,7 @@ namespace iTunesSmartParser.Fields;
 
 public enum IntFields
 {
-    BPM = 0x23,
+    Bpm = 0x23,
     BitRate = 0x05,
     Compilation = 0x1f,
     DiskNumber = 0x18,

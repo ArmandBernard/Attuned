@@ -15,7 +15,7 @@ public enum StringFields
     Name = 0x02,
     Show = 0x3e,
     SortAlbum = 0x4f,
-    SortAlbumartist = 0x51,
+    SortAlbumArtist = 0x51,
     SortComposer = 0x52,
     SortName = 0x4e,
     SortShow = 0x53,

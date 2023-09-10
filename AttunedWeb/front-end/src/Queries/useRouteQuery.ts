@@ -41,7 +41,7 @@ const buildUrl = (path: string, parameters: ValidParams | undefined) => {
 
   if (parameters !== undefined) {
     Object.entries(parameters).forEach(([name, value]) => {
-      if (value != undefined) {
+      if (value !== undefined) {
         url.searchParams.set(name, value.toString());
       }
     });

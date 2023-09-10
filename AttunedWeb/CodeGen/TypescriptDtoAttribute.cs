@@ -2,9 +2,9 @@ using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.CodeGen;
 
-public sealed class TsDtoAttribute: TsInterfaceAttribute
+public sealed class TypescriptDtoAttribute: TsInterfaceAttribute
 {
-    public TsDtoAttribute()
+    public TypescriptDtoAttribute()
     {
         AutoI = false;
         AutoExportMethods = false;
