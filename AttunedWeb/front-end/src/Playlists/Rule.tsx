@@ -11,8 +11,8 @@ import {
   StringRuleDto,
   TimeSpanRuleDto,
 } from "../dtos/Dtos.ts";
-import { timeSpanToTimeString } from "../timeSpanToTimeString.ts";
-import { getRatingString } from "../getRatingString.ts";
+import { timeSpanToTimeString } from "../StringFormatters/timeSpanToTimeString.ts";
+import { getRatingString } from "../StringFormatters/getRatingString.ts";
 
 export const Rule: FunctionComponent<{
   rule:

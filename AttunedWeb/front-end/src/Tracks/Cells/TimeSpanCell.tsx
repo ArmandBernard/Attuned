@@ -1,6 +1,6 @@
 import { CellComponent } from "./CellComponent.ts";
 import { TimeSpan } from "../../dtos/TimeSpan.ts";
-import {timeSpanToTimeString} from "../../timeSpanToTimeString.ts";
+import {timeSpanToTimeString} from "../../StringFormatters/timeSpanToTimeString.ts";
 
 export const TimeSpanCell: CellComponent<TimeSpan | undefined> = (props) => {
   const { className, value, ...rest } = props;

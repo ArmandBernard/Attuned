@@ -1,5 +1,5 @@
 import { CellComponent } from "./CellComponent.ts";
-import { getRatingString } from "../../getRatingString.ts";
+import { getRatingString } from "../../StringFormatters/getRatingString.ts";
 import { Rating } from "../../dtos/Rating.ts";
 
 export const RatingCell: CellComponent<Rating> = (props) => {

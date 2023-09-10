@@ -2,7 +2,7 @@ import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 import { PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
 import { FunctionComponent, useState } from "react";
-import { getDurationString } from "../getDurationString.ts";
+import { getDurationString } from "../StringFormatters/getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
 import { PlaylistDetails } from "../Playlists/PlaylistDetails.tsx";
 

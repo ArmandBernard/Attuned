@@ -1,4 +1,4 @@
-import { TimeSpan } from "./dtos/TimeSpan.ts";
+import { TimeSpan } from "../dtos/TimeSpan.ts";
 
 export const timeSpanToTimeString = (timeSpan: TimeSpan) => {
   const ISOTime = new Date(timeSpan).toISOString().slice(11, -5);
