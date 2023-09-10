@@ -4,6 +4,7 @@ import { PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
 import { FunctionComponent, useState } from "react";
 import { getDurationString } from "../getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
+import { PlaylistDetails } from "../PlaylistDetails.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -13,16 +14,18 @@ interface SortOrder {
 export const TracksView: FunctionComponent<{
   title: string;
   playlist: PlaylistDto | undefined;
-}> = (props) => {
+}> = ({ playlist, title }) => {
+  const [showPlaylistDetails, setShowPlaylistDetails] =
+    useState<boolean>(false);
+  const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
+
   const { data: tracks, isFetching } = useRouteQuery<TrackDto[]>({
     url: "track",
     refetchOnWindowFocus: false,
   });
 
-  const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
-
   const filtered = tracks?.filter((x) =>
-    props.playlist?.Items ? props.playlist.Items.indexOf(x.Id) !== -1 : true,
+    playlist?.Items ? playlist.Items.indexOf(x.Id) !== -1 : true,
   );
 
   const sorted = sortOrder
@@ -31,8 +34,15 @@ export const TracksView: FunctionComponent<{
 
   return (
     <div className="p-4 h-full flex flex-col gap-2">
+      {playlist && (
+        <PlaylistDetails
+          playlist={playlist}
+          show={showPlaylistDetails}
+          onClose={() => setShowPlaylistDetails(false)}
+        />
+      )}
       <div>
-        <h1 className="text-2xl inline-block">{props.title}</h1>{" "}
+        <h1 className="text-2xl inline-block">{title}</h1>{" "}
         {isFetching && <span aria-hidden>Loading...</span>}
       </div>
       {filtered && (
@@ -45,8 +55,13 @@ export const TracksView: FunctionComponent<{
                 .reduce((agg, curr) => agg + (curr ?? 0), 0) as TimeSpan,
             )}
           </span>
-          {props.playlist?.IsSmart && (
-            <button className="inline-block text-primary">View rules</button>
+          {playlist?.IsSmart && (
+            <button
+              className="inline-block text-primary"
+              onClick={() => setShowPlaylistDetails(true)}
+            >
+              View rules
+            </button>
           )}
         </div>
       )}
