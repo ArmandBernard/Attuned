@@ -64,7 +64,7 @@ export interface DictionaryRuleDto
 	Field: DictionaryFieldsDto;
 	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: string;
+	ValueA: string;
 	RuleType: "Dictionary";
 }
 export interface IntRuleDto
@@ -81,7 +81,7 @@ export interface PlaylistRuleDto
 	FieldDto: PlaylistFieldsDto;
 	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: string;
+	ValueA: string;
 	RuleType: "Playlist";
 }
 export interface StringRuleDto
@@ -89,7 +89,7 @@ export interface StringRuleDto
 	Field: StringFieldsDto;
 	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: string;
+	ValueA: string;
 	RuleType: "String";
 }
 export interface TimeSpanRuleDto
@@ -97,7 +97,7 @@ export interface TimeSpanRuleDto
 	Field: DateFieldsDto;
 	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: TimeSpan;
+	ValueA: TimeSpan;
 	RuleType: "TimeSpan";
 }
 export enum OperatorDto {

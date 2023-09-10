@@ -6,7 +6,7 @@ using Reinforced.Typings.Attributes;
 namespace AttunedWebApi.Dtos.Rules;
 
 [TypescriptDto]
-public record TimeSpanRuleDto(DateFieldsDto Field, OperatorDto Operator, SignDto Sign, TimeSpan Value) : IRuleDto
+public record TimeSpanRuleDto(DateFieldsDto Field, OperatorDto Operator, SignDto Sign, TimeSpan ValueA) : IRuleDto
 {
     [TsProperty(Type = $"\"{nameof(RuleType.TimeSpan)}\"")]
     public RuleType RuleType => RuleType.TimeSpan;

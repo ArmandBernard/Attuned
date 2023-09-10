@@ -6,7 +6,7 @@ using Reinforced.Typings.Attributes;
 namespace AttunedWebApi.Dtos.Rules;
 
 [TypescriptDto]
-public record PlaylistRuleDto(PlaylistFieldsDto FieldDto, OperatorDto Operator, SignDto Sign, string Value) : IRuleDto
+public record PlaylistRuleDto(PlaylistFieldsDto FieldDto, OperatorDto Operator, SignDto Sign, string ValueA) : IRuleDto
 {
     [TsProperty(Type = $"\"{nameof(RuleType.Playlist)}\"")]
     public RuleType RuleType => RuleType.Playlist;    

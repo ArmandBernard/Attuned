@@ -6,7 +6,7 @@ using Reinforced.Typings.Attributes;
 namespace AttunedWebApi.Dtos.Rules;
 
 [TypescriptDto]
-public record DictionaryRuleDto(DictionaryFieldsDto Field, OperatorDto Operator, SignDto Sign, string Value)
+public record DictionaryRuleDto(DictionaryFieldsDto Field, OperatorDto Operator, SignDto Sign, string ValueA)
     : IRuleDto
 {
     [TsProperty(Type = $"\"{nameof(RuleType.Dictionary)}\"")]
