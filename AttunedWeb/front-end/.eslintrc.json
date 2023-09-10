@@ -29,7 +29,8 @@
     "semi": [
       "error",
       "always"
-    ]
+    ],
+    "eqeqeq": "error"
   },
   "overrides": [{
     "files": ["src/dtos/Dtos.ts"],
