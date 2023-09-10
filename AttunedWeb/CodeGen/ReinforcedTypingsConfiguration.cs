@@ -13,6 +13,7 @@ public static class ReinforcedTypingsConfiguration
     private static readonly Import[] _customImports = {
         new("{ UTCDateTime }", "./UTCDateTime.ts"),
         new("{ TimeSpan }", "./TimeSpan.ts"),
+        new("{ Rating }", "./Rating.ts"),
     };
 
     public static void Configure(ConfigurationBuilder builder)

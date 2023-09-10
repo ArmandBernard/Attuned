@@ -4,6 +4,7 @@
 
 import { UTCDateTime } from './UTCDateTime.ts';
 import { TimeSpan } from './TimeSpan.ts';
+import { Rating } from './Rating.ts';
 
 export interface PlaylistDto
 {
@@ -83,6 +84,15 @@ export interface PlaylistRuleDto
 	Sign: SignDto;
 	ValueA: string;
 	RuleType: "Playlist";
+}
+export interface RatingRuleDto
+{
+	RuleType: "Rating";
+	Field: "Rating";
+	Operator: OperatorDto;
+	Sign: SignDto;
+	ValueA: Rating;
+	ValueB: Rating | undefined;
 }
 export interface StringRuleDto
 {
@@ -237,5 +247,5 @@ export interface ConjunctionDto
 {
 	Type: number;
 	SubConjunctions: ConjunctionDto[];
-	Rules: (BooleanRuleDto | DateRuleDto | DictionaryRuleDto | IntRuleDto | PlaylistRuleDto | StringRuleDto | TimeSpanRuleDto)[];
+	Rules: (BooleanRuleDto | DateRuleDto | DictionaryRuleDto | IntRuleDto | RatingRuleDto | PlaylistRuleDto | StringRuleDto | TimeSpanRuleDto)[];
 }

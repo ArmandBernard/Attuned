@@ -8,5 +8,6 @@ public enum RuleType
     Int,
     Playlist,
     String,
-    TimeSpan
+    TimeSpan,
+    Rating
 }
