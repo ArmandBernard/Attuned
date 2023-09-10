@@ -4,7 +4,7 @@ namespace iTunesSmartParser.Data.Rules;
 
 public interface IRule
 {
-    public Operator RuleType { get; }
+    public Operator Operator { get; }
 
     public Sign Sign { get; }
 }

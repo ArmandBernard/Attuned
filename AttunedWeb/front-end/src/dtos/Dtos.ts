@@ -46,52 +46,59 @@ export interface TrackDto
 export interface BooleanRuleDto
 {
 	Field: BoolFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
+	RuleType: "Boolean";
 }
 export interface DateRuleDto
 {
 	Field: DateFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	ValueA: UTCDateTime;
 	ValueB: UTCDateTime | undefined;
+	RuleType: "Date";
 }
 export interface DictionaryRuleDto
 {
 	Field: DictionaryFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	Value: string;
+	RuleType: "Dictionary";
 }
 export interface IntRuleDto
 {
 	Field: IntFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	ValueA: number;
 	ValueB: number | undefined;
+	RuleType: "Int";
 }
 export interface PlaylistRuleDto
 {
 	FieldDto: PlaylistFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	Value: string;
+	RuleType: "Playlist";
 }
 export interface StringRuleDto
 {
 	Field: StringFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	Value: string;
+	RuleType: "String";
 }
 export interface TimeSpanRuleDto
 {
 	Field: DateFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	Value: TimeSpan;
+	RuleType: "TimeSpan";
 }
 export enum OperatorDto {
 	Is = "Is",

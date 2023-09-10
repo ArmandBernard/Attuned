@@ -1,8 +1,13 @@
 using AttunedWebApi.CodeGen;
 using AttunedWebApi.Dtos.Fields;
 using AttunedWebApi.Dtos.Logic;
+using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.Dtos.Rules;
 
 [TypescriptDto]
-public record StringRuleDto(StringFieldsDto Field, OperatorDto RuleType, SignDto Sign, string Value) : IRuleDto;
+public record StringRuleDto(StringFieldsDto Field, OperatorDto Operator, SignDto Sign, string Value) : IRuleDto
+{
+    [TsProperty(Type = $"\"{nameof(RuleType.String)}\"")]
+    public RuleType RuleType => RuleType.String;
+}

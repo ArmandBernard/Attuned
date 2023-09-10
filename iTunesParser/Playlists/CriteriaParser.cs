@@ -81,14 +81,14 @@ public static class CriteriaParser
             {
                 var content = criteriaHelper.ReadStringContent(offset);
 
-                rule = new StringRule(Field: (StringFields) field, RuleType: logicRule, Sign: logicSign,
+                rule = new StringRule(Field: (StringFields) field, Operator: logicRule, Sign: logicSign,
                     Value: content);
 
                 offset = CriteriaHelper.PostStringOffset(offset, content);
             }
             else if (Enum.IsDefined(typeof(IntFields), field))
             {
-                rule = new IntRule(Field: (IntFields) field, RuleType: logicRule, Sign: logicSign,
+                rule = new IntRule(Field: (IntFields) field, Operator: logicRule, Sign: logicSign,
                     ValueA: criteriaHelper.IntA(offset), // Only range rule has two values.
                     ValueB: criteriaHelper.IsRangeField(offset) ? criteriaHelper.IntB(offset) : null);
 
@@ -98,13 +98,13 @@ public static class CriteriaParser
             {
                 if (criteriaHelper.IsTimeSpanRule(offset))
                 {
-                    rule = new TimeSpanRule(Field: (DateFields) field, RuleType: Operator.Other, Sign: logicSign,
+                    rule = new TimeSpanRule(Field: (DateFields) field, Operator: Operator.Other, Sign: logicSign,
                         Value: TimeSpan.FromSeconds(
                             (int) criteriaHelper.TimeUnits(offset) * criteriaHelper.TimeSpanValue(offset)));
                 }
                 else
                 {
-                    rule = new DateRule(Field: (DateFields) field, RuleType: logicRule, Sign: logicSign,
+                    rule = new DateRule(Field: (DateFields) field, Operator: logicRule, Sign: logicSign,
                         ValueA: criteriaHelper.DateA(offset), // Only range rule has two values.
                         ValueB: criteriaHelper.IsRangeField(offset) ? criteriaHelper.DateB(offset) : null);
                 }
@@ -113,7 +113,7 @@ public static class CriteriaParser
             else if (Enum.IsDefined(typeof(BoolFields), field))
             {
                 rule = new BooleanRule(Field: (BoolFields) field,
-                    RuleType: Operator.Is, // when sign is IntPositive it means true
+                    Operator: Operator.Is, // when sign is IntPositive it means true
                     Sign: logicSign);
 
                 offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
@@ -130,14 +130,14 @@ public static class CriteriaParser
                         $"DictionaryField not recognized: ${(DictionaryFields) field}")
                 };
                 
-                rule = new DictionaryRule(Field: (DictionaryFields) field, RuleType: logicRule, Sign: logicSign,
+                rule = new DictionaryRule(Field: (DictionaryFields) field, Operator: logicRule, Sign: logicSign,
                     Value: dictionary[criteriaHelper.IntA(offset)]);
 
                 offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);
             }
             else if (Enum.IsDefined(typeof(PlaylistFields), field))
             {
-                rule = new PlaylistRule(Field: (PlaylistFields) field, RuleType: logicRule, Sign: logicSign,
+                rule = new PlaylistRule(Field: (PlaylistFields) field, Operator: logicRule, Sign: logicSign,
                     Value: criteriaHelper.PlaylistId(offset));
 
                 offset = CriteriaHelper.PostFixedLengthFieldOffset(offset);

@@ -12,7 +12,9 @@ namespace AttunedWebApi.Dtos.Rules;
 [JsonDerivedType(typeof(TimeSpanRuleDto))]
 public interface IRuleDto
 {
-    public OperatorDto RuleType { get; }
+    public RuleType RuleType { get; }
+    
+    public OperatorDto Operator { get; }
 
     public SignDto Sign { get; }
 }
