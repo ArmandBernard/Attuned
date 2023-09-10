@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, ReactElement } from "react";
 import {
   BooleanRuleDto,
   ConjunctionDto,
@@ -89,11 +89,13 @@ const ValueRuleText = (
     | PlaylistRuleDto
     | StringRuleDto
     | TimeSpanRuleDto,
-) =>
-  `${GetValueRuleOperatorText(rule.Operator, rule.Sign)} ${valueFormatter(
-    rule,
-    "A",
-  )} ${valueFormatter(rule, "B") && `and ${valueFormatter(rule, "B")}`}`;
+) => (
+  <>
+    {GetValueRuleOperatorText(rule.Operator, rule.Sign)}{" "}
+    {valueFormatter(rule, "A")}
+    {valueFormatter(rule, "B") && <> and {valueFormatter(rule, "B")}</>}
+  </>
+);
 
 const GetValueRuleOperatorText = (operator: OperatorDto, sign: SignDto) => {
   switch (operator) {
@@ -126,24 +128,26 @@ const valueFormatter = (
     | StringRuleDto
     | TimeSpanRuleDto,
   property: "A" | "B",
-): string | undefined => {
+): ReactElement | string | undefined => {
   switch (rule.RuleType) {
     case "Date": {
       const value = property === "A" ? rule.ValueA : rule.ValueB;
       return value && new Date(value).toLocaleDateString();
     }
     case "TimeSpan":
-      return timeSpanToTimeString(rule.ValueA);
+      return property === "A" ? timeSpanToTimeString(rule.ValueA) : undefined;
     case "Rating": {
       const value = property === "A" ? rule.ValueA : rule.ValueB;
-      return value !== undefined ? getRatingString(value) : undefined;
+      return value === undefined ? undefined : (
+        <span aria-label={`${value} stars`}>{getRatingString(value)}</span>
+      );
     }
     case "Int":
       return (property === "A" ? rule.ValueA : rule.ValueB)?.toFixed(0);
     case "Playlist":
     case "Dictionary":
     case "String":
-      return rule.ValueA;
+      return property === "A" ? rule.ValueA : undefined;
     default:
       rule satisfies never;
   }
