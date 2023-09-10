@@ -10,9 +10,21 @@ Currently not even in alpha yet.
 
 Huge kudos to [cvzi](https://github.com/cvzi)'s [itunes_smartplaylist](https://github.com/cvzi/itunes_smartplaylist) project, which I based the parsing code on.
 
-Here's a picture of the early UI showing tracks loaded from my library.
+## UI Screenshots
 
-![Tracks view](./TracksUI.png)
+Here are some pictures of the UI as it currently is.
+
+On Desktop:
+
+![Desktop](Desktop.png)
+
+On mobile, with the sidebar open:
+
+![Mobile](MobileOpen.png)
+
+The details of a smart playlist:
+
+![Smart Playlist details](SmartPlaylist.png)
 
 ## Tech stack
 
@@ -22,7 +34,7 @@ WebAPI + React front-end.
 ## Development checklist
 
 - [x] Decode XML into an in-memory data structure.
-- [ ] Create a GUI to show this data. (Ongoing)
+- [x] Create a GUI to show this data.
 - [ ] Generate non-smart playlist files for Android.
 
 ## Not planned, potential features
