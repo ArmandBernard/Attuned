@@ -20,7 +20,10 @@
   "rules": {
     "indent": [
       "warn",
-      2
+      2,
+      {
+        "SwitchCase": 1
+      }
     ],
     "quotes": [
       "error",
@@ -32,10 +35,14 @@
     ],
     "eqeqeq": "error"
   },
-  "overrides": [{
-    "files": ["src/dtos/Dtos.ts"],
-    "rules": {
-      "quotes": "off"
+  "overrides": [
+    {
+      "files": [
+        "src/dtos/Dtos.ts"
+      ],
+      "rules": {
+        "quotes": "off"
+      }
     }
-  }]
+  ]
 }
