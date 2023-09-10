@@ -10,6 +10,7 @@ namespace AttunedWebApi.Dtos.Rules;
 [JsonDerivedType(typeof(PlaylistRuleDto))]
 [JsonDerivedType(typeof(StringRuleDto))]
 [JsonDerivedType(typeof(TimeSpanRuleDto))]
+[JsonDerivedType(typeof(RatingRuleDto))]
 public interface IRuleDto
 {
     public RuleType RuleType { get; }
