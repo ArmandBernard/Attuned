@@ -89,9 +89,16 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
         </div>
         <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
           <ul>
-            <li>
-              <h3 className="text-xl">
-                <button onClick={() => props.setSelectedTrackList(undefined)}>
+            <li aria-selected={props.selectedTrackList === undefined}>
+              <h3 className="text-xl flex">
+                <button
+                  className={[ "flex-1 flex",
+                    props.selectedTrackList === undefined && "bg-neutral-700",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => props.setSelectedTrackList(undefined)}
+                >
                   All tracks
                 </button>
               </h3>
@@ -126,9 +133,15 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {isFetching && <span>Loading...</span>}
                 {playlists &&
                   playlists.map((x) => (
-                    <li key={x.Id}>
+                    <li aria-selected={x.Id === props.selectedTrackList?.playListId} className="flex" key={x.Id}>
                       <button
-                        className="truncate"
+                        className={[
+                          "truncate flex flex-1",
+                          x.Id === props.selectedTrackList?.playListId &&
+                            "bg-neutral-700",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                         onClick={() =>
                           props.setSelectedTrackList({
                             playListId: x.Id,
