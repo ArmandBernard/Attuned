@@ -1,6 +1,8 @@
 import { CellComponent } from "./CellComponent.ts";
+import { getRatingString } from "../../StringFormatters/getRatingString.ts";
+import { Rating } from "../../dtos/Rating.ts";
 
-export const RatingCell: CellComponent<number> = (props) => {
+export const RatingCell: CellComponent<Rating> = (props) => {
   const { className, value, ...rest } = props;
 
   const classNames = ["px-2 whitespace-nowrap text-primary text-lg", className]
@@ -9,8 +11,7 @@ export const RatingCell: CellComponent<number> = (props) => {
 
   return (
     <td aria-label={`${value} stars`} className={classNames} {...rest}>
-      {Array(value).fill("★")}
-      {Array(5 - value).fill("☆")}
+      {getRatingString(value)}
     </td>
   );
 };

@@ -1,4 +1,4 @@
-import { TimeSpan } from "./dtos/TimeSpan.ts";
+import { TimeSpan } from "../dtos/TimeSpan.ts";
 
 export const getDurationString = (timeSpan: TimeSpan) => {
   const days = timeSpan / (24 * 60 * 60 * 1000);

@@ -2,13 +2,9 @@ import { FunctionComponent, useRef, useState } from "react";
 import { useRouteQuery } from "./Queries/useRouteQuery.ts";
 import { PlaylistDto } from "./dtos/Dtos.ts";
 
-type SelectedTrackList =
-  | { playListId: number; playListName: string; trackIds: number[] }
-  | undefined;
-
 interface NavigationProps {
-  selectedTrackList: SelectedTrackList;
-  setSelectedTrackList: (selectedTrackList: SelectedTrackList) => void;
+  selectedPlaylist: PlaylistDto | undefined;
+  setSelectedPlaylist: (playlist: PlaylistDto | undefined) => void;
 }
 
 const mediaPlaylistNames = [
@@ -89,15 +85,16 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
         </div>
         <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
           <ul>
-            <li aria-selected={props.selectedTrackList === undefined}>
+            <li aria-current={props.selectedPlaylist === undefined}>
               <h3 className="text-xl flex">
                 <button
-                  className={[ "flex-1 flex",
-                    props.selectedTrackList === undefined && "bg-neutral-700",
+                  className={[
+                    "flex-1 flex",
+                    props.selectedPlaylist === undefined && "bg-neutral-700",
                   ]
                     .filter(Boolean)
                     .join(" ")}
-                  onClick={() => props.setSelectedTrackList(undefined)}
+                  onClick={() => props.setSelectedPlaylist(undefined)}
                 >
                   All tracks
                 </button>
@@ -113,13 +110,7 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                       <button
                         aria-label={x.Name}
                         className="truncate"
-                        onClick={() =>
-                          props.setSelectedTrackList({
-                            playListId: x.Id,
-                            playListName: x.Name,
-                            trackIds: x.Items,
-                          })
-                        }
+                        onClick={() => props.setSelectedPlaylist(x)}
                       >
                         {x.Name}
                       </button>
@@ -133,22 +124,20 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {isFetching && <span>Loading...</span>}
                 {playlists &&
                   playlists.map((x) => (
-                    <li aria-selected={x.Id === props.selectedTrackList?.playListId} className="flex" key={x.Id}>
+                    <li
+                      aria-current={x.Id === props.selectedPlaylist?.Id}
+                      className="flex"
+                      key={x.Id}
+                    >
                       <button
                         className={[
                           "truncate flex flex-1",
-                          x.Id === props.selectedTrackList?.playListId &&
+                          x.Id === props.selectedPlaylist?.Id &&
                             "bg-neutral-700",
                         ]
                           .filter(Boolean)
                           .join(" ")}
-                        onClick={() =>
-                          props.setSelectedTrackList({
-                            playListId: x.Id,
-                            playListName: x.Name,
-                            trackIds: x.Items,
-                          })
-                        }
+                        onClick={() => props.setSelectedPlaylist(x)}
                       >
                         <span
                           aria-label={x.IsSmart ? "Smart playlist" : "playlist"}

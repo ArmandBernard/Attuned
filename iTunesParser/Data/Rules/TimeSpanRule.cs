@@ -3,4 +3,4 @@ using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Data.Rules;
 
-public record TimeSpanRule(DateFields Field, Operator RuleType, Sign Sign, TimeSpan Value) : IRule;
+public record TimeSpanRule(DateFields Field, Operator Operator, Sign Sign, TimeSpan Value) : IRule;

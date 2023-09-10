@@ -4,6 +4,7 @@
 
 import { UTCDateTime } from './UTCDateTime.ts';
 import { TimeSpan } from './TimeSpan.ts';
+import { Rating } from './Rating.ts';
 
 export interface PlaylistDto
 {
@@ -11,8 +12,8 @@ export interface PlaylistDto
 	Name: string;
 	Items: number[];
 	IsSmart: boolean;
-	Limit: LimitDto;
-	RuleConjunction: ConjunctionDto;
+	Limit: LimitDto | undefined;
+	RuleConjunction: ConjunctionDto | undefined;
 	LiveUpdating: boolean;
 }
 export interface TrackDto
@@ -46,52 +47,68 @@ export interface TrackDto
 export interface BooleanRuleDto
 {
 	Field: BoolFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
+	RuleType: "Boolean";
 }
 export interface DateRuleDto
 {
 	Field: DateFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	ValueA: UTCDateTime;
 	ValueB: UTCDateTime | undefined;
+	RuleType: "Date";
 }
 export interface DictionaryRuleDto
 {
 	Field: DictionaryFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: string;
+	ValueA: string;
+	RuleType: "Dictionary";
 }
 export interface IntRuleDto
 {
 	Field: IntFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
 	ValueA: number;
 	ValueB: number | undefined;
+	RuleType: "Int";
 }
 export interface PlaylistRuleDto
 {
 	FieldDto: PlaylistFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: string;
+	ValueA: string;
+	RuleType: "Playlist";
+}
+export interface RatingRuleDto
+{
+	RuleType: "Rating";
+	Field: "Rating";
+	Operator: OperatorDto;
+	Sign: SignDto;
+	ValueA: Rating;
+	ValueB: Rating | undefined;
 }
 export interface StringRuleDto
 {
 	Field: StringFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: string;
+	ValueA: string;
+	RuleType: "String";
 }
 export interface TimeSpanRuleDto
 {
 	Field: DateFieldsDto;
-	RuleType: OperatorDto;
+	Operator: OperatorDto;
 	Sign: SignDto;
-	Value: TimeSpan;
+	ValueA: TimeSpan;
+	RuleType: "TimeSpan";
 }
 export enum OperatorDto {
 	Is = "Is",
@@ -230,5 +247,5 @@ export interface ConjunctionDto
 {
 	Type: number;
 	SubConjunctions: ConjunctionDto[];
-	Rules: (BooleanRuleDto | DateRuleDto | DictionaryRuleDto | IntRuleDto | PlaylistRuleDto | StringRuleDto | TimeSpanRuleDto)[];
+	Rules: (BooleanRuleDto | DateRuleDto | DictionaryRuleDto | IntRuleDto | RatingRuleDto | PlaylistRuleDto | StringRuleDto | TimeSpanRuleDto)[];
 }

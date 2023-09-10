@@ -8,11 +8,12 @@ import { NumberCell } from "./Cells/NumberCell.tsx";
 import { DateTimeCell } from "./Cells/DateTimeCell.tsx";
 import { CellTypes } from "./CellTypes.ts";
 import { FieldCellTypeDictionary } from "./FieldTypeDictionary.ts";
+import { Rating } from "../dtos/Rating.ts";
 
 const CellTypeElementDictionary: Record<
   CellTypes,
   | CellComponent<string | undefined>
-  | CellComponent<number>
+  | CellComponent<Rating>
   | CellComponent<number | undefined>
   | CellComponent<TimeSpan | undefined>
 > = {

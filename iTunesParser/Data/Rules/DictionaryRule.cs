@@ -3,4 +3,4 @@ using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Data.Rules;
 
-public record DictionaryRule(DictionaryFields Field, Operator RuleType, Sign Sign, string Value) : IRule;
+public record DictionaryRule(DictionaryFields Field, Operator Operator, Sign Sign, string Value) : IRule;
