@@ -25,7 +25,7 @@ export const PlaylistDetails: FunctionComponent<PlaylistDetailsProps> = ({
         <h1 className="">{playlist.Name}</h1>
         <button onClick={onClose}>✕</button>
       </div>
-      <div className="p-4">
+      <div className="flex flex-col gap-2 px-4 pb-4">
         <label>
           <input
             disabled

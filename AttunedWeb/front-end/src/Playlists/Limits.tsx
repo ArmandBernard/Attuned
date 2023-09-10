@@ -6,30 +6,20 @@ export const Limits: FunctionComponent<{ playlist: PlaylistDto }> = ({
 }) => {
   return (
     <>
-      <div>
-        <label>
-          <input type="checkbox" disabled checked={playlist.Limit?.IsLimited} />{" "}
-          Limit to {playlist.Limit?.Amount} {playlist.Limit?.Units} selected by{" "}
-          {playlist.Limit?.SortField}{" "}
-          {playlist.Limit?.SortDirection.toLowerCase()}
-        </label>
-      </div>
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            disabled
-            checked={playlist.Limit?.OnlyChecked}
-          />{" "}
-          Match only ticked items
-        </label>
-      </div>
-      <div>
-        <label>
-          <input type="checkbox" disabled checked={playlist.LiveUpdating} />{" "}
-          Live updating
-        </label>
-      </div>
+      <label>
+        <input type="checkbox" disabled checked={playlist.Limit?.IsLimited} />{" "}
+        Limit to {playlist.Limit?.Amount} {playlist.Limit?.Units} selected by{" "}
+        {playlist.Limit?.SortField}{" "}
+        {playlist.Limit?.SortDirection.toLowerCase()}
+      </label>
+      <label>
+        <input type="checkbox" disabled checked={playlist.Limit?.OnlyChecked} />{" "}
+        Match only ticked items
+      </label>
+      <label>
+        <input type="checkbox" disabled checked={playlist.LiveUpdating} /> Live
+        updating
+      </label>
     </>
   );
 };
