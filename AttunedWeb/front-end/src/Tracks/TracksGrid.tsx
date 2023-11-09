@@ -15,6 +15,7 @@ interface TracksGridProps {
   tracks: TrackDto[] | undefined;
   sortOrder: SortOrder | undefined;
   setSortOrder: Dispatch<SetStateAction<SortOrder | undefined>>;
+  setTrackToShow: Dispatch<SetStateAction<TrackDto | undefined>>;
 }
 
 const RightAlignedFields: Record<CellTypes, boolean> = {
@@ -109,7 +110,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
               className="contents [&>td]:dark:odd:bg-neutral-700 [&>td]:odd:bg-neutral-100"
             >
               <td>
-                <button className="px-2" aria-label="View details">🗏</button>
+                <button className="px-2" aria-label="View details" onClick={() => props.setTrackToShow(track)}>🗏</button>
               </td>
               {fieldsToShow.map((field) => {
                 return (GetCellElement(field) as CellComponent<unknown>)({

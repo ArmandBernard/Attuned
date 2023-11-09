@@ -5,6 +5,7 @@ import { FunctionComponent, useState } from "react";
 import { getDurationString } from "../StringFormatters/getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
 import { PlaylistDetails } from "../Playlists/PlaylistDetails.tsx";
+import {TrackDetails} from "./TrackDetails.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -17,6 +18,7 @@ export const TracksView: FunctionComponent<{
 }> = ({ playlist, title }) => {
   const [showPlaylistDetails, setShowPlaylistDetails] =
     useState<boolean>(false);
+  const [trackToShow, setTrackToShow] = useState<TrackDto | undefined>();
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
   const { data: tracks, isFetching } = useRouteQuery<TrackDto[]>({
@@ -74,8 +76,10 @@ export const TracksView: FunctionComponent<{
           tracks={sorted}
           sortOrder={sortOrder}
           setSortOrder={(field) => setSortOrder(field)}
+          setTrackToShow={setTrackToShow}
         />
       </div>
+      <TrackDetails show={trackToShow !== undefined} onClose={() => setTrackToShow(undefined)} track={trackToShow} />
     </div>
   );
 };
