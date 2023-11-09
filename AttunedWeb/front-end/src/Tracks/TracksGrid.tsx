@@ -107,7 +107,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
           props.tracks.map((track) => (
             <tr
               key={track.Id}
-              className="contents [&>td]:dark:odd:bg-neutral-700 [&>td]:odd:bg-neutral-100"
+              className="contents [&>td]:odd:bg-alternating-row"
             >
               <td>
                 <button

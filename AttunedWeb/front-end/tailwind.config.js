@@ -5,6 +5,8 @@ export default {
     extend: {
       colors: {
         background: "var(--background)",
+        "alternating-row": "var(--alternating-row)",
+        "selected-row": "var(--selected-row)",
         "text-color": "var(--text-color)",
         primary: "var(--primary)",
         love: "var(--love)",

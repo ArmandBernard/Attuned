@@ -90,7 +90,7 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 <button
                   className={[
                     "flex-1 flex",
-                    props.selectedPlaylist === undefined && "bg-neutral-700",
+                    props.selectedPlaylist === undefined && "bg-selected-row",
                   ]
                     .filter(Boolean)
                     .join(" ")}
@@ -133,7 +133,7 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                         className={[
                           "truncate flex flex-1",
                           x.Id === props.selectedPlaylist?.Id &&
-                            "bg-neutral-700",
+                            "bg-selected-row",
                         ]
                           .filter(Boolean)
                           .join(" ")}
