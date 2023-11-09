@@ -18,7 +18,7 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
 }) => {
   return (
     <Dialog
-      className="max-sm:w-full sm:max-w-[1000px] sm:w-4/5 bg-background text-text-color"
+      className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color"
       show={show}
       onClose={onClose}
     >
