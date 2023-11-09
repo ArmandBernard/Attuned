@@ -54,11 +54,17 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
   return (
     <table
       aria-label="Tracks"
-      style={{ gridTemplateColumns: fieldsToShow.map(() => "auto").join(" ") }}
+      style={{
+        gridTemplateColumns: "auto " + fieldsToShow.map(() => "auto").join(" "),
+      }}
       className="grid min-w-[72rem]"
     >
       <thead className="contents">
         <tr className="contents">
+          <th
+            className="border flex sticky top-0 bg-background"
+            aria-label="Track actions"
+          ></th>
           {fieldsToShow.map((field) => (
             <th
               className="border flex sticky top-0 bg-background"
@@ -102,6 +108,9 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
               key={track.Id}
               className="contents [&>td]:dark:odd:bg-neutral-700 [&>td]:odd:bg-neutral-100"
             >
+              <td>
+                <button className="px-2" aria-label="View details">🗏</button>
+              </td>
               {fieldsToShow.map((field) => {
                 return (GetCellElement(field) as CellComponent<unknown>)({
                   key: field,
