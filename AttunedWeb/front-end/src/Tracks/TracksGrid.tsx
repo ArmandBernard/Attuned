@@ -111,12 +111,12 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
             >
               <td>
                 <button
-                  className="px-2 text-primary"
+                  className="px-2 text-primary font-bold"
                   aria-label="View details"
                   title="View details"
                   onClick={() => props.setTrackToShow(track)}
                 >
-                  🗏
+                  🗎
                 </button>
               </td>
               {fieldsToShow.map((field) => {
