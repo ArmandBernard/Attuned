@@ -110,7 +110,14 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
               className="contents [&>td]:dark:odd:bg-neutral-700 [&>td]:odd:bg-neutral-100"
             >
               <td>
-                <button className="px-2" aria-label="View details" onClick={() => props.setTrackToShow(track)}>🗏</button>
+                <button
+                  className="px-2 text-primary"
+                  aria-label="View details"
+                  title="View details"
+                  onClick={() => props.setTrackToShow(track)}
+                >
+                  🗏
+                </button>
               </td>
               {fieldsToShow.map((field) => {
                 return (GetCellElement(field) as CellComponent<unknown>)({
