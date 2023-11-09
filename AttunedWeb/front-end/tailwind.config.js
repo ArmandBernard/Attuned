@@ -7,6 +7,7 @@ export default {
         background: "var(--background)",
         "text-color": "var(--text-color)",
         primary: "var(--primary)",
+        love: "var(--love)",
       },
     },
   },

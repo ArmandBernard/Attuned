@@ -14,10 +14,12 @@ html:not(.dark) {
     --text-color: black;
     --background: white;
     --primary: #0ea5e9; /* sky-500 */
+    --love: #e11d48; /* rose-600 */
 }
 
 html.dark {
     --text-color: white;
     --background: #262626;
     --primary: #38bdf8; /* sky-400 */
+    --love: #f43f5e; /* rose-500 */
 }
