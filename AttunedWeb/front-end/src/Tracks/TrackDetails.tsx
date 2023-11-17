@@ -3,7 +3,8 @@ import { FunctionComponent, ReactNode } from "react";
 import { TrackDto } from "../dtos/Dtos.ts";
 import { getRatingString } from "../StringFormatters/getRatingString.ts";
 import { Rating } from "../dtos/Rating.ts";
-import { getLoveString } from "../StringFormatters/getLoveString.ts";
+import { LoveStatus } from "../Icons/LoveStatus.tsx";
+import { getLoveLabel } from "../StringFormatters/getLoveLabel.ts";
 
 interface TrackDetailProps {
   show: boolean;
@@ -50,9 +51,9 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
               </span>
               <span
                 className="text-love"
-                aria-label={track.Loved ? "loved" : "not loved"}
+                aria-label={getLoveLabel(track.Loved)}
               >
-                {getLoveString(track.Loved)}
+                <LoveStatus loved={track.Loved} className="w-4 h-4 inline-block" />
               </span>
             </span>
           </FieldValuePair>
