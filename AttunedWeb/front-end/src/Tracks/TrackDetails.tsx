@@ -8,12 +8,16 @@ import { getLoveLabel } from "../StringFormatters/getLoveLabel.ts";
 
 interface TrackDetailProps {
   show: boolean;
+  onPreviousTrack: (() => void) | undefined;
+  onNextTrack: (() => void) | undefined;
   onClose: () => void;
   track: TrackDto | undefined;
 }
 
 export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
   show,
+  onPreviousTrack,
+  onNextTrack,
   onClose,
   track,
 }) => {
@@ -25,7 +29,29 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
     >
       <div className="flex justify-between py-3 px-4 text-xl">
         <h1>{track === undefined ? "No track selected" : track.Name}</h1>
-        <button onClick={onClose}>✕</button>
+        <div className="flex gap-4">
+          {onPreviousTrack && (
+            <button
+              aria-label="Previous track"
+              title="Previous track"
+              onClick={onPreviousTrack}
+            >
+              ⮜
+            </button>
+          )}
+          {onNextTrack && (
+            <button
+              aria-label="Next track"
+              title="Next track"
+              onClick={onNextTrack}
+            >
+              ⮞
+            </button>
+          )}
+          <button aria-label="Close" title="Close" onClick={onClose}>
+            ✕
+          </button>
+        </div>
       </div>
       {track !== undefined && (
         <div className="grid grid-cols-[auto_1fr] p-4 gap-x-2">
@@ -53,7 +79,10 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
                 className="text-love"
                 aria-label={getLoveLabel(track.Loved)}
               >
-                <LoveStatus loved={track.Loved} className="w-4 h-4 inline-block" />
+                <LoveStatus
+                  loved={track.Loved}
+                  className="w-4 h-4 inline-block"
+                />
               </span>
             </span>
           </FieldValuePair>
