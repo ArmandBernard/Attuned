@@ -108,7 +108,7 @@ public class TrackListParserTests
             DiscNumber = null,
             Genre = "Anime",
             Location = "file://localhost/D:/Users/arman/Documents/MEGA/MUSIC/Soul%20Eater/Resonance.mp3",
-            Loved = false,
+            Loved = null,
             Name = "Resonance",
             PlayCount = 56,
             PlayDate = DateTime.Parse("2018-08-29T13:02:42Z"),
