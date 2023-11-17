@@ -33,7 +33,7 @@ public record TrackDto
     public DateTime? PlayDate { get; init; }
     public int? SkipCount { get; init; }
     public int Rating { get; init; }
-    public bool Loved { get; init; }
+    public bool? Loved { get; init; }
 
     public static TrackDto FromTrack(Track track) =>
         new()

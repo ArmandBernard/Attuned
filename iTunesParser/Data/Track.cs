@@ -179,9 +179,9 @@ public record Track
     public int Rating { get; init; }
 
     /// <summary>
-    /// Has this track been marked as "loved"
+    /// Has this track been marked as "loved" (true) "disliked" (false) or neither?
     /// </summary>
-    public bool Loved { get; init; }
+    public bool? Loved { get; init; }
 
     #endregion
 

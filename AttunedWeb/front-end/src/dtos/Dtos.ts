@@ -42,7 +42,7 @@ export interface TrackDto
 	PlayDate: UTCDateTime | undefined;
 	SkipCount: number | undefined;
 	Rating: number;
-	Loved: boolean;
+	Loved: boolean | undefined;
 }
 export interface BooleanRuleDto
 {
