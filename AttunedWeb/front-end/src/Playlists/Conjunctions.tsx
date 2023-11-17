@@ -14,15 +14,15 @@ export const Conjunctions: FunctionComponent<{
     <>
       {filteredRules.length > 0 && conjunction.Type}
       <ul>
-        {filteredRules.map((x) => (
-          <li className="ml-4 list-disc">
+        {filteredRules.map((x, i) => (
+          <li key={i} className="ml-4 list-disc">
             <Rule rule={x} />
           </li>
         ))}
       </ul>
       <ul>
-        {conjunction.SubConjunctions.map((x) => (
-          <li className="ml-4 list-disc">
+        {conjunction.SubConjunctions.map((x, i) => (
+          <li key={i} className="ml-4 list-disc">
             <Conjunctions conjunction={x} />
           </li>
         ))}
