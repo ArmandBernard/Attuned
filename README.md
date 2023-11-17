@@ -16,15 +16,19 @@ Here are some pictures of the UI as it currently is.
 
 On Desktop:
 
-![Desktop](Desktop.png)
+![Desktop](./Images/Desktop.png)
 
 On mobile, with the sidebar open:
 
-![Mobile](MobileOpen.png)
+![Mobile](./Images/MobileOpen.png)
+
+Track details:
+
+![Track details](./Images/TrackDetails.png)
 
 The details of a smart playlist:
 
-![Smart Playlist details](SmartPlaylist.png)
+![Smart Playlist details](./Images/SmartPlaylist.png)
 
 ## Tech stack
 
