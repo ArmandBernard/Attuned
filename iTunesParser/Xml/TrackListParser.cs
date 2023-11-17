@@ -22,6 +22,9 @@ public class TrackListParser : ITrackListParser
     {
         Dictionary<string, dynamic?> properties = PListParser.ParseDictionary(playlistElement)!;
 
+        var loved = properties.GetValueOrDefault("Loved", false);
+        var disliked = properties.GetValueOrDefault("Disliked", false);
+
         return new Track
         {
             // parse all field
@@ -44,7 +47,7 @@ public class TrackListParser : ITrackListParser
             PlayDate = properties.GetValueOrDefault("Play Date UTC", null),
             SkipCount = (int?) properties.GetValueOrDefault("Skip Count", null),
             Rating = (int) (properties.GetValueOrDefault("Rating", 0) / 20),
-            Loved = properties.GetValueOrDefault("Loved", false),
+            Loved = loved ? true : (disliked ? false : null),
             Name = properties.GetValueOrDefault("Name", null),
             Artist = properties.GetValueOrDefault("Artist", null),
             Composer = properties.GetValueOrDefault("Composer", null),
@@ -53,7 +56,7 @@ public class TrackListParser : ITrackListParser
             Location = properties["Location"]!,
         };
     }
-    
+
     // This is temporarily disabled while the XML-sourced information is worked on.
     public void LoadTagInfo(Track track)
     {
@@ -63,12 +66,12 @@ public class TrackListParser : ITrackListParser
         }
 
         using var file = TagLib.File.Create(track.LocalLocation);
-        
+
         track.Type = file.MimeType.Replace("taglib/", "");
         track.Codec = file.Properties.Description;
         track.Channels = file.Properties.AudioChannels;
     }
-    
+
     // This is temporarily disabled while the XML-sourced information is worked on.
     public void LoadImage(Track track)
     {
@@ -76,9 +79,9 @@ public class TrackListParser : ITrackListParser
         {
             return;
         }
-        
+
         using var file = TagLib.File.Create(track.LocalLocation);
-        
+
         // if there are any pictures
         if (file.Tag.Pictures.Length >= 1)
         {

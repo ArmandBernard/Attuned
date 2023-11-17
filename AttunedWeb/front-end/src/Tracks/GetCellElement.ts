@@ -9,16 +9,18 @@ import { DateTimeCell } from "./Cells/DateTimeCell.tsx";
 import { CellTypes } from "./CellTypes.ts";
 import { FieldCellTypeDictionary } from "./FieldTypeDictionary.ts";
 import { Rating } from "../dtos/Rating.ts";
+import { LoveCell } from "./Cells/LoveCell.tsx";
 
 const CellTypeElementDictionary: Record<
   CellTypes,
   | CellComponent<string | undefined>
   | CellComponent<Rating>
   | CellComponent<number | undefined>
+  | CellComponent<boolean | undefined>
   | CellComponent<TimeSpan | undefined>
 > = {
   date: DateTimeCell,
-  loved: TextCell,
+  loved: LoveCell,
   none: TextCell,
   number: NumberCell,
   rating: RatingCell,

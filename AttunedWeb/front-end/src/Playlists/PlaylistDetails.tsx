@@ -22,7 +22,7 @@ export const PlaylistDetails: FunctionComponent<PlaylistDetailsProps> = ({
       onClose={onClose}
     >
       <div className="flex justify-between py-3 px-4 text-xl">
-        <h1 className="">{playlist.Name}</h1>
+        <h1>{playlist.Name}</h1>
         <button onClick={onClose}>✕</button>
       </div>
       <div className="flex flex-col gap-2 px-4 pb-4">

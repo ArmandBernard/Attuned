@@ -15,6 +15,7 @@ interface TracksGridProps {
   tracks: TrackDto[] | undefined;
   sortOrder: SortOrder | undefined;
   setSortOrder: Dispatch<SetStateAction<SortOrder | undefined>>;
+  setTrackToShow: Dispatch<SetStateAction<TrackDto | undefined>>;
 }
 
 const RightAlignedFields: Record<CellTypes, boolean> = {
@@ -35,6 +36,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
     "Album",
     "TotalTime",
     "Rating",
+    "Loved",
     "Genre",
     "PlayCount",
     "DateAdded",
@@ -54,11 +56,17 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
   return (
     <table
       aria-label="Tracks"
-      style={{ gridTemplateColumns: fieldsToShow.map(() => "auto").join(" ") }}
+      style={{
+        gridTemplateColumns: "auto " + fieldsToShow.map(() => "auto").join(" "),
+      }}
       className="grid min-w-[72rem]"
     >
       <thead className="contents">
         <tr className="contents">
+          <th
+            className="border flex sticky top-0 bg-background"
+            aria-label="Track actions"
+          ></th>
           {fieldsToShow.map((field) => (
             <th
               className="border flex sticky top-0 bg-background"
@@ -100,8 +108,18 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
           props.tracks.map((track) => (
             <tr
               key={track.Id}
-              className="contents [&>td]:dark:odd:bg-neutral-700 [&>td]:odd:bg-neutral-100"
+              className="contents [&>td]:odd:bg-alternating-row"
             >
+              <td>
+                <button
+                  className="px-2 text-primary font-bold"
+                  aria-label="View details"
+                  title="View details"
+                  onClick={() => props.setTrackToShow(track)}
+                >
+                  🗎
+                </button>
+              </td>
               {fieldsToShow.map((field) => {
                 return (GetCellElement(field) as CellComponent<unknown>)({
                   key: field,

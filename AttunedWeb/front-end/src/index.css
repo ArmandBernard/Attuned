@@ -13,11 +13,17 @@ html, #root, body {
 html:not(.dark) {
     --text-color: black;
     --background: white;
+    --alternating-row: #f5f5f5; /* neutral-100 */
+    --selected-row: #7dd3fc; /* sky-300 */
     --primary: #0ea5e9; /* sky-500 */
+    --love: #e11d48; /* rose-600 */
 }
 
 html.dark {
     --text-color: white;
     --background: #262626;
+    --alternating-row: #404040; /* neutral-800 */   
+    --selected-row: #0369a1; /* sky-700 */   
     --primary: #38bdf8; /* sky-400 */
+    --love: #f43f5e; /* rose-500 */
 }
