@@ -20,11 +20,6 @@ export const ThemeLayer: FunctionComponent<{ children?: ReactNode }> = ({
 
   const systemPreferredTheme = useSystemPreferredTheme();
 
-  // when the themePreference changes, also update the app theme
-  useEffect(() => {
-    setTheme(systemPreferredTheme === "dark");
-  }, [systemPreferredTheme]);
-
   // set the site theme using a class on the main html element
   const setTheme = useCallback((dark: boolean) => {
     if (dark) {
@@ -33,6 +28,11 @@ export const ThemeLayer: FunctionComponent<{ children?: ReactNode }> = ({
       htmlRef.current.classList.remove("dark");
     }
   }, []);
+
+  // when the themePreference changes, also update the app theme
+  useEffect(() => {
+    setTheme(systemPreferredTheme === "dark");
+  }, [setTheme, systemPreferredTheme]);
 
   return (
     <ThemeContext.Provider value={systemPreferredTheme || "light"}>
