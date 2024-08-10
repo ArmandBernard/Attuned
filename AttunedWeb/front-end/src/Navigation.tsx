@@ -14,7 +14,9 @@ const mediaPlaylistNames = [
 export const Navigation: FunctionComponent = () => {
   const params = useParams({ strict: false });
 
-  const playlistId = parseInt(params.playlistId);
+  const playlistId: number | undefined = params.playlistId
+    ? parseInt(params.playlistId)
+    : undefined;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,7 +25,10 @@ export const Navigation: FunctionComponent = () => {
     refetchOnWindowFocus: false,
   });
 
-  const selectedPlaylist = data?.find((playlist) => playlist.Id === playlistId);
+  const selectedPlaylist =
+    playlistId !== undefined
+      ? data?.find((playlist) => playlist.Id === playlistId)
+      : undefined;
 
   const mediaPlaylists = data?.filter(
     (x) => mediaPlaylistNames.indexOf(x.Name) !== -1,
@@ -113,7 +118,7 @@ export const Navigation: FunctionComponent = () => {
                         aria-label={x.Name}
                         className="truncate"
                         to="/playlists/$playlistId"
-                        params={{ playlistId: x.Id }}
+                        params={{ playlistId: x.Id.toString() }}
                       >
                         {x.Name}
                       </Link>
@@ -140,7 +145,7 @@ export const Navigation: FunctionComponent = () => {
                           .filter(Boolean)
                           .join(" ")}
                         to="/playlists/$playlistId"
-                        params={{ playlistId: x.Id }}
+                        params={{ playlistId: x.Id.toString() }}
                       >
                         <span
                           aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
