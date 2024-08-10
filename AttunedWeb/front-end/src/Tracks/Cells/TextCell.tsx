@@ -6,7 +6,7 @@ export const TextCell: CellComponent<string | undefined> = (props) => {
   const classNames = ["px-2 truncate", className].filter(Boolean).join(" ");
 
   return (
-    <td className={classNames} {...rest}>
+    <td className={classNames} style={{ contain: "strict" }} {...rest}>
       {value}
     </td>
   );

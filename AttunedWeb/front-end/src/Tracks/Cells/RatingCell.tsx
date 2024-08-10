@@ -10,7 +10,12 @@ export const RatingCell: CellComponent<Rating> = (props) => {
     .join(" ");
 
   return (
-    <td aria-label={`${value} stars`} className={classNames} {...rest}>
+    <td
+      aria-label={`${value} stars`}
+      className={classNames}
+      style={{ contain: "strict" }}
+      {...rest}
+    >
       {getRatingString(value)}
     </td>
   );
