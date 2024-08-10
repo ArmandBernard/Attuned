@@ -36,12 +36,18 @@ export const TracksView: FunctionComponent<{
     filtered = tracks?.filter((x) => itemSet.has(x.Id));
   }
 
-  const sorted = sortOrder
-    ? filtered?.sort((a, b) => sortComparer(a, b, sortOrder))
-    : filtered;
+  const sorted = useMemo(
+    () =>
+      sortOrder
+        ? filtered?.sort((a, b) => sortComparer(a, b, sortOrder))
+        : filtered,
+    [filtered, sortOrder],
+  );
 
-  const trackIndex =
-    trackToShow && sorted && sorted.map((x) => x.Id).indexOf(trackToShow.Id);
+  const trackIndex = useMemo(
+    () => trackToShow && sorted?.map((x) => x.Id).indexOf(trackToShow.Id),
+    [sorted, trackToShow],
+  );
 
   const navigatePrevious =
     sorted && trackIndex !== undefined && trackIndex > 0
