@@ -1,11 +1,7 @@
 import { FunctionComponent, useRef, useState } from "react";
 import { useRouteQuery } from "./Queries/useRouteQuery.ts";
 import { PlaylistDto } from "./dtos/Dtos.ts";
-
-interface NavigationProps {
-  selectedPlaylist: PlaylistDto | undefined;
-  setSelectedPlaylist: (playlist: PlaylistDto | undefined) => void;
-}
+import { Link, useParams } from "@tanstack/react-router";
 
 const mediaPlaylistNames = [
   "Music",
@@ -15,13 +11,19 @@ const mediaPlaylistNames = [
   "Audiobooks",
 ];
 
-export const Navigation: FunctionComponent<NavigationProps> = (props) => {
+export const Navigation: FunctionComponent = () => {
+  const params = useParams({ strict: false });
+
+  const playlistId = parseInt(params.playlistId);
+
   const [isOpen, setIsOpen] = useState(false);
 
   const { data, isFetching } = useRouteQuery<PlaylistDto[]>({
     url: "playlist",
     refetchOnWindowFocus: false,
   });
+
+  const selectedPlaylist = data?.find((playlist) => playlist.Id === playlistId);
 
   const mediaPlaylists = data?.filter(
     (x) => mediaPlaylistNames.indexOf(x.Name) !== -1,
@@ -85,19 +87,19 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
         </div>
         <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
           <ul>
-            <li aria-current={props.selectedPlaylist === undefined}>
+            <li aria-current={selectedPlaylist === undefined}>
               <h3 className="text-xl flex">
-                <button
+                <Link
                   className={[
                     "flex-1 flex",
-                    props.selectedPlaylist === undefined && "bg-selected-row",
+                    selectedPlaylist === undefined && "bg-selected-row",
                   ]
                     .filter(Boolean)
                     .join(" ")}
-                  onClick={() => props.setSelectedPlaylist(undefined)}
+                  to="/"
                 >
                   All tracks
-                </button>
+                </Link>
               </h3>
             </li>
             <li>
@@ -107,13 +109,14 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {mediaPlaylists &&
                   mediaPlaylists.map((x) => (
                     <li key={x.Id}>
-                      <button
+                      <Link
                         aria-label={x.Name}
                         className="truncate"
-                        onClick={() => props.setSelectedPlaylist(x)}
+                        to="/playlists/$playlistId"
+                        params={{ playlistId: x.Id }}
                       >
                         {x.Name}
-                      </button>
+                      </Link>
                     </li>
                   ))}
               </ul>
@@ -125,19 +128,19 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                 {playlists &&
                   playlists.map((x) => (
                     <li
-                      aria-current={x.Id === props.selectedPlaylist?.Id}
+                      aria-current={x.Id === selectedPlaylist?.Id}
                       className="flex"
                       key={x.Id}
                     >
-                      <button
+                      <Link
                         className={[
                           "truncate flex flex-1",
-                          x.Id === props.selectedPlaylist?.Id &&
-                            "bg-selected-row",
+                          x.Id === selectedPlaylist?.Id && "bg-selected-row",
                         ]
                           .filter(Boolean)
                           .join(" ")}
-                        onClick={() => props.setSelectedPlaylist(x)}
+                        to="/playlists/$playlistId"
+                        params={{ playlistId: x.Id }}
                       >
                         <span
                           aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
@@ -146,7 +149,7 @@ export const Navigation: FunctionComponent<NavigationProps> = (props) => {
                           {x.IsSmart ? "⛭" : "♫"}
                         </span>
                         {x.Name}
-                      </button>
+                      </Link>
                     </li>
                   ))}
               </ul>
