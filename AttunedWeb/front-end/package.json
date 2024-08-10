@@ -13,19 +13,19 @@
   "dependencies": {
     "@tanstack/react-query": "4.36.1",
     "@tanstack/react-router": "1.47.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.15",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
     "@vitejs/plugin-react": "4.3.1",
     "autoprefixer": "10.4.15",
     "eslint": "8.57.0",
     "eslint-plugin-react": "7.35.0",
-    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-react-hooks": "4.6.2",
     "postcss": "8.4.29",
     "prettier": "3.3.3",
     "tailwindcss": "3.3.3",
