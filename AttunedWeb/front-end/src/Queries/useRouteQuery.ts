@@ -20,9 +20,9 @@ export function useRouteQuery<
 >(props: useRouteQueryProps<TParams, TBody, TResult, TError>) {
   const { url, parameters, body, ...rest } = props;
 
-  return useQuery<TResult, TError>(
-    [url, parameters, body],
-    async () => {
+  return useQuery<TResult, TError>({
+    queryKey: [url, parameters, body],
+    queryFn: async () => {
       const response = await fetch(buildUrl(url, parameters), {
         body: JSON.stringify(body),
         headers: [],
@@ -33,8 +33,8 @@ export function useRouteQuery<
       }
       return response.json();
     },
-    rest,
-  );
+    ...rest,
+  });
 }
 
 const base = "http://localhost:5280";
