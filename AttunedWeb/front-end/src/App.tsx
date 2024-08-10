@@ -1,6 +1,6 @@
 import { TracksView } from "./Tracks/TracksView.tsx";
 import { ThemeLayer } from "./Theming/ThemeLayer.tsx";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Navigation } from "./Navigation.tsx";
 import { useState } from "react";
 import { PlaylistDto } from "./dtos/Dtos.ts";

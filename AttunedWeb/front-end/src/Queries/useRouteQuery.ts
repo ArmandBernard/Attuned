@@ -1,5 +1,5 @@
-import { useQuery } from "react-query";
-import { UseQueryOptions } from "react-query/types/react/types";
+import { useQuery } from "@tanstack/react-query";
+import { UseQueryOptions } from "@tanstack/react-query";
 
 type useRouteQueryProps<TParams extends ValidParams, TBody, TResult, TError> = {
   url: string;
