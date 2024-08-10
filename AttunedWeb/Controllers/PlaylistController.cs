@@ -25,4 +25,14 @@ public class PlaylistController : ControllerBase
         return Ok((await _xmlParser.ParsePlaylists()).Where(x => x.Name != "Downloaded" && x.Name != "Library")
             .Select(PlaylistDto.FromPlaylist));
     }
+    
+    [HttpGet]
+    [Route("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
+    public async Task<IActionResult> Get(int id)
+    {
+        var playlist = (await _xmlParser.ParsePlaylists()).FirstOrDefault(x => x.Id == id);
+
+        return playlist == null ? NotFound() : Ok(PlaylistDto.FromPlaylist(playlist));
+    }
 }
