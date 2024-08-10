@@ -5,7 +5,10 @@ type useRouteQueryProps<TParams extends ValidParams, TBody, TResult, TError> = {
   url: string;
   parameters?: TParams;
   body?: TBody;
-} & Omit<UseQueryOptions<TResult, TError, TResult>, "queryKey" | "queryFn">;
+} & Omit<
+  UseQueryOptions<TResult, TError, TResult>,
+  "queryKey" | "queryFn" | "initialData"
+>;
 
 type ValidParams = { [key: string]: string | number | undefined } | undefined;
 
@@ -17,9 +20,9 @@ export function useRouteQuery<
 >(props: useRouteQueryProps<TParams, TBody, TResult, TError>) {
   const { url, parameters, body, ...rest } = props;
 
-  return useQuery<TResult, TError>({
-    queryKey: [{ url, parameters, body }],
-    queryFn: async () => {
+  return useQuery<TResult, TError>(
+    [url, parameters, body],
+    async () => {
       const response = await fetch(buildUrl(url, parameters), {
         body: JSON.stringify(body),
         headers: [],
@@ -30,8 +33,8 @@ export function useRouteQuery<
       }
       return response.json();
     },
-    ...rest,
-  });
+    rest,
+  );
 }
 
 const base = "http://localhost:5280";
