@@ -1,7 +1,7 @@
 import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 import { PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useMemo, useState } from "react";
 import { getDurationString } from "../StringFormatters/getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
 import { PlaylistDetails } from "../Playlists/PlaylistDetails.tsx";
@@ -26,9 +26,15 @@ export const TracksView: FunctionComponent<{
     refetchOnWindowFocus: false,
   });
 
-  const filtered = tracks?.filter((x) =>
-    playlist?.Items ? playlist.Items.indexOf(x.Id) !== -1 : true,
-  );
+  const itemSet = useMemo(() => new Set(playlist?.Items), [playlist]);
+
+  let filtered: TrackDto[] | undefined;
+
+  if (playlist === undefined) {
+    filtered = tracks;
+  } else {
+    filtered = tracks?.filter((x) => itemSet.has(x.Id));
+  }
 
   const sorted = sortOrder
     ? filtered?.sort((a, b) => sortComparer(a, b, sortOrder))
