@@ -1,7 +1,7 @@
 import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 import { PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
-import { FunctionComponent, useMemo, useState } from "react";
+import { FunctionComponent, useMemo, useRef, useState } from "react";
 import { getDurationString } from "../StringFormatters/getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
 import { PlaylistDetails } from "../Playlists/PlaylistDetails.tsx";
@@ -20,6 +20,7 @@ export const TracksView: FunctionComponent<{
     useState<boolean>(false);
   const [trackToShow, setTrackToShow] = useState<TrackDto | undefined>();
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
+  const ref = useRef(null);
 
   const { data: tracks, isFetching } = useRouteQuery<TrackDto[]>({
     url: "track",
@@ -96,12 +97,14 @@ export const TracksView: FunctionComponent<{
         className="flex-1 overflow-scroll"
         aria-busy={isFetching}
         aria-live="polite"
+        ref={ref}
       >
         <TracksGrid
           tracks={sorted}
           sortOrder={sortOrder}
           setSortOrder={(field) => setSortOrder(field)}
           setTrackToShow={setTrackToShow}
+          containerRef={ref}
         />
       </div>
       <TrackDetails
