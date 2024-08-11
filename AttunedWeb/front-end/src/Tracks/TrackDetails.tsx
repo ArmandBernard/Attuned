@@ -1,10 +1,11 @@
 import { Dialog } from "../Dialog.tsx";
 import { FunctionComponent, ReactNode } from "react";
-import { TrackDto } from "../dtos/Dtos.ts";
+import { TrackDetailsDto, TrackDto } from "../dtos/Dtos.ts";
 import { getRatingString } from "../StringFormatters/getRatingString.ts";
 import { Rating } from "../dtos/Rating.ts";
 import { LoveStatus } from "../Icons/LoveStatus.tsx";
 import { getLoveLabel } from "../StringFormatters/getLoveLabel.ts";
+import { useRouteQuery } from "../Queries/useRouteQuery.ts";
 
 interface TrackDetailProps {
   show: boolean;
@@ -21,6 +22,21 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
   onClose,
   track,
 }) => {
+  const { data: trackDetails } = useRouteQuery<
+    TrackDetailsDto,
+    unknown,
+    { id: number }
+  >({
+    enabled: track !== undefined,
+    url: "track/{id}",
+    parameters: {
+      id: track?.Id as number,
+    },
+  });
+
+  const availableDetails: TrackDetailsDto | TrackDto | undefined =
+    trackDetails ?? track;
+
   return (
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color"
@@ -28,7 +44,11 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
       onClose={onClose}
     >
       <div className="flex justify-between py-3 px-4 text-xl">
-        <h1>{track === undefined ? "No track selected" : track.Name}</h1>
+        <h1>
+          {availableDetails === undefined
+            ? "No track selected"
+            : availableDetails.Name}
+        </h1>
         <div className="flex gap-4">
           {onPreviousTrack && (
             <button
@@ -53,41 +73,55 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
           </button>
         </div>
       </div>
-      {track !== undefined && (
+      {availableDetails !== undefined && (
         <div className="grid grid-cols-[auto_1fr] p-4 gap-x-2">
-          <FieldValuePair fieldName="Name">{track.Name}</FieldValuePair>
-          <FieldValuePair fieldName="Artist">{track.Artist}</FieldValuePair>
-          <FieldValuePair fieldName="Album">{track.Album}</FieldValuePair>
-          <FieldValuePair fieldName="Composer">{track.Composer}</FieldValuePair>
-          <FieldValuePair fieldName="Genre">{track.Genre}</FieldValuePair>
-          <FieldValuePair fieldName="Year">{track.Year}</FieldValuePair>
+          <FieldValuePair fieldName="Name">
+            {availableDetails.Name}
+          </FieldValuePair>
+          <FieldValuePair fieldName="Artist">
+            {availableDetails.Artist}
+          </FieldValuePair>
+          <FieldValuePair fieldName="Album">
+            {availableDetails.Album}
+          </FieldValuePair>
+          <FieldValuePair fieldName="Composer">
+            {availableDetails.Composer}
+          </FieldValuePair>
+          <FieldValuePair fieldName="Genre">
+            {availableDetails.Genre}
+          </FieldValuePair>
+          <FieldValuePair fieldName="Year">
+            {availableDetails.Year}
+          </FieldValuePair>
           <FieldValuePair fieldName="Track">
-            {track.TrackNumber ?? "?"} of {track.TrackCount ?? "?"}
+            {availableDetails.TrackNumber ?? "?"} of{" "}
+            {availableDetails.TrackCount ?? "?"}
           </FieldValuePair>
           <FieldValuePair fieldName="Disc">
-            {track.DiscNumber ?? "?"} of {track.DiscCount ?? "?"}
+            {availableDetails.DiscNumber ?? "?"} of{" "}
+            {availableDetails.DiscCount ?? "?"}
           </FieldValuePair>
           <FieldValuePair fieldName="Rating">
             <span className="flex gap-4">
               <span
-                aria-label={`${track.Rating} stars`}
+                aria-label={`${availableDetails.Rating} stars`}
                 className="text-primary"
               >
-                {getRatingString(track.Rating as Rating)}
+                {getRatingString(availableDetails.Rating as Rating)}
               </span>
               <span
                 className="text-love"
-                aria-label={getLoveLabel(track.Loved)}
+                aria-label={getLoveLabel(availableDetails.Loved)}
               >
                 <LoveStatus
-                  loved={track.Loved}
+                  loved={availableDetails.Loved}
                   className="w-4 h-4 inline-block"
                 />
               </span>
             </span>
           </FieldValuePair>
           <FieldValuePair fieldName="Play count">
-            {track.PlayCount}
+            {availableDetails.PlayCount}
           </FieldValuePair>
         </div>
       )}
