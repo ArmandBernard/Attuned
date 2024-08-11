@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
+using AttunedWebApi.Dtos;
+using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
 using Microsoft.OpenApi.Models;
 
@@ -56,6 +58,8 @@ internal static class Program
         builder.Services.AddSingleton<IXmlParser>(provider =>
             new XmlParserCacheProxy(new XmlParser(provider.GetService<ITrackListParser>()!,
                 provider.GetService<IPlaylistParser>()!, xmlPath)));
+        builder.Services.AddSingleton<IRepository<TrackDto>, TrackRepository>();
+        builder.Services.AddSingleton<IRepository<PlaylistDto>, PlaylistRepository>();
 
         var app = builder.Build();
 
