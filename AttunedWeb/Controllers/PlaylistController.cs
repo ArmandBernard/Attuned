@@ -6,23 +6,14 @@ namespace AttunedWebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlaylistController : ControllerBase
+public class PlaylistController(ILogger<PlaylistController> logger, IXmlParser xmlParser) : ControllerBase
 {
-    private readonly ILogger<PlaylistController> _logger;
-    private readonly IXmlParser _xmlParser;
-
-    public PlaylistController(ILogger<PlaylistController> logger, IXmlParser xmlParser)
-    {
-        _logger = logger;
-        _xmlParser = xmlParser;
-    }
-
     [HttpGet]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
     public async Task<IActionResult> Get()
     {
-        return Ok((await _xmlParser.ParsePlaylists()).Where(x => x.Name != "Downloaded" && x.Name != "Library")
+        return Ok((await xmlParser.ParsePlaylists()).Where(x => x.Name != "Downloaded" && x.Name != "Library")
             .Select(PlaylistDto.FromPlaylist));
     }
     
@@ -31,7 +22,7 @@ public class PlaylistController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
     public async Task<IActionResult> Get(int id)
     {
-        var playlist = (await _xmlParser.ParsePlaylists()).FirstOrDefault(x => x.Id == id);
+        var playlist = (await xmlParser.ParsePlaylists()).FirstOrDefault(x => x.Id == id);
 
         return playlist == null ? NotFound() : Ok(PlaylistDto.FromPlaylist(playlist));
     }
