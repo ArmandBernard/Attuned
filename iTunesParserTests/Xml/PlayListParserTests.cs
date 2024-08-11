@@ -13,7 +13,7 @@ namespace iTunesParserTests.Xml;
 [TestFixture]
 public class PlayListParserTests
 {
-    private readonly PlaylistParser _playlistParser = new();
+    private readonly IPlaylistParser _playlistParser = new PlaylistParser();
 
     // lang=XML
     private const string TEST_DOC =

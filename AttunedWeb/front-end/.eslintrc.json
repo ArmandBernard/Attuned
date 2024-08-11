@@ -6,7 +6,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react/jsx-runtime"
+    "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -15,7 +16,8 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "react"
+    "react",
+    "react-hooks"
   ],
   "rules": {
     "indent": [
@@ -33,7 +35,8 @@
       "error",
       "always"
     ],
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "react-hooks/exhaustive-deps" : ["error"]
   },
   "overrides": [
     {

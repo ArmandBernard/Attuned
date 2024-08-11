@@ -1,4 +1,5 @@
 using AttunedWebApi.Dtos;
+using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,33 +7,23 @@ namespace AttunedWebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlaylistController : ControllerBase
+public class PlaylistController(ILogger<PlaylistController> logger, IRepository<PlaylistDto> playlistRepository) : ControllerBase
 {
-    private readonly ILogger<PlaylistController> _logger;
-    private readonly IXmlParser _xmlParser;
-
-    public PlaylistController(ILogger<PlaylistController> logger, IXmlParser xmlParser)
-    {
-        _logger = logger;
-        _xmlParser = xmlParser;
-    }
-
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PlaylistDto>))]
     public async Task<IActionResult> Get()
     {
-        return Ok((await _xmlParser.ParsePlaylists()).Where(x => x.Name != "Downloaded" && x.Name != "Library")
-            .Select(PlaylistDto.FromPlaylist));
+        return Ok(await playlistRepository.Get());
     }
     
     [HttpGet]
     [Route("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlaylistDto))]
     public async Task<IActionResult> Get(int id)
     {
-        var playlist = (await _xmlParser.ParsePlaylists()).FirstOrDefault(x => x.Id == id);
+        var playlist = (await playlistRepository.Get()).FirstOrDefault(x => x.Id == id);
 
-        return playlist == null ? NotFound() : Ok(PlaylistDto.FromPlaylist(playlist));
+        return playlist != null ? Ok(playlist) : NotFound();
     }
 }

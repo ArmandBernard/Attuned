@@ -6,7 +6,7 @@ using iTunesSmartParser.Playlists;
 
 namespace iTunesSmartParser.Xml;
 
-public class PlaylistParser : IPlaylistsParser
+public class PlaylistParser : IPlaylistParser
 {
     public IEnumerable<Playlist> ParseDocument(XDocument doc)
     {
@@ -20,11 +20,11 @@ public class PlaylistParser : IPlaylistsParser
 
         return playlistsArrayElement.Elements().Select(ParsePlaylistElement);
     }
-    
+
     public Playlist ParsePlaylistElement(XElement playlistElement)
     {
         var dictionary = PListParser.ParseDictionary(playlistElement);
-        
+
         var name = dictionary["Name"];
 
         var id = dictionary["Playlist ID"];
@@ -50,25 +50,27 @@ public class PlaylistParser : IPlaylistsParser
         var isSmart = dictionary.ContainsKey("Smart Info") && dictionary.ContainsKey("Smart Criteria");
 
         SmartPlaylistInformation? playlistInfo = null;
-        
-        if (isSmart)
+
+        if (!isSmart)
         {
-            try
-            {
-                // try to parse playlist info
-                playlistInfo = ParseSmartInformation(
-                    (byte[])dictionary["Smart Info"], (byte[])dictionary["Smart Criteria"]
-                );
-            }
-            catch (Exception ex)
-            {
-                throw new XmlException($"Failed to parse playlist '{name}'. Exception:\n{ex}");
-            }
+            return new Playlist(name, (int) id, playlistItems, isSmart, playlistInfo);
+        }
+
+        try
+        {
+            // try to parse playlist info
+            playlistInfo = ParseSmartInformation(
+                (byte[]) dictionary["Smart Info"], (byte[]) dictionary["Smart Criteria"]
+            );
+        }
+        catch (Exception ex)
+        {
+            throw new XmlException($"Failed to parse playlist '{name}'. Exception:\n{ex}");
         }
 
         return new Playlist(name, (int) id, playlistItems, isSmart, playlistInfo);
     }
-    
+
     private static SmartPlaylistInformation ParseSmartInformation(byte[] info, byte[] criteria)
     {
         var infoHelper = new InfoHelper(info);

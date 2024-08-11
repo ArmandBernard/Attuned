@@ -3,7 +3,7 @@ using iTunesSmartParser.Data;
 
 namespace iTunesSmartParser.Xml;
 
-public interface IPlaylistsParser
+public interface IPlaylistParser
 {
     IEnumerable<Playlist> ParseDocument(XDocument doc);
     Playlist ParsePlaylistElement(XElement playlistElement);

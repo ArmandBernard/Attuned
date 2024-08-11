@@ -1,4 +1,4 @@
-import { Dispatch, FunctionComponent, SetStateAction } from "react";
+import { Dispatch, Fragment, FunctionComponent, SetStateAction } from "react";
 import { TrackDto } from "../dtos/Dtos.ts";
 import { GetCellElement } from "./GetCellElement.ts";
 import { CellComponent } from "./Cells/CellComponent.ts";
@@ -120,12 +120,13 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
                   🗎
                 </button>
               </td>
-              {fieldsToShow.map((field) => {
-                return (GetCellElement(field) as CellComponent<unknown>)({
-                  key: field,
-                  value: track[field],
-                });
-              })}
+              {fieldsToShow.map((field) => (
+                <Fragment key={field}>
+                  {(GetCellElement(field) as CellComponent<unknown>)({
+                    value: track[field],
+                  })}
+                </Fragment>
+              ))}
             </tr>
           ))}
       </tbody>
