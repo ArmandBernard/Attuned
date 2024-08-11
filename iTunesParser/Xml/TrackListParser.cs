@@ -18,9 +18,9 @@ public class TrackListParser : ITrackListParser
         return tracksDictNode.PlistDictKeys().Select(ParseTrackElement);
     }
 
-    public Track ParseTrackElement(XElement playlistElement)
+    public Track ParseTrackElement(XElement tracksElement)
     {
-        Dictionary<string, dynamic?> properties = PListParser.ParseDictionary(playlistElement)!;
+        Dictionary<string, dynamic?> properties = PListParser.ParseDictionary(tracksElement)!;
 
         var loved = properties.GetValueOrDefault("Loved", false);
         var disliked = properties.GetValueOrDefault("Disliked", false);
