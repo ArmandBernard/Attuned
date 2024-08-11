@@ -2,10 +2,10 @@ using AttunedWebApi.CodeGen;
 using iTunesSmartParser.Data;
 using Reinforced.Typings.Attributes;
 
-namespace AttunedWebApi.Dtos;
+namespace AttunedWebApi.Dtos.Tracks;
 
 [TypescriptDto]
-public record TrackDto
+public record TrackDetailsDto
 {
     public required int Id { get; init; }
     public required string Location { get; init; }
@@ -34,8 +34,20 @@ public record TrackDto
     public int? SkipCount { get; init; }
     public int Rating { get; init; }
     public bool? Loved { get; init; }
+    
+    
+    public int? Channels { get; set; }
 
-    public static TrackDto FromTrack(Track track) =>
+    public string? Type { get; set; }
+
+    public string? Codec { get; set; }
+
+    /// <summary>
+    /// Base64 encoded image data 
+    /// </summary>
+    public string? CoverArt { get; set; }
+
+    public static TrackDetailsDto FromTrackDetails(TrackDetails track) =>
         new()
         {
             Id = track.Id,
@@ -62,5 +74,10 @@ public record TrackDto
             SkipCount = track.SkipCount,
             Rating = track.Rating,
             Loved = track.Loved,
+            
+            Channels = track.Channels,
+            Type = track.Type,
+            Codec = track.Codec,
+            CoverArt = track.CoverArt != null ? Convert.ToBase64String(track.CoverArt) : null
         };
 }

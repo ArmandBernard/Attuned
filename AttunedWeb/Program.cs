@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
-using AttunedWebApi.Dtos;
 using AttunedWebApi.Dtos.Playlists;
+using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
 using Microsoft.OpenApi.Models;
@@ -59,8 +59,8 @@ internal static class Program
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
         builder.Services.AddSingleton<IXmlSource>(_ => new XmlSource(xmlPath));
 
-        builder.Services.AddSingleton<IRepository<TrackDto, TrackDto>>(provider =>
-            new CachingRepository<TrackDto, TrackDto>(
+        builder.Services.AddSingleton<IRepository<TrackDto, TrackDetailsDto>>(provider =>
+            new CachingRepository<TrackDto, TrackDetailsDto>(
                 new TrackRepository(provider.GetRequiredService<IXmlSource>(),
                     provider.GetRequiredService<ITrackListParser>()),
                 new TimeSpan(0, 1, 0)
