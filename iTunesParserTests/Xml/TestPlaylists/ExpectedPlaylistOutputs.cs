@@ -8,7 +8,7 @@ namespace iTunesParserTests.Xml.TestPlaylists;
 
 public static class ExpectedPlaylistOutputs
 {
-    private static readonly Conjunction MusicMediaConjunction = new(ConjunctionType.Or, Array.Empty<Conjunction>(),
+    private static readonly Conjunction _musicMediaConjunction = new(ConjunctionType.Or, Array.Empty<Conjunction>(),
         new List<IRule>
         {
             new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive, "Music"),
@@ -16,15 +16,15 @@ public static class ExpectedPlaylistOutputs
                 "Music Video")
         });
 
-    private static readonly Limit DefaultOffLimit =
+    private static readonly Limit _defaultOffLimit =
         new(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true);
 
-    public static Playlist BestOfWaveshaper = new("Best of Waveshaper", 22432, new[] {7914, 7916, 7918}, true,
+    public static readonly PlaylistDetails BestOfWaveshaper = new("Best of Waveshaper", 22432, true, [7914, 7916, 7918],
         new SmartPlaylistInformation(
-            DefaultOffLimit,
-            new Conjunction(ConjunctionType.And, new List<Conjunction>()
+            _defaultOffLimit,
+            new Conjunction(ConjunctionType.And, new List<Conjunction>
             {
-                MusicMediaConjunction,
+                _musicMediaConjunction,
                 new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
                 {
                     new StringRule(StringFields.Artist, Operator.Contains, Sign.StringPositive, "Waveshaper"),
@@ -34,16 +34,16 @@ public static class ExpectedPlaylistOutputs
             true
         ));
 
-    public static readonly Playlist FavouriteClassical = new(
+    public static readonly PlaylistDetails FavouriteClassical = new(
         "favourite classical",
         22530,
-        new[] {1082, 1054, 1042},
         true,
+        [1082, 1054, 1042],
         new SmartPlaylistInformation(
-            DefaultOffLimit,
-            new Conjunction(ConjunctionType.And, new List<Conjunction>()
+            _defaultOffLimit,
+            new Conjunction(ConjunctionType.And, new List<Conjunction>
             {
-                MusicMediaConjunction,
+                _musicMediaConjunction,
                 new(ConjunctionType.And, new List<Conjunction>
                 {
                     new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()
@@ -61,11 +61,11 @@ public static class ExpectedPlaylistOutputs
             true
         ));
 
-    public static readonly Playlist MostPlayed = new(
+    public static readonly PlaylistDetails MostPlayed = new(
         "Most played",
         22804,
-        new[] {724, 2528, 820},
         true,
+        new[] {724, 2528, 820},
         new SmartPlaylistInformation(
             new Limit(true, LimitUnits.Items, 50, false, SelectionMethods.OftenPlayed, true),
             null, true)

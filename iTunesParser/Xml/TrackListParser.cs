@@ -5,22 +5,36 @@ namespace iTunesSmartParser.Xml;
 
 public class TrackListParser : ITrackListParser
 {
-    public IEnumerable<Track> ParseDocument(XDocument doc)
-    {
-        // get the node which contains all tracks
-        var tracksDictNode = PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks");
+    public IEnumerable<Track> ParseDocument(XDocument doc) =>
+        GetTracksNode(doc).PlistDictKeys().Select(ParseTrackElement);
 
-        if (tracksDictNode == null)
+    public TrackDetails? GetById(XDocument doc, int id)
+    {
+        var trackNode = GetTracksNode(doc).PlistDictGet(id.ToString());
+
+        if (trackNode == null)
         {
-            throw new Exception("Could not find the Tracks node");
+            return null;
         }
 
-        return tracksDictNode.PlistDictKeys().Select(ParseTrackElement);
+        var track = ParseTrackElement(trackNode);
+
+        return LoadImage(LoadTagInfo(new TrackDetails(track)));
     }
 
-    public Track ParseTrackElement(XElement playlistElement)
+    /// <summary>
+    /// Get the node which contains all tracks
+    /// </summary>
+    /// <param name="doc"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private static XElement GetTracksNode(XDocument doc) =>
+        PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks") ??
+        throw new Exception("Could not find the Tracks node");
+
+    public Track ParseTrackElement(XElement tracksElement)
     {
-        Dictionary<string, dynamic?> properties = PListParser.ParseDictionary(playlistElement)!;
+        Dictionary<string, dynamic?> properties = PListParser.ParseDictionary(tracksElement)!;
 
         var loved = properties.GetValueOrDefault("Loved", false);
         var disliked = properties.GetValueOrDefault("Disliked", false);
@@ -58,26 +72,29 @@ public class TrackListParser : ITrackListParser
     }
 
     // This is temporarily disabled while the XML-sourced information is worked on.
-    public void LoadTagInfo(Track track)
+    private static TrackDetails LoadTagInfo(TrackDetails track)
     {
         if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
         {
-            return;
+            return track;
         }
 
         using var file = TagLib.File.Create(track.LocalLocation);
 
-        track.Type = file.MimeType.Replace("taglib/", "");
-        track.Codec = file.Properties.Description;
-        track.Channels = file.Properties.AudioChannels;
+        return track with
+        {
+            Type = file.MimeType.Replace("taglib/", ""),
+            Codec = file.Properties.Description,
+            Channels = file.Properties.AudioChannels,
+        };
     }
 
     // This is temporarily disabled while the XML-sourced information is worked on.
-    public void LoadImage(Track track)
+    private static TrackDetails LoadImage(TrackDetails track)
     {
         if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
         {
-            return;
+            return track;
         }
 
         using var file = TagLib.File.Create(track.LocalLocation);
@@ -85,7 +102,12 @@ public class TrackListParser : ITrackListParser
         // if there are any pictures
         if (file.Tag.Pictures.Length >= 1)
         {
-            track.CoverArt = file.Tag.Pictures[0].Data.Data;
+            return track with
+            {
+                CoverArt = file.Tag.Pictures[0].Data.Data
+            };
         }
+
+        return track;
     }
 }

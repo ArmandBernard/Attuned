@@ -6,15 +6,37 @@ import { UTCDateTime } from './UTCDateTime.ts';
 import { TimeSpan } from './TimeSpan.ts';
 import { Rating } from './Rating.ts';
 
-export interface PlaylistDto
+export interface TrackDetailsDto
 {
 	Id: number;
+	Location: string;
+	Media: "Music";
+	Size: number | undefined;
+	DateModified: UTCDateTime;
+	DateAdded: UTCDateTime;
+	BitRate: number | undefined;
+	SampleRate: number | undefined;
+	TotalTime: TimeSpan | undefined;
+	Year: number | undefined;
+	Bpm: number | undefined;
+	DiscNumber: number | undefined;
+	DiscCount: number | undefined;
+	TrackNumber: number | undefined;
+	TrackCount: number | undefined;
 	Name: string;
-	Items: number[];
-	IsSmart: boolean;
-	Limit: LimitDto | undefined;
-	RuleConjunction: ConjunctionDto | undefined;
-	LiveUpdating: boolean;
+	Artist: string;
+	Composer: string;
+	Album: string;
+	Genre: string;
+	PlayCount: number | undefined;
+	PlayDate: UTCDateTime | undefined;
+	SkipCount: number | undefined;
+	Rating: number;
+	Loved: boolean | undefined;
+	Channels: number | undefined;
+	Type: string;
+	Codec: string;
+	CoverArt: string;
 }
 export interface TrackDto
 {
@@ -109,6 +131,22 @@ export interface TimeSpanRuleDto
 	Sign: SignDto;
 	ValueA: TimeSpan;
 	RuleType: "TimeSpan";
+}
+export interface PlaylistDetailsDto
+{
+	Id: number;
+	Name: string;
+	Items: number[];
+	IsSmart: boolean;
+	Limit: LimitDto | undefined;
+	RuleConjunction: ConjunctionDto | undefined;
+	LiveUpdating: boolean;
+}
+export interface PlaylistDto
+{
+	Id: number;
+	Name: string;
+	IsSmart: boolean;
 }
 export enum OperatorDto {
 	Is = "Is",

@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
-using AttunedWebApi.Dtos;
+using AttunedWebApi.Dtos.Playlists;
+using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
 using Microsoft.OpenApi.Models;
@@ -56,21 +57,20 @@ internal static class Program
 
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
-        builder.Services.AddSingleton<IXmlParser>(provider =>
-            new XmlParserCacheProxy(new XmlParser(provider.GetService<ITrackListParser>()!,
-                provider.GetService<IPlaylistParser>()!, xmlPath)));
-        
-        builder.Services.AddSingleton<IRepository<TrackDto>>(provider =>
-            new CachingRepository<TrackDto>(
-                new TrackRepository(provider.GetRequiredService<IXmlParser>()),
+        builder.Services.AddSingleton<IXmlSource>(_ => new XmlSource(xmlPath));
+
+        builder.Services.AddSingleton<IRepository<TrackDto, TrackDetailsDto>>(provider =>
+            new CachingRepository<TrackDto, TrackDetailsDto>(
+                new TrackRepository(provider.GetRequiredService<IXmlSource>(),
+                    provider.GetRequiredService<ITrackListParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );
-        builder.Services.AddSingleton<IRepository<PlaylistDto>>(provider =>
-            new CachingRepository<PlaylistDto>(
-                new PlaylistRepository(provider.GetRequiredService<IXmlParser>()),
+        builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
+            new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
+                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
                 new TimeSpan(0, 1, 0)
-                )
+            )
         );
 
         var app = builder.Build();

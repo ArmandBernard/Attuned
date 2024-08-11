@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
-import { PlaylistDto } from "../dtos/Dtos.ts";
+import { PlaylistDetailsDto } from "../dtos/Dtos.ts";
 
-export const Limits: FunctionComponent<{ playlist: PlaylistDto }> = ({
+export const Limits: FunctionComponent<{ playlist: PlaylistDetailsDto }> = ({
   playlist,
 }) => {
   return (

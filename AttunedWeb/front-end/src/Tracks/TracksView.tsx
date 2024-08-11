@@ -1,6 +1,6 @@
 import { TracksGrid } from "./TracksGrid";
 import { useRouteQuery } from "../Queries/useRouteQuery.ts";
-import { PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
+import { PlaylistDetailsDto, PlaylistDto, TrackDto } from "../dtos/Dtos.ts";
 import { FunctionComponent, useMemo, useState } from "react";
 import { getDurationString } from "../StringFormatters/getDurationString.ts";
 import { TimeSpan } from "../dtos/TimeSpan.ts";
@@ -21,12 +21,28 @@ export const TracksView: FunctionComponent<{
   const [trackToShow, setTrackToShow] = useState<TrackDto | undefined>();
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
-  const { data: tracks, isFetching } = useRouteQuery<TrackDto[]>({
+  const { data: playlistDetails, isFetching: isFetchingPlaylistDetails } =
+    useRouteQuery<PlaylistDetailsDto, unknown, { id: number }>({
+      url: "playlist/{id}",
+      enabled: playlist !== undefined,
+      parameters: {
+        id: playlist!.Id,
+      },
+    });
+
+  const { data: tracks, isFetching: isFetchingTracks } = useRouteQuery<
+    TrackDto[]
+  >({
     url: "track",
     refetchOnWindowFocus: false,
   });
 
-  const itemSet = useMemo(() => new Set(playlist?.Items), [playlist]);
+  const isFetching = isFetchingPlaylistDetails || isFetchingTracks;
+
+  const itemSet = useMemo(
+    () => new Set(playlistDetails?.Items),
+    [playlistDetails?.Items],
+  );
 
   let filtered: TrackDto[] | undefined;
 
@@ -61,9 +77,9 @@ export const TracksView: FunctionComponent<{
 
   return (
     <div className="p-4 h-full flex flex-col gap-2">
-      {playlist && (
+      {playlistDetails && (
         <PlaylistDetails
-          playlist={playlist}
+          playlist={playlistDetails}
           show={showPlaylistDetails}
           onClose={() => setShowPlaylistDetails(false)}
         />

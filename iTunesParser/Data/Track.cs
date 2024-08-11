@@ -66,18 +66,6 @@ public record Track
 
     #endregion
 
-    #region From Tags
-
-    public int? Channels { get; set; }
-
-    public string? Type { get; set; }
-
-    public string? Codec { get; set; }
-
-    public byte[]? CoverArt { get; set; }
-
-    #endregion
-
     #region Encoding
 
     public int? BitRate { get; init; }

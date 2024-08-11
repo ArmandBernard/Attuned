@@ -76,44 +76,66 @@ public class PlayListParserTests
 
     private readonly IEnumerable<Playlist> _expectedPlaylists = new[]
     {
-        new Playlist(
-            "5 Stars+",
-            16371,
-            new[]
-            {
-                3702,
-                3694,
-                3696,
-            },
-            true,
-            //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
-            new SmartPlaylistInformation(
-                new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true),
-                new Conjunction(ConjunctionType.And, new List<Conjunction>()
-                {
-                    new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()
-                    {
-                        new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive, "Music"),
-                        new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive,
-                            "Music Video")
-                    }),
-                    new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
-                    {
-                        new IntRule(IntFields.Rating, Operator.Other, Sign.IntPositive, 2, 5)
-                    })
-                }, Array.Empty<IRule>()),
-                true
-            ))
+        new Playlist("5 Stars+", 16371, true)
     };
 
+    private readonly PlaylistDetails _expectedPlaylistDetails = new PlaylistDetails(
+        "5 Stars+",
+        16371,
+        true,
+        new[]
+        {
+            3702,
+            3694,
+            3696,
+        },
+        //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
+        new SmartPlaylistInformation(
+            new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true),
+            new Conjunction(ConjunctionType.And, new List<Conjunction>()
+            {
+                new(ConjunctionType.Or, Array.Empty<Conjunction>(), new List<IRule>()
+                {
+                    new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive, "Music"),
+                    new DictionaryRule(DictionaryFields.MediaKind, Operator.Is, Sign.IntPositive,
+                        "Music Video")
+                }),
+                new(ConjunctionType.And, Array.Empty<Conjunction>(), new List<IRule>()
+                {
+                    new IntRule(IntFields.Rating, Operator.Other, Sign.IntPositive, 2, 5)
+                })
+            }, Array.Empty<IRule>()),
+            true
+        ));
+
     [Test]
-    public void PlayListParser_GivenValidDocument_ShouldReturnExpectedTrackList()
+    public void ParseDocument_GivenValidDocument_ShouldReturnExpectedPlaylist()
     {
         var doc = XDocument.Parse(TEST_DOC);
 
         var result = _playlistParser.ParseDocument(doc);
 
         result.Should().BeEquivalentTo(_expectedPlaylists);
+    }
+    
+    [Test]
+    public void GetById_GivenValidDocumentAndId_ShouldReturnExpectedPlaylistDetails()
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var result = _playlistParser.GetById(doc, 16371);
+
+        result.Should().BeEquivalentTo(_expectedPlaylistDetails);
+    }
+    
+    [Test]
+    public void GetById_GivenValidDocumentAndMissingId_ShouldReturnNull()
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var result = _playlistParser.GetById(doc, 2);
+
+        result.Should().BeNull();
     }
 
     public static IEnumerable<TestCaseData> TestPlaylistsSource()
@@ -128,19 +150,19 @@ public class PlayListParserTests
 
     [TestCaseSource(nameof(TestPlaylistsSource))]
     public void PlayListParser_GivenAVarietyOfSmartPlaylists_ParsesAllOfThemCorrectly(string xml,
-        Playlist expectedOutput)
+        PlaylistDetails expectedOutput)
     {
-        var parsedPlaylist = _playlistParser.ParsePlaylistElement(XElement.Parse(xml));
+        var parsedPlaylist = _playlistParser.ParsePlaylistDetails(XElement.Parse(xml));
 
         var converters = new JsonConverter[]
         {
             new Newtonsoft.Json.Converters.StringEnumConverter()
         };
-        
+
         // serialization need to ensure recursive equality
         var parsedPlaylistJson = JsonConvert.SerializeObject(parsedPlaylist, Formatting.Indented, converters);
         var expectedOutputJson = JsonConvert.SerializeObject(expectedOutput, Formatting.Indented, converters);
-        
+
         parsedPlaylistJson.Should().Be(expectedOutputJson);
     }
 }
