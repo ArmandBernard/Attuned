@@ -1,4 +1,6 @@
-﻿namespace iTunesSmartParser.Data;
+﻿using System.Web;
+
+namespace iTunesSmartParser.Data;
 
 public record Track
 {
@@ -51,13 +53,13 @@ public record Track
                 return null;
             }
 
-            var locationWithUnixSlashes = Location
+            var locationWithUnixSlashes = HttpUtility
+                // location is url encoded
+                .UrlDecode(Location)
                 // remove "file:" prefix
                 .Replace("file:", "")
                 // remove localhost prefix
-                .Replace(@"//localhost/", "")
-                // spaces are denoted by %20 in Apple's filepaths
-                .Replace("%20", " ");
+                .Replace(@"//localhost/", "");
 
             // Replace forward slashes with environment-respecting delimiters
             return Path.Combine(locationWithUnixSlashes.Split("/"));
