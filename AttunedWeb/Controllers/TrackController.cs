@@ -6,7 +6,7 @@ namespace AttunedWebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TrackController(ILogger<TrackController> logger, IRepository<TrackDto, TrackDto> trackRepository)
+public class TrackController(IRepository<TrackDto, TrackDto> trackRepository)
     : ControllerBase
 {
     [HttpGet]

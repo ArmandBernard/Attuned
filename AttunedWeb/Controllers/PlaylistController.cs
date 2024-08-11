@@ -6,9 +6,7 @@ namespace AttunedWebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlaylistController(
-    ILogger<PlaylistController> logger,
-    IRepository<PlaylistDto, PlaylistDto> playlistRepository) : ControllerBase
+public class PlaylistController(IRepository<PlaylistDto, PlaylistDto> playlistRepository) : ControllerBase
 {
     [HttpGet]
     [Route("")]
