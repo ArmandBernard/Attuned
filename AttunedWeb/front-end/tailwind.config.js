@@ -10,6 +10,8 @@ export default {
         "text-color": "var(--text-color)",
         primary: "var(--primary)",
         love: "var(--love)",
+        "paper-1": "var(--paper-1)",
+        "paper-2": "var(--paper-2)",
       },
     },
   },

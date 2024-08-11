@@ -17,6 +17,8 @@ html:not(.dark) {
     --selected-row: #7dd3fc; /* sky-300 */
     --primary: #0ea5e9; /* sky-500 */
     --love: #e11d48; /* rose-600 */
+    --paper-1: #f5f5f5; /* neutral-100 */
+    --paper-2: #e5e5e5; /* neutral-200 */
 }
 
 html.dark {
@@ -26,4 +28,6 @@ html.dark {
     --selected-row: #0369a1; /* sky-700 */   
     --primary: #38bdf8; /* sky-400 */
     --love: #f43f5e; /* rose-500 */
+    --paper-1: #404040; /* neutral-700 */
+    --paper-2: #525252; /* neutral-600 */
 }
