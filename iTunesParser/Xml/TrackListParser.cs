@@ -58,26 +58,29 @@ public class TrackListParser : ITrackListParser
     }
 
     // This is temporarily disabled while the XML-sourced information is worked on.
-    public void LoadTagInfo(Track track)
+    private static Track LoadTagInfo(Track track)
     {
         if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
         {
-            return;
+            return track;
         }
 
         using var file = TagLib.File.Create(track.LocalLocation);
 
-        track.Type = file.MimeType.Replace("taglib/", "");
-        track.Codec = file.Properties.Description;
-        track.Channels = file.Properties.AudioChannels;
+        return track with
+        {
+            Type = file.MimeType.Replace("taglib/", ""),
+            Codec = file.Properties.Description,
+            Channels = file.Properties.AudioChannels,
+        };
     }
 
     // This is temporarily disabled while the XML-sourced information is worked on.
-    public void LoadImage(Track track)
+    private static Track LoadImage(Track track)
     {
         if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
         {
-            return;
+            return track;
         }
 
         using var file = TagLib.File.Create(track.LocalLocation);
@@ -85,7 +88,12 @@ public class TrackListParser : ITrackListParser
         // if there are any pictures
         if (file.Tag.Pictures.Length >= 1)
         {
-            track.CoverArt = file.Tag.Pictures[0].Data.Data;
+            return track with
+            {
+                CoverArt = file.Tag.Pictures[0].Data.Data
+            };
         }
+
+        return track;
     }
 }
