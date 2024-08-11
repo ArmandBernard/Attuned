@@ -18,6 +18,28 @@ public class TrackListParser : ITrackListParser
         return tracksDictNode.PlistDictKeys().Select(ParseTrackElement);
     }
 
+    public Track? GetById(XDocument doc, int id)
+    {
+        // get the node which contains all tracks
+        var tracksDictNode = PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks");
+
+        if (tracksDictNode == null)
+        {
+            throw new Exception("Could not find the Tracks node");
+        }
+
+        var trackNode = tracksDictNode.PlistDictGet(id.ToString());
+
+        if (trackNode == null)
+        {
+            return null;
+        }
+
+        var track = ParseTrackElement(trackNode);
+
+        return LoadImage(LoadTagInfo(track));
+    }
+
     public Track ParseTrackElement(XElement tracksElement)
     {
         Dictionary<string, dynamic?> properties = PListParser.ParseDictionary(tracksElement)!;
