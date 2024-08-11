@@ -1,11 +1,11 @@
 import { FunctionComponent } from "react";
-import { PlaylistDto } from "../dtos/Dtos.ts";
+import { PlaylistDetailsDto } from "../dtos/Dtos.ts";
 import { Dialog } from "../Dialog.tsx";
 import { Limits } from "./Limits.tsx";
 import { Conjunctions } from "./Conjunctions.tsx";
 
 interface PlaylistDetailsProps {
-  playlist: PlaylistDto;
+  playlist: PlaylistDetailsDto;
   show: boolean;
   onClose: () => void;
 }
