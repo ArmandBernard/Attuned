@@ -76,7 +76,7 @@ function Header({
           <div className="w-32 h-32 flex items-center justify-center">
             <img
               alt="album art"
-              className="w-32 rounded"
+              className="max-w-32 max-h-32 h-auto w-auto rounded"
               src={`data:image/png;base64,${track.CoverArt}`}
             />
           </div>
