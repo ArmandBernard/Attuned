@@ -3,14 +3,14 @@ using iTunesSmartParser.Data;
 
 namespace iTunesSmartParser.Xml;
 
-public class XmlParser(ITrackListParser trackListParser, IPlaylistsParser playlistsParser, string path)
+public class XmlParser(ITrackListParser trackListParser, IPlaylistParser playlistParser, string path)
     : IXmlParser
 {
     public async Task<IEnumerable<Track>> ParseTracks(CancellationToken? token = null) =>
         trackListParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
 
     public async Task<IEnumerable<Playlist>> ParsePlaylists(CancellationToken? token = null) =>
-        playlistsParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
+        playlistParser.ParseDocument(await OpenDocument(path, token ?? CancellationToken.None));
 
     private static async Task<XDocument> OpenDocument(string path, CancellationToken token)
     {

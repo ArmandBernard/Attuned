@@ -6,7 +6,7 @@ using iTunesSmartParser.Playlists;
 
 namespace iTunesSmartParser.Xml;
 
-public class PlaylistParser : IPlaylistsParser
+public class PlaylistParser : IPlaylistParser
 {
     public IEnumerable<Playlist> ParseDocument(XDocument doc)
     {

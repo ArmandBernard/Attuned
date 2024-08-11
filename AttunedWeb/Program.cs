@@ -52,10 +52,10 @@ internal static class Program
         }
 
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
-        builder.Services.AddSingleton<IPlaylistsParser, PlaylistParser>();
+        builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
         builder.Services.AddSingleton<IXmlParser>(provider =>
             new XmlParserCacheProxy(new XmlParser(provider.GetService<ITrackListParser>()!,
-                provider.GetService<IPlaylistsParser>()!, xmlPath)));
+                provider.GetService<IPlaylistParser>()!, xmlPath)));
 
         var app = builder.Build();
 
