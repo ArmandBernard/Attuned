@@ -39,7 +39,8 @@ internal static class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(options => {
+        builder.Services.AddSwaggerGen(options =>
+        {
             options.MapType<TimeSpan>(() => new OpenApiSchema
             {
                 Type = "number"
@@ -58,8 +59,19 @@ internal static class Program
         builder.Services.AddSingleton<IXmlParser>(provider =>
             new XmlParserCacheProxy(new XmlParser(provider.GetService<ITrackListParser>()!,
                 provider.GetService<IPlaylistParser>()!, xmlPath)));
-        builder.Services.AddSingleton<IRepository<TrackDto>, TrackRepository>();
-        builder.Services.AddSingleton<IRepository<PlaylistDto>, PlaylistRepository>();
+        
+        builder.Services.AddSingleton<IRepository<TrackDto>>(provider =>
+            new CachingRepository<TrackDto>(
+                new TrackRepository(provider.GetRequiredService<IXmlParser>()),
+                new TimeSpan(0, 1, 0)
+            )
+        );
+        builder.Services.AddSingleton<IRepository<PlaylistDto>>(provider =>
+            new CachingRepository<PlaylistDto>(
+                new PlaylistRepository(provider.GetRequiredService<IXmlParser>()),
+                new TimeSpan(0, 1, 0)
+                )
+        );
 
         var app = builder.Build();
 
