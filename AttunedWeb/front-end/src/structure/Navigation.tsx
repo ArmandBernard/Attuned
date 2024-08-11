@@ -1,7 +1,7 @@
 import { FunctionComponent, useRef, useState } from "react";
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { PlaylistDto } from "@dtos";
-import { Link, useParams } from "@tanstack/react-router";
+import { Link, useMatchRoute, useParams } from "@tanstack/react-router";
 
 const mediaPlaylistNames = [
   "Music",
@@ -13,6 +13,11 @@ const mediaPlaylistNames = [
 
 export const Navigation: FunctionComponent = () => {
   const params = useParams({ strict: false });
+
+  const matchRoute = useMatchRoute();
+
+  const isAlbums = !!matchRoute({ to: "/albums" });
+  const isRoot = !!matchRoute({ to: "/" });
 
   const playlistId: number | undefined = params.playlistId
     ? parseInt(params.playlistId)
@@ -92,18 +97,27 @@ export const Navigation: FunctionComponent = () => {
         </div>
         <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
           <ul>
-            <li aria-current={selectedPlaylist === undefined}>
+            <li aria-current={isRoot}>
               <h3 className="text-xl flex">
                 <Link
-                  className={[
-                    "flex-1 flex",
-                    selectedPlaylist === undefined && "bg-selected-row",
-                  ]
+                  className={["flex-1 flex", isRoot && "bg-selected-row"]
                     .filter(Boolean)
                     .join(" ")}
                   to="/"
                 >
                   All tracks
+                </Link>
+              </h3>
+            </li>
+            <li aria-current={isAlbums}>
+              <h3 className="text-xl flex">
+                <Link
+                  className={["flex-1 flex", isAlbums && "bg-selected-row"]
+                    .filter(Boolean)
+                    .join(" ")}
+                  to="/albums"
+                >
+                  Albums
                 </Link>
               </h3>
             </li>
