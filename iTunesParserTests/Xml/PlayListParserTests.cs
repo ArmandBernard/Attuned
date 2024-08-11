@@ -74,18 +74,18 @@ public class PlayListParserTests
         """;
 
 
-    private readonly IEnumerable<Playlist> _expectedPlaylists = new[]
+    private readonly IEnumerable<PlaylistDetails> _expectedPlaylists = new[]
     {
-        new Playlist(
+        new PlaylistDetails(
             "5 Stars+",
             16371,
+            true,
             new[]
             {
                 3702,
                 3694,
                 3696,
             },
-            true,
             //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
             new SmartPlaylistInformation(
                 new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true),
@@ -128,9 +128,9 @@ public class PlayListParserTests
 
     [TestCaseSource(nameof(TestPlaylistsSource))]
     public void PlayListParser_GivenAVarietyOfSmartPlaylists_ParsesAllOfThemCorrectly(string xml,
-        Playlist expectedOutput)
+        PlaylistDetails expectedOutput)
     {
-        var parsedPlaylist = _playlistParser.ParsePlaylistElement(XElement.Parse(xml));
+        var parsedPlaylist = _playlistParser.ParsePlaylistDetails(XElement.Parse(xml));
 
         var converters = new JsonConverter[]
         {

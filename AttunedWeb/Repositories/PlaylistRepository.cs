@@ -1,9 +1,9 @@
-using AttunedWebApi.Dtos;
+using AttunedWebApi.Dtos.Playlists;
 using iTunesSmartParser.Xml;
 
 namespace AttunedWebApi.Repositories;
 
-public class PlaylistRepository(IXmlSource xmlSource, IPlaylistParser playlistParser) : IRepository<PlaylistDto, PlaylistDto>
+public class PlaylistRepository(IXmlSource xmlSource, IPlaylistParser playlistParser) : IRepository<PlaylistDto, PlaylistDetailsDto>
 {
     public async Task<IEnumerable<PlaylistDto>> Get(CancellationToken token)
     {
@@ -14,12 +14,12 @@ public class PlaylistRepository(IXmlSource xmlSource, IPlaylistParser playlistPa
             .Select(PlaylistDto.FromPlaylist);
     }
 
-    public async Task<PlaylistDto?> GetById(int id, CancellationToken token)
+    public async Task<PlaylistDetailsDto?> GetById(int id, CancellationToken token)
     {
         var doc = await xmlSource.GetXDocument(token);
 
         var playlist = playlistParser.GetById(doc, id);
         
-        return playlist != null ? PlaylistDto.FromPlaylist(playlist) : null;
+        return playlist != null ? PlaylistDetailsDto.FromPlaylistDetails(playlist) : null;
     }
 }

@@ -6,16 +6,6 @@ import { UTCDateTime } from './UTCDateTime.ts';
 import { TimeSpan } from './TimeSpan.ts';
 import { Rating } from './Rating.ts';
 
-export interface PlaylistDto
-{
-	Id: number;
-	Name: string;
-	Items: number[];
-	IsSmart: boolean;
-	Limit: LimitDto | undefined;
-	RuleConjunction: ConjunctionDto | undefined;
-	LiveUpdating: boolean;
-}
 export interface TrackDto
 {
 	Id: number;
@@ -109,6 +99,22 @@ export interface TimeSpanRuleDto
 	Sign: SignDto;
 	ValueA: TimeSpan;
 	RuleType: "TimeSpan";
+}
+export interface PlaylistDetailsDto
+{
+	Id: number;
+	Name: string;
+	Items: number[];
+	IsSmart: boolean;
+	Limit: LimitDto | undefined;
+	RuleConjunction: ConjunctionDto | undefined;
+	LiveUpdating: boolean;
+}
+export interface PlaylistDto
+{
+	Id: number;
+	Name: string;
+	IsSmart: boolean;
 }
 export enum OperatorDto {
 	Is = "Is",

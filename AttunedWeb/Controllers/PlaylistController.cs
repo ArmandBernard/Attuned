@@ -1,4 +1,4 @@
-using AttunedWebApi.Dtos;
+using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +6,7 @@ namespace AttunedWebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlaylistController(IRepository<PlaylistDto, PlaylistDto> playlistRepository) : ControllerBase
+public class PlaylistController(IRepository<PlaylistDto, PlaylistDetailsDto> playlistRepository) : ControllerBase
 {
     [HttpGet]
     [Route("")]
@@ -18,7 +18,7 @@ public class PlaylistController(IRepository<PlaylistDto, PlaylistDto> playlistRe
 
     [HttpGet]
     [Route("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlaylistDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlaylistDetailsDto))]
     public async Task<IActionResult> Get(int id, CancellationToken token)
     {
         var playlist = await playlistRepository.GetById(id, token);

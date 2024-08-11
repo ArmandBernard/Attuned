@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
 using AttunedWebApi.Dtos;
+using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
 using Microsoft.OpenApi.Models;
@@ -65,8 +66,8 @@ internal static class Program
                 new TimeSpan(0, 1, 0)
             )
         );
-        builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDto>>(provider =>
-            new CachingRepository<PlaylistDto, PlaylistDto>(
+        builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
+            new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
                 new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
                 new TimeSpan(0, 1, 0)
             )

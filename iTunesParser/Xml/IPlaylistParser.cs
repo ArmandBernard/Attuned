@@ -6,6 +6,6 @@ namespace iTunesSmartParser.Xml;
 public interface IPlaylistParser
 {
     IEnumerable<Playlist> ParseDocument(XDocument doc);
-    Playlist ParsePlaylistElement(XElement playlistElement);
-    Playlist? GetById(XDocument doc, int id);
+    PlaylistDetails ParsePlaylistDetails(XElement playlistElement);
+    PlaylistDetails? GetById(XDocument doc, int id);
 }

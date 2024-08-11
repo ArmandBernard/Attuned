@@ -9,16 +9,16 @@ namespace iTunesSmartParser.Xml;
 public class PlaylistParser : IPlaylistParser
 {
     public IEnumerable<Playlist> ParseDocument(XDocument doc) =>
-        GetPlaylistsArrayNode(doc).Elements().Select(ParsePlaylistElement);
+        GetPlaylistsArrayNode(doc).Elements().Select(ParsePlaylist);
 
-    public Playlist? GetById(XDocument doc, int id)
+    public PlaylistDetails? GetById(XDocument doc, int id)
     {
         var playlistElements = GetPlaylistsArrayNode(doc).Elements();
         
         var playlistNode = playlistElements
             .FirstOrDefault(playlist => playlist.PlistDictGet("Playlist ID")?.PlistParseValue() == id);
 
-        return playlistNode == null ? null : ParsePlaylistElement(playlistNode);
+        return playlistNode == null ? null : ParsePlaylistDetails(playlistNode);
     }
 
     /// <summary>
@@ -31,19 +31,18 @@ public class PlaylistParser : IPlaylistParser
         PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Playlists") ??
         throw new Exception("Could not find the Playlists node");
 
-    public Playlist ParsePlaylistElement(XElement playlistElement)
+    private static Playlist ParsePlaylist(XElement playlistElement)
     {
         var dictionary = PListParser.ParseDictionary(playlistElement);
 
-        var name = dictionary["Name"];
+        return GetBasicFields(dictionary);
+    }
+    
+    public PlaylistDetails ParsePlaylistDetails(XElement playlistElement)
+    {
+        var dictionary = PListParser.ParseDictionary(playlistElement);
 
-        var id = dictionary["Playlist ID"];
-
-        //properties.TryGetValue("Playlist Items", out var playlistItemsDictionaries);
-
-        var playlistItemsDictionaries =
-            ((IEnumerable<object>) dictionary.GetValueOrDefault("Playlist Items",
-                new List<Dictionary<string, dynamic>>())).Cast<Dictionary<string, dynamic>>();
+        var basicFields = GetBasicFields(dictionary);
 
         // The structure of playlistItems here is:
         // <array>
@@ -55,15 +54,17 @@ public class PlaylistParser : IPlaylistParser
         //   </dict>
         //   ...
         // </array>
+        var playlistItemsDictionaries =
+            ((IEnumerable<object>) dictionary.GetValueOrDefault("Playlist Items",
+                new List<Dictionary<string, dynamic>>())).Cast<Dictionary<string, dynamic>>();
+        
         var playlistItems = playlistItemsDictionaries.Select(x => (int) x.Values.Single());
-
-        var isSmart = dictionary.ContainsKey("Smart Info") && dictionary.ContainsKey("Smart Criteria");
-
+        
         SmartPlaylistInformation? playlistInfo = null;
 
-        if (!isSmart)
+        if (!basicFields.IsSmart)
         {
-            return new Playlist(name, (int) id, playlistItems, isSmart, playlistInfo);
+            return new PlaylistDetails(basicFields.Name, basicFields.Id, basicFields.IsSmart, playlistItems, playlistInfo);
         }
 
         try
@@ -75,10 +76,21 @@ public class PlaylistParser : IPlaylistParser
         }
         catch (Exception ex)
         {
-            throw new XmlException($"Failed to parse playlist '{name}'. Exception:\n{ex}");
+            throw new XmlException($"Failed to parse playlist '{basicFields.Name}'. Exception:\n{ex}");
         }
 
-        return new Playlist(name, (int) id, playlistItems, isSmart, playlistInfo);
+        return new PlaylistDetails(basicFields.Name, basicFields.Id, basicFields.IsSmart, playlistItems, playlistInfo);
+    }
+
+    private static Playlist GetBasicFields(Dictionary<string,dynamic> playlistDictionary)
+    {
+        var name = playlistDictionary["Name"];
+
+        var id = (int) playlistDictionary["Playlist ID"];
+        
+        var isSmart = playlistDictionary.ContainsKey("Smart Info") && playlistDictionary.ContainsKey("Smart Criteria");
+
+        return new Playlist(name, id, isSmart);
     }
 
     private static SmartPlaylistInformation ParseSmartInformation(byte[] info, byte[] criteria)
