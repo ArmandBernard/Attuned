@@ -5,30 +5,12 @@ namespace iTunesSmartParser.Xml;
 
 public class TrackListParser : ITrackListParser
 {
-    public IEnumerable<Track> ParseDocument(XDocument doc)
+    public IEnumerable<Track> ParseDocument(XDocument doc) =>
+        GetTracksNode(doc).PlistDictKeys().Select(ParseTrackElement);
+
+    public TrackDetails? GetById(XDocument doc, int id)
     {
-        // get the node which contains all tracks
-        var tracksDictNode = PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks");
-
-        if (tracksDictNode == null)
-        {
-            throw new Exception("Could not find the Tracks node");
-        }
-
-        return tracksDictNode.PlistDictKeys().Select(ParseTrackElement);
-    }
-
-    public Track? GetById(XDocument doc, int id)
-    {
-        // get the node which contains all tracks
-        var tracksDictNode = PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks");
-
-        if (tracksDictNode == null)
-        {
-            throw new Exception("Could not find the Tracks node");
-        }
-
-        var trackNode = tracksDictNode.PlistDictGet(id.ToString());
+        var trackNode = GetTracksNode(doc).PlistDictGet(id.ToString());
 
         if (trackNode == null)
         {
@@ -37,8 +19,18 @@ public class TrackListParser : ITrackListParser
 
         var track = ParseTrackElement(trackNode);
 
-        return LoadImage(LoadTagInfo(track));
+        return LoadImage(LoadTagInfo(new TrackDetails(track)));
     }
+
+    /// <summary>
+    /// Get the node which contains all tracks
+    /// </summary>
+    /// <param name="doc"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private static XElement GetTracksNode(XDocument doc) =>
+        PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Tracks") ??
+        throw new Exception("Could not find the Tracks node");
 
     public Track ParseTrackElement(XElement tracksElement)
     {
@@ -80,7 +72,7 @@ public class TrackListParser : ITrackListParser
     }
 
     // This is temporarily disabled while the XML-sourced information is worked on.
-    private static Track LoadTagInfo(Track track)
+    private static TrackDetails LoadTagInfo(TrackDetails track)
     {
         if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
         {
@@ -98,7 +90,7 @@ public class TrackListParser : ITrackListParser
     }
 
     // This is temporarily disabled while the XML-sourced information is worked on.
-    private static Track LoadImage(Track track)
+    private static TrackDetails LoadImage(TrackDetails track)
     {
         if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
         {
