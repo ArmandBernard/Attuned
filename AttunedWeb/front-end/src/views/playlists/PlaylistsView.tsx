@@ -34,7 +34,6 @@ export const PlaylistsView: FunctionComponent<{
     TrackDto[]
   >({
     url: "track",
-    refetchOnWindowFocus: false,
   });
 
   const isFetching = isFetchingPlaylistDetails || isFetchingTracks;
