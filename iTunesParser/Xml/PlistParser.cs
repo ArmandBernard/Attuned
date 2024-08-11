@@ -50,7 +50,7 @@ public static class PListParser
 
             var valueElement = enumerator.Current;
 
-            var value = ParseValueElement(valueElement);
+            var value = valueElement.PlistParseValue();
 
             dictionary.Add(key, value);
         }
@@ -61,12 +61,12 @@ public static class PListParser
     private static readonly Regex SpaceRegex = new(@"\s");
 
     /// <summary>
-    /// Parse a 
+    /// Parse a value element
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public static dynamic ParseValueElement(XElement element)
+    public static dynamic PlistParseValue(this XElement element)
     {
         // the name of the element is its data type
         var type = element.Name.LocalName;
@@ -82,7 +82,7 @@ public static class PListParser
             "date" => DateTime.Parse(element.Value),
             // get rid of new lines and spaces before parsing base64 string
             "data" => Convert.FromBase64String(SpaceRegex.Replace(element.Value, "")),
-            "array" => element.Elements().Select(ParseValueElement),
+            "array" => element.Elements().Select(PlistParseValue),
             "dict" => ParseDictionary(element),
             _ => throw new NotImplementedException($"Unsupported datatype {type}")
         };

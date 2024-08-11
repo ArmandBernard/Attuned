@@ -81,7 +81,7 @@ public class PlistParserTests
         element.Value.Should().Be("1");
     }
 
-    private static IEnumerable<TestCaseData> ParseValueElementSource()
+    private static IEnumerable<TestCaseData> PlistParseValueSource()
     {
         yield return new TestCaseData("<string>Hello there!</string>", "Hello there!");
         yield return new TestCaseData("<integer>628</integer>", 628);
@@ -108,12 +108,12 @@ public class PlistParserTests
         });
     }
 
-    [TestCaseSource(nameof(ParseValueElementSource))]
-    public void ParseValueElement_ForGivenDataTypeParsesValueCorrectly(string stringXml, object expectedValue)
+    [TestCaseSource(nameof(PlistParseValueSource))]
+    public void PlistParseValue_ForGivenDataTypeParsesValueCorrectly(string stringXml, object expectedValue)
     {
         var element = XElement.Parse(stringXml);
 
-        var value = PListParser.ParseValueElement(element);
+        var value = element.PlistParseValue();
 
         switch (value)
         {
