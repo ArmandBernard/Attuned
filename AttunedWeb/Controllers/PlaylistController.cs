@@ -10,7 +10,7 @@ public class PlaylistController(ILogger<PlaylistController> logger, IXmlParser x
 {
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PlaylistDto>))]
     public async Task<IActionResult> Get()
     {
         return Ok((await xmlParser.ParsePlaylists()).Where(x => x.Name != "Downloaded" && x.Name != "Library")
@@ -19,7 +19,7 @@ public class PlaylistController(ILogger<PlaylistController> logger, IXmlParser x
     
     [HttpGet]
     [Route("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TrackDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlaylistDto))]
     public async Task<IActionResult> Get(int id)
     {
         var playlist = (await xmlParser.ParsePlaylists()).FirstOrDefault(x => x.Id == id);
