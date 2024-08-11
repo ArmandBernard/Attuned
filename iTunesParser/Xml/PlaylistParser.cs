@@ -8,18 +8,28 @@ namespace iTunesSmartParser.Xml;
 
 public class PlaylistParser : IPlaylistParser
 {
-    public IEnumerable<Playlist> ParseDocument(XDocument doc)
+    public IEnumerable<Playlist> ParseDocument(XDocument doc) =>
+        GetPlaylistsArrayNode(doc).Elements().Select(ParsePlaylistElement);
+
+    public Playlist? GetById(XDocument doc, int id)
     {
-        // get the node which contains all tracks
-        var playlistsArrayElement = PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Playlists");
+        var playlistElements = GetPlaylistsArrayNode(doc).Elements();
+        
+        var playlistNode = playlistElements
+            .FirstOrDefault(playlist => playlist.PlistDictGet("Playlist ID")?.PlistParseValue() == id);
 
-        if (playlistsArrayElement == null)
-        {
-            throw new Exception("Could not find the Playlists node");
-        }
-
-        return playlistsArrayElement.Elements().Select(ParsePlaylistElement);
+        return playlistNode == null ? null : ParsePlaylistElement(playlistNode);
     }
+
+    /// <summary>
+    /// Get the node which contains all playlists
+    /// </summary>
+    /// <param name="doc"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private static XElement GetPlaylistsArrayNode(XDocument doc) =>
+        PListParser.GetTopLevelDictionaryElement(doc)?.PlistDictGet("Playlists") ??
+        throw new Exception("Could not find the Playlists node");
 
     public Playlist ParsePlaylistElement(XElement playlistElement)
     {

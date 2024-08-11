@@ -56,21 +56,20 @@ internal static class Program
 
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
-        builder.Services.AddSingleton<IXmlParser>(provider =>
-            new XmlParserCacheProxy(new XmlParser(provider.GetService<ITrackListParser>()!,
-                provider.GetService<IPlaylistParser>()!, xmlPath)));
-        
-        builder.Services.AddSingleton<IRepository<TrackDto>>(provider =>
-            new CachingRepository<TrackDto>(
-                new TrackRepository(provider.GetRequiredService<IXmlParser>()),
+        builder.Services.AddSingleton<IXmlSource>(_ => new XmlSource(xmlPath));
+
+        builder.Services.AddSingleton<IRepository<TrackDto, TrackDto>>(provider =>
+            new CachingRepository<TrackDto, TrackDto>(
+                new TrackRepository(provider.GetRequiredService<IXmlSource>(),
+                    provider.GetRequiredService<ITrackListParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );
-        builder.Services.AddSingleton<IRepository<PlaylistDto>>(provider =>
-            new CachingRepository<PlaylistDto>(
-                new PlaylistRepository(provider.GetRequiredService<IXmlParser>()),
+        builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDto>>(provider =>
+            new CachingRepository<PlaylistDto, PlaylistDto>(
+                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
                 new TimeSpan(0, 1, 0)
-                )
+            )
         );
 
         var app = builder.Build();

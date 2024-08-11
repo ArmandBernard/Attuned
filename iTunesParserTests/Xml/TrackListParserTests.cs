@@ -98,10 +98,7 @@ public class TrackListParserTests
             Artist = "TM Revolution",
             Bpm = null,
             BitRate = 128,
-            Channels = null,
-            Codec = null,
             Composer = null,
-            CoverArt = null,
             DateAdded = DateTime.Parse("2013-12-13T14:07:35Z"),
             DateModified = DateTime.Parse("2014-12-26T14:17:09Z"),
             DiscCount = null,
@@ -120,7 +117,6 @@ public class TrackListParserTests
             TrackCount = null,
             Id = 628,
             TrackNumber = null,
-            Type = null,
             Year = null
         },
         new()
@@ -129,10 +125,7 @@ public class TrackListParserTests
             Artist = "Abingdon Boys School",
             Bpm = null,
             BitRate = 320,
-            Channels = null,
-            Codec = null,
             Composer = null,
-            CoverArt = null,
             DateAdded = DateTime.Parse("2013-12-13T14:07:35Z"),
             DateModified = DateTime.Parse("2014-12-26T14:17:09Z"),
             DiscCount = null,
@@ -151,7 +144,6 @@ public class TrackListParserTests
             TrackCount = null,
             Id = 630,
             TrackNumber = 1,
-            Type = null,
             Year = 2009
         }
     };

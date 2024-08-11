@@ -1,6 +1,8 @@
 namespace AttunedWebApi.Repositories;
 
-public interface IRepository<T>
+public interface IRepository<TBasic,TDetailed>
 {
-    Task<IEnumerable<T>> Get();
+    Task<IEnumerable<TBasic>> Get(CancellationToken token);
+
+    Task<TDetailed?> GetById(int id, CancellationToken token);
 }

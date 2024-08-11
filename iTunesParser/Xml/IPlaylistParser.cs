@@ -7,4 +7,5 @@ public interface IPlaylistParser
 {
     IEnumerable<Playlist> ParseDocument(XDocument doc);
     Playlist ParsePlaylistElement(XElement playlistElement);
+    Playlist? GetById(XDocument doc, int id);
 }
