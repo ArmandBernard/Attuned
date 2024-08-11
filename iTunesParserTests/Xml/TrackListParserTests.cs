@@ -149,7 +149,7 @@ public class TrackListParserTests
     };
 
     [Test]
-    public void TrackListParser_GivenValidDocument_ShouldReturnExpectedTrackList()
+    public void ParseDocument_GivenValidDocument_ShouldReturnExpectedTrackList()
     {
         var doc = XDocument.Parse(TEST_DOC);
 
