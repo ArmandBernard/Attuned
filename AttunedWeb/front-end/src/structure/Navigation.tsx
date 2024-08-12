@@ -123,12 +123,12 @@ function Contents({
           ✕
         </button>
       </div>
-      <div className="bg-background h-full px-4 overflow-y-auto overflow-x-hidden">
+      <div className="bg-background h-full overflow-y-auto overflow-x-hidden">
         <ul>
           <li aria-current={isRoot}>
             <h3 className="text-xl flex">
               <Link
-                className={["flex-1 flex", isRoot && "bg-selected-row"]
+                className={["flex-1 px-4", isRoot && "bg-selected-row"]
                   .filter(Boolean)
                   .join(" ")}
                 to="/"
@@ -140,7 +140,7 @@ function Contents({
           <li aria-current={isAlbums}>
             <h3 className="text-xl flex">
               <Link
-                className={["flex-1 flex", isAlbums && "bg-selected-row"]
+                className={["flex-1 px-4", isAlbums && "bg-selected-row"]
                   .filter(Boolean)
                   .join(" ")}
                 to="/albums"
@@ -150,15 +150,20 @@ function Contents({
             </h3>
           </li>
           <li>
-            <h3 className="text-xl">Media categories</h3>
-            <ul className="pl-2">
+            <h3 className="text-xl px-4">Media categories</h3>
+            <ul>
               {isFetching && <span>Loading...</span>}
               {mediaPlaylists &&
                 mediaPlaylists.map((x) => (
                   <li key={x.Id}>
                     <Link
                       aria-label={x.Name}
-                      className="truncate"
+                      className={[
+                        "truncate flex-1 pl-6 pr-4",
+                        x.Id === selectedPlaylist?.Id && "bg-selected-row",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
                       to="/playlists/$playlistId"
                       params={{ playlistId: x.Id.toString() }}
                     >
@@ -169,19 +174,15 @@ function Contents({
             </ul>
           </li>
           <li>
-            <h3 className="text-xl">Playlists</h3>
-            <ul className="pl-2">
+            <h3 className="px-4 text-xl">Playlists</h3>
+            <ul>
               {isFetching && <span>Loading...</span>}
               {playlists &&
                 playlists.map((x) => (
-                  <li
-                    aria-current={x.Id === selectedPlaylist?.Id}
-                    className="flex"
-                    key={x.Id}
-                  >
+                  <li aria-current={x.Id === selectedPlaylist?.Id} key={x.Id}>
                     <Link
                       className={[
-                        "truncate flex flex-1",
+                        "truncate flex gap-1 flex-1 pl-6 pr-4",
                         x.Id === selectedPlaylist?.Id && "bg-selected-row",
                       ]
                         .filter(Boolean)
@@ -191,7 +192,7 @@ function Contents({
                     >
                       <span
                         aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
-                        className="inline-block w-[2rem] flex-shrink-0"
+                        className="inline-block flex-shrink-0"
                       >
                         {x.IsSmart ? "⛭" : "♫"}
                       </span>
