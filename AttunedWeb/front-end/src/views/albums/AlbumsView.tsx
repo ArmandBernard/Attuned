@@ -15,9 +15,11 @@ export function AlbumsView() {
     url: "track",
   });
 
+  const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
+
   const grouped = useMemo(() => {
     const map = new Map<string, TrackDto[]>();
-    tracks?.forEach((track) => {
+    sorted?.forEach((track) => {
       const key = `${track.Album};${track.Artist}`;
       const collection = map.get(key);
       if (!collection) {
@@ -28,7 +30,7 @@ export function AlbumsView() {
     });
 
     return map;
-  }, [tracks]);
+  }, [sorted]);
 
   const openAlbumTracks =
     openAlbum && grouped.get(`${openAlbum.album};${openAlbum.artist}`);
@@ -64,3 +66,22 @@ export function AlbumsView() {
     </main>
   );
 }
+
+const sortComparer = (trackA: TrackDto, trackB: TrackDto): number => {
+  const albumOrder = trackA.Album?.localeCompare(trackB.Album);
+
+  if (albumOrder !== 0) {
+    return albumOrder;
+  }
+
+  const artistOrder = trackA.Artist?.localeCompare(trackB.Artist);
+
+  if (artistOrder !== 0) {
+    return artistOrder;
+  }
+
+  const trackANumber = trackA.TrackNumber ?? 0;
+  const trackBNumber = trackB.TrackNumber ?? 0;
+
+  return trackANumber > trackBNumber ? 1 : trackANumber < trackBNumber ? -1 : 0;
+};
