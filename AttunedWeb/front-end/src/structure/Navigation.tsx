@@ -44,7 +44,7 @@ export const Navigation: FunctionComponent = () => {
   );
 
   const classNames = [
-    "flex flex-col border-r min-w-[16rem] max-sm:fixed z-20 h-full bg-background pb-4",
+    "fixed flex flex-col border-r w-80 z-20 h-full bg-background pb-4",
     !isOpen && "max-sm:hidden",
   ];
 
@@ -66,7 +66,7 @@ export const Navigation: FunctionComponent = () => {
       {!isOpen && (
         <button
           ref={openButtonRef}
-          className="sm:hidden p-2 m-2 mr-0 self-start text-2xl"
+          className="sm:hidden fixed p-2 m-2 mr-0 self-start text-2xl"
           aria-label="open nav"
           onClick={open}
         >
@@ -163,11 +163,11 @@ export const Navigation: FunctionComponent = () => {
                       >
                         <span
                           aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
-                          className="inline-block w-[2rem]"
+                          className="inline-block w-[2rem] flex-shrink-0"
                         >
                           {x.IsSmart ? "⛭" : "♫"}
                         </span>
-                        {x.Name}
+                        <span className="truncate">{x.Name}</span>
                       </Link>
                     </li>
                   ))}
