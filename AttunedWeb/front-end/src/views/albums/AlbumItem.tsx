@@ -5,9 +5,10 @@ interface AlbumItemProps {
   album: string;
   artist: string;
   items: TrackDto[];
+  onClick: () => void;
 }
 
-export function AlbumItem({ album, artist, items }: AlbumItemProps) {
+export function AlbumItem({ album, artist, items, onClick }: AlbumItemProps) {
   const firstTrack = items.length > 0 ? items[0] : undefined;
 
   const { data: trackDetails } = useRouteQuery<
@@ -23,7 +24,7 @@ export function AlbumItem({ album, artist, items }: AlbumItemProps) {
   });
 
   return (
-    <div className="flex flex-col w-48">
+    <div className="flex flex-col w-48 cursor-pointer" onClick={onClick}>
       {trackDetails?.CoverArt ? (
         <div className="w-48 h-48 flex items-center justify-center">
           <img
@@ -35,7 +36,7 @@ export function AlbumItem({ album, artist, items }: AlbumItemProps) {
       ) : (
         <div className="w-48 h-48 rounded bg-paper-2"></div>
       )}
-      <div className="truncate">{album}</div>
+      <button className="truncate text-left">{album}</button>
       <div className="text-sm truncate">{artist}</div>
     </div>
   );
