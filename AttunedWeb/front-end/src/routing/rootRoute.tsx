@@ -4,7 +4,9 @@ import { Navigation } from "@root/structure/Navigation.tsx";
 export const rootRoute = createRootRoute({
   component: () => (
     <div className="flex h-full">
-      <Navigation />
+      <div className="sm:w-80 max-sm:w-8">
+        <Navigation />
+      </div>
       <Outlet />
     </div>
   ),

@@ -26,7 +26,7 @@ export const PlaylistsView: FunctionComponent<{
       url: "playlist/{id}",
       enabled: playlist !== undefined,
       parameters: {
-        id: playlist!.Id,
+        id: playlist?.Id as number,
       },
     });
 
@@ -34,7 +34,6 @@ export const PlaylistsView: FunctionComponent<{
     TrackDto[]
   >({
     url: "track",
-    refetchOnWindowFocus: false,
   });
 
   const isFetching = isFetchingPlaylistDetails || isFetchingTracks;
