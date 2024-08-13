@@ -6,6 +6,11 @@ import { UTCDateTime } from './UTCDateTime.ts';
 import { TimeSpan } from './TimeSpan.ts';
 import { Rating } from './Rating.ts';
 
+export interface ImageDto
+{
+	Image: string;
+	TrackIds: number[];
+}
 export interface TrackDetailsDto
 {
 	Id: number;

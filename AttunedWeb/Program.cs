@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
+using AttunedWebApi.Dtos;
 using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
@@ -69,6 +70,12 @@ internal static class Program
         builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
             new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
                 new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
+                new TimeSpan(0, 1, 0)
+            )
+        );
+        builder.Services.AddSingleton<IRepository<ImageDto, string>>(provider =>
+            new CachingRepository<ImageDto, string>(
+                new TrackImageRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<ITrackListParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );
