@@ -1,11 +1,12 @@
 import { Dialog } from "@components/Dialog.tsx";
-import { FunctionComponent } from "react";
+import { Fragment, FunctionComponent } from "react";
 import { TrackDto } from "@dtos";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
 import IconButton from "@components/IconButton.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
+import { useRouteQuery } from "@utils/useRouteQuery.ts";
 
 interface TrackDetailProps {
   show: boolean;
@@ -13,7 +14,6 @@ interface TrackDetailProps {
   album: string | undefined;
   artist: string | undefined;
   tracks: TrackDto[] | undefined;
-  coverArt: string | undefined;
 }
 
 export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
@@ -22,8 +22,13 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
   album,
   artist,
   tracks,
-  coverArt,
 }) => {
+  const { data: art } = useRouteQuery<string, unknown, { id: number }>({
+    enabled: tracks !== undefined,
+    url: "image/{id}",
+    parameters: { id: tracks?.at(0)?.Id as number },
+  });
+
   return (
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
@@ -31,12 +36,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
       onClose={onClose}
       closeOnBackgroundClick
     >
-      <Header
-        album={album}
-        artist={artist}
-        albumArt={coverArt}
-        onClose={onClose}
-      />
+      <Header album={album} artist={artist} albumArt={art} onClose={onClose} />
       <Details tracks={tracks} />
     </Dialog>
   );
