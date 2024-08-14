@@ -82,7 +82,7 @@ internal static class Program
             new CachingRepository<ImageDto, string>(
                 new TrackImageResizeRepository(provider.GetRequiredService<IXmlSource>(),
                     provider.GetRequiredService<ITrackListParser>(), 200, 80),
-                new TimeSpan(0, 1, 0)
+                new TimeSpan(0, 10, 0)
             )
         );
 
