@@ -69,13 +69,15 @@ internal static class Program
         );
         builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
             new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
-                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
+                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(),
+                    provider.GetRequiredService<IPlaylistParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );
         builder.Services.AddSingleton<IRepository<ImageDto, string>>(provider =>
             new CachingRepository<ImageDto, string>(
-                new TrackImageRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<ITrackListParser>()),
+                new TrackImageResizeRepository(provider.GetRequiredService<IXmlSource>(),
+                    provider.GetRequiredService<ITrackListParser>(), 200, 80),
                 new TimeSpan(0, 1, 0)
             )
         );

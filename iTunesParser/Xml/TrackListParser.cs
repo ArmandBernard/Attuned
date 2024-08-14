@@ -22,19 +22,30 @@ public class TrackListParser : ITrackListParser
         return LoadImage(LoadTagInfo(new TrackDetails(track)));
     }
 
-    public Dictionary<byte[], HashSet<int>> GetAllImages(XDocument doc)
+    public Dictionary<byte[], HashSet<int>> GetAllImages(XDocument doc, Func<byte[], byte[]>? processImage = null)
     {
         var deduplicator = new Dictionary<byte[], HashSet<int>>(new SequenceEqualComparer<byte>());
 
         foreach (var trackNode in GetTracksNode(doc).PlistDictKeys())
         {
             var track = ParseTrackElement(trackNode);
-            
+
             var image = GetImage(track.LocalLocation);
 
             if (image == null)
             {
                 continue;
+            }
+
+            if (processImage != null)
+            {
+                try
+                {
+                    image = processImage(image);
+                }
+                catch
+                {
+                }
             }
 
             if (deduplicator.TryGetValue(image, out var value))
