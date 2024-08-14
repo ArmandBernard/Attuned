@@ -5,6 +5,7 @@ using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
 
 namespace AttunedWebApi;
@@ -56,6 +57,9 @@ internal static class Program
             throw new Exception("LibraryXml prop in appsettings.json needs to be set to the library xml location.");
         }
 
+        builder.Services.AddSingleton<ILoggerProvider, ConsoleLoggerProvider>();
+        builder.Services.AddSingleton<ILogger>(provider =>
+            provider.GetRequiredService<ILoggerProvider>().CreateLogger("everything"));
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
         builder.Services.AddSingleton<IXmlSource>(_ => new XmlSource(xmlPath));

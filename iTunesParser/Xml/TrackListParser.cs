@@ -1,9 +1,10 @@
 using System.Xml.Linq;
 using iTunesSmartParser.Data;
+using Microsoft.Extensions.Logging;
 
 namespace iTunesSmartParser.Xml;
 
-public class TrackListParser : ITrackListParser
+public class TrackListParser(ILogger logger) : ITrackListParser
 {
     public IEnumerable<Track> ParseDocument(XDocument doc) =>
         GetTracksNode(doc).PlistDictKeys().Select(ParseTrackElement);
@@ -43,8 +44,9 @@ public class TrackListParser : ITrackListParser
                 {
                     image = processImage(image);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    logger.LogWarning("Failed to resize the image" + ex);
                 }
             }
 

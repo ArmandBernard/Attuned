@@ -1,4 +1,5 @@
 using iTunesSmartParser.Xml;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace iTunesParserTests.Xml;
 
@@ -9,7 +10,7 @@ public class XmlSourceTests
 
     private readonly XmlSource _xmlSource = new(PATH);
 
-    private readonly ITrackListParser _trackListParser = new TrackListParser();
+    private readonly ITrackListParser _trackListParser = new TrackListParser(NullLogger.Instance);
 
     private readonly IPlaylistParser _playlistParser = new PlaylistParser();
 
