@@ -21,6 +21,20 @@ public class TrackImageResizeRepository(IXmlSource xmlSource, ITrackListParser t
 
         var image = trackListParser.GetById(doc, id)?.CoverArt;
 
-        return image != null ? Convert.ToBase64String(Utils.ImageUtils.ResizeImage(image, size, quality)) : null;
+        if (image == null)
+        {
+            return null;
+        }
+        
+        try
+        {
+            image = Utils.ImageUtils.ResizeImage(image, size, quality);
+        }
+        catch
+        {
+            // image may fail to load or be resized, but we can still pass on the unaltered bytes.
+        }
+
+        return Convert.ToBase64String(image);
     }
 }
