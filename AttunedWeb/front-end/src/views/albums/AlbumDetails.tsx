@@ -1,5 +1,5 @@
 import { Dialog } from "@components/Dialog.tsx";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { TrackDetailsDto, TrackDto } from "@dtos";
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
@@ -7,6 +7,7 @@ import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
 import IconButton from "@components/IconButton.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
+import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -98,18 +99,46 @@ function Header({
 }
 
 function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
+  const [openedTrack, setOpenedTrack] = useState<TrackDto | undefined>(
+    undefined,
+  );
+
+  const index = openedTrack && tracks?.indexOf(openedTrack);
+
+  const previousTrack =
+    index !== undefined && index > 0 ? tracks?.at(index - 1) : undefined;
+
+  const nextTrack =
+    tracks && index !== undefined && index < tracks.length
+      ? tracks.at(index + 1)
+      : undefined;
+
   return (
-    <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
-      {tracks?.map((track) => (
-        <>
-          <span>{track.TrackNumber}</span>
-          <span>{track.Name}</span>
-          <span>{getRatingString(track.Rating as Rating)}</span>
-          <span>
-            {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
-          </span>
-        </>
-      ))}
-    </ul>
+    <>
+      <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
+        {tracks?.map((track) => (
+          <>
+            <span>{track.TrackNumber}</span>
+            <button
+              className="underline text-left"
+              onClick={() => setOpenedTrack(track)}
+            >
+              {track.Name}
+            </button>
+            <span>{getRatingString(track.Rating as Rating)}</span>
+            <span>
+              {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
+            </span>
+          </>
+        ))}
+      </ul>
+      <TrackDetails
+        show={openedTrack !== undefined}
+        onPreviousTrack={previousTrack && (() => setOpenedTrack(previousTrack))}
+        onNextTrack={nextTrack && (() => setOpenedTrack(nextTrack))}
+        onClose={() => setOpenedTrack(undefined)}
+        track={openedTrack}
+      />
+    </>
   );
 }
