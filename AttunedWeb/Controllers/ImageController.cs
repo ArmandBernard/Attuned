@@ -16,4 +16,12 @@ public class ImageController(IRepository<ImageDto, string> trackImageRepository)
     {
         return Ok(await trackImageRepository.Get(token));
     }
+    
+    [HttpGet]
+    [Route("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ImageDto>))]
+    public async Task<IActionResult> Get(int id, CancellationToken token)
+    {
+        return Ok(await trackImageRepository.GetById(id, token));
+    }
 }
