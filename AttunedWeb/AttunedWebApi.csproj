@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Reinforced.Typings" Version="1.6.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="11.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
   </ItemGroup>
 
   <ItemGroup>
