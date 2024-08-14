@@ -32,6 +32,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color"
       show={show}
       onClose={onClose}
+      closeOnBackgroundClick
     >
       <Header album={album} artist={artist} albumArt={art} onClose={onClose} />
       <Details tracks={tracks} />
