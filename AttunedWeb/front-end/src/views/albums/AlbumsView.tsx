@@ -1,5 +1,5 @@
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
-import { TrackDto } from "@dtos";
+import { TrackDto, ImageDto } from "@dtos";
 import { useMemo, useState } from "react";
 import { AlbumItem } from "@views/albums/AlbumItem.tsx";
 import { FullScreenLoading } from "@components/FullScreenLoading.tsx";
@@ -13,6 +13,10 @@ export function AlbumsView() {
     TrackDto[]
   >({
     url: "track",
+  });
+
+  const { data: images } = useRouteQuery<ImageDto[]>({
+    url: "image",
   });
 
   const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
@@ -35,6 +39,10 @@ export function AlbumsView() {
   const openAlbumTracks =
     openAlbum && grouped.get(`${openAlbum.album};${openAlbum.artist}`);
 
+  const openAlbumCoverArt =
+    openAlbumTracks &&
+    images?.find((x) => x.TrackIds.includes(openAlbumTracks[0].Id))?.Image;
+
   return (
     <main className="flex flex-1 flex-col items-center">
       {isLoadingTracks ? (
@@ -45,11 +53,17 @@ export function AlbumsView() {
             const album = x[1][0].Album;
             const artist = x[1][0].Artist;
 
+            const firstTrack = x[1][0];
+
+            const coverArt = images?.find((x) =>
+              x.TrackIds.includes(firstTrack.Id),
+            );
+
             return (
               <AlbumItem
                 album={album}
                 artist={artist}
-                items={x[1]}
+                coverArt={coverArt?.Image}
                 onClick={() => setOpenAlbum({ album, artist })}
               />
             );
@@ -62,6 +76,7 @@ export function AlbumsView() {
         album={openAlbum?.album}
         artist={openAlbum?.artist}
         tracks={openAlbumTracks}
+        coverArt={openAlbumCoverArt}
       />
     </main>
   );

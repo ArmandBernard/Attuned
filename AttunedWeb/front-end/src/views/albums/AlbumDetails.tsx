@@ -1,7 +1,6 @@
 import { Dialog } from "@components/Dialog.tsx";
 import { FunctionComponent } from "react";
-import { TrackDetailsDto, TrackDto } from "@dtos";
-import { useRouteQuery } from "@utils/useRouteQuery.ts";
+import { TrackDto } from "@dtos";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
@@ -12,6 +11,7 @@ interface TrackDetailProps {
   album: string | undefined;
   artist: string | undefined;
   tracks: TrackDto[] | undefined;
+  coverArt: string | undefined;
 }
 
 export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
@@ -20,21 +20,8 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
   album,
   artist,
   tracks,
+  coverArt,
 }) => {
-  const firstTrack = tracks && tracks.length > 0 ? tracks[0] : undefined;
-
-  const { data: trackDetails } = useRouteQuery<
-    TrackDetailsDto,
-    unknown,
-    { id: number }
-  >({
-    enabled: firstTrack !== undefined,
-    url: "track/{id}",
-    parameters: {
-      id: firstTrack?.Id as number,
-    },
-  });
-
   return (
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color"
@@ -44,7 +31,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
       <Header
         album={album}
         artist={artist}
-        albumArt={trackDetails?.CoverArt}
+        albumArt={coverArt}
         onClose={onClose}
       />
       <Details tracks={tracks} />
