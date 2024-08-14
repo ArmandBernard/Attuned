@@ -1,9 +1,11 @@
 using System.Text.Json.Serialization;
 using AttunedWebApi.Converters;
+using AttunedWebApi.Dtos;
 using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
+using Microsoft.Extensions.Logging.Console;
 using Microsoft.OpenApi.Models;
 
 namespace AttunedWebApi;
@@ -55,6 +57,9 @@ internal static class Program
             throw new Exception("LibraryXml prop in appsettings.json needs to be set to the library xml location.");
         }
 
+        builder.Services.AddSingleton<ILoggerProvider, ConsoleLoggerProvider>();
+        builder.Services.AddSingleton<ILogger>(provider =>
+            provider.GetRequiredService<ILoggerProvider>().CreateLogger("everything"));
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
         builder.Services.AddSingleton<IXmlSource>(_ => new XmlSource(xmlPath));
@@ -68,8 +73,16 @@ internal static class Program
         );
         builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
             new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
-                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
+                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(),
+                    provider.GetRequiredService<IPlaylistParser>()),
                 new TimeSpan(0, 1, 0)
+            )
+        );
+        builder.Services.AddSingleton<IRepository<ImageDto, string>>(provider =>
+            new CachingRepository<ImageDto, string>(
+                new TrackImageResizeRepository(provider.GetRequiredService<IXmlSource>(),
+                    provider.GetRequiredService<ITrackListParser>(), 200, 80),
+                new TimeSpan(0, 10, 0)
             )
         );
 

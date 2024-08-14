@@ -22,10 +22,6 @@ type DialogProps = HTMLAttributes<HTMLElement> & {
    */
   onClose: () => void;
   /**
-   * Classes to pass to the dialog itself
-   */
-  className: string;
-  /**
    * If true, the dialog closes when the background is clicked
    */
   closeOnBackgroundClick?: boolean;
@@ -37,7 +33,7 @@ type DialogProps = HTMLAttributes<HTMLElement> & {
  */
 export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
   (props, ref) => {
-    const { show, children, ...rest } = props;
+    const { show, children, closeOnBackgroundClick, ...rest } = props;
 
     const innerRef = useRef<HTMLDialogElement>(null);
 
@@ -54,10 +50,9 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
     return (
       <dialog
         {...rest}
-        className={props.className}
         ref={innerRef}
         onClick={(e) => {
-          if (props.closeOnBackgroundClick && e.target === innerRef.current) {
+          if (closeOnBackgroundClick && e.target === innerRef.current) {
             props.onClose();
           }
         }}

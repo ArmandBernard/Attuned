@@ -31,7 +31,14 @@ export function useRouteQuery<
       if (!response.ok) {
         throw new Error("fetch failed");
       }
-      return response.json();
+
+      const cloned = response.clone();
+
+      try {
+        return await response.json();
+      } catch {
+        return await cloned.text();
+      }
     },
     ...rest,
   });

@@ -47,10 +47,11 @@ export function AlbumsView() {
 
             return (
               <AlbumItem
+                key={x[0]}
                 album={album}
                 artist={artist}
-                items={x[1]}
                 onClick={() => setOpenAlbum({ album, artist })}
+                tracks={x[1]}
               />
             );
           })}

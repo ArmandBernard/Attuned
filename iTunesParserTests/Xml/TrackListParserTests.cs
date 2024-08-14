@@ -1,6 +1,7 @@
 using iTunesSmartParser.Xml;
 using System.Xml.Linq;
 using iTunesSmartParser.Data;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace iTunesParserTests.Xml;
 
@@ -88,7 +89,7 @@ public class TrackListParserTests
         </plist>
         """;
 
-    private readonly TrackListParser _trackListParser = new();
+    private readonly TrackListParser _trackListParser = new(NullLogger.Instance);
 
     private readonly IEnumerable<Track> _expectedTrackList = new Track[]
     {

@@ -1,10 +1,10 @@
 import { Dialog } from "@components/Dialog.tsx";
-import { FunctionComponent } from "react";
-import { TrackDetailsDto, TrackDto } from "@dtos";
-import { useRouteQuery } from "@utils/useRouteQuery.ts";
+import { Fragment, FunctionComponent } from "react";
+import { TrackDto } from "@dtos";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
+import { useRouteQuery } from "@utils/useRouteQuery.ts";
 
 interface TrackDetailProps {
   show: boolean;
@@ -21,18 +21,10 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
   artist,
   tracks,
 }) => {
-  const firstTrack = tracks && tracks.length > 0 ? tracks[0] : undefined;
-
-  const { data: trackDetails } = useRouteQuery<
-    TrackDetailsDto,
-    unknown,
-    { id: number }
-  >({
-    enabled: firstTrack !== undefined,
-    url: "track/{id}",
-    parameters: {
-      id: firstTrack?.Id as number,
-    },
+  const { data: art } = useRouteQuery<string, unknown, { id: number }>({
+    enabled: tracks !== undefined,
+    url: "image/{id}",
+    parameters: { id: tracks?.at(0)?.Id as number },
   });
 
   return (
@@ -40,13 +32,9 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color"
       show={show}
       onClose={onClose}
+      closeOnBackgroundClick
     >
-      <Header
-        album={album}
-        artist={artist}
-        albumArt={trackDetails?.CoverArt}
-        onClose={onClose}
-      />
+      <Header album={album} artist={artist} albumArt={art} onClose={onClose} />
       <Details tracks={tracks} />
     </Dialog>
   );
@@ -95,14 +83,14 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
   return (
     <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
       {tracks?.map((track) => (
-        <>
+        <Fragment key={track.Id}>
           <span>{track.TrackNumber}</span>
           <span>{track.Name}</span>
           <span>{getRatingString(track.Rating as Rating)}</span>
           <span>
             {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
           </span>
-        </>
+        </Fragment>
       ))}
     </ul>
   );

@@ -1,9 +1,10 @@
 using System.Xml.Linq;
 using iTunesSmartParser.Data;
+using Microsoft.Extensions.Logging;
 
 namespace iTunesSmartParser.Xml;
 
-public class TrackListParser : ITrackListParser
+public class TrackListParser(ILogger logger) : ITrackListParser
 {
     public IEnumerable<Track> ParseDocument(XDocument doc) =>
         GetTracksNode(doc).PlistDictKeys().Select(ParseTrackElement);
@@ -20,6 +21,46 @@ public class TrackListParser : ITrackListParser
         var track = ParseTrackElement(trackNode);
 
         return LoadImage(LoadTagInfo(new TrackDetails(track)));
+    }
+
+    public Dictionary<byte[], HashSet<int>> GetAllImages(XDocument doc, Func<byte[], byte[]>? processImage = null)
+    {
+        var deduplicator = new Dictionary<byte[], HashSet<int>>(new SequenceEqualComparer<byte>());
+
+        foreach (var trackNode in GetTracksNode(doc).PlistDictKeys())
+        {
+            var track = ParseTrackElement(trackNode);
+
+            var image = GetImage(track.LocalLocation);
+
+            if (image == null)
+            {
+                continue;
+            }
+
+            if (processImage != null)
+            {
+                try
+                {
+                    image = processImage(image);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning("Failed to resize the image" + ex);
+                }
+            }
+
+            if (deduplicator.TryGetValue(image, out var value))
+            {
+                value.Add(track.Id);
+            }
+            else
+            {
+                deduplicator.Add(image, new HashSet<int>(track.Id));
+            }
+        }
+
+        return deduplicator;
     }
 
     /// <summary>
@@ -89,25 +130,30 @@ public class TrackListParser : ITrackListParser
         };
     }
 
-    // This is temporarily disabled while the XML-sourced information is worked on.
     private static TrackDetails LoadImage(TrackDetails track)
     {
-        if (track.LocalLocation != null && !File.Exists(track.LocalLocation))
+        var coverArt = GetImage(track.LocalLocation);
+
+        return coverArt != null
+            ? track with
+            {
+                CoverArt = coverArt
+            }
+            : track;
+    }
+
+    private static byte[]? GetImage(string? path)
+    {
+        if (path == null || !File.Exists(path))
         {
-            return track;
+            return null;
         }
 
-        using var file = TagLib.File.Create(track.LocalLocation);
+        using var file = TagLib.File.Create(path);
+
+        var pictures = file.Tag.Pictures;
 
         // if there are any pictures
-        if (file.Tag.Pictures.Length >= 1)
-        {
-            return track with
-            {
-                CoverArt = file.Tag.Pictures[0].Data.Data
-            };
-        }
-
-        return track;
+        return pictures.Length >= 1 ? pictures[0].Data.Data : null;
     }
 }
