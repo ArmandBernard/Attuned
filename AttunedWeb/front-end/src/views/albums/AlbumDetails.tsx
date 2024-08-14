@@ -82,14 +82,14 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
   return (
     <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
       {tracks?.map((track) => (
-        <>
+        <Fragment key={track.Id}>
           <span>{track.TrackNumber}</span>
           <span>{track.Name}</span>
           <span>{getRatingString(track.Rating as Rating)}</span>
           <span>
             {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
           </span>
-        </>
+        </Fragment>
       ))}
     </ul>
   );
