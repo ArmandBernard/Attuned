@@ -1,5 +1,5 @@
 import { Dialog } from "@components/Dialog.tsx";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useMemo, useState } from "react";
 import { TrackDetailsDto, TrackDto } from "@dtos";
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
@@ -105,18 +105,20 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
 
   const index = openedTrack && tracks?.indexOf(openedTrack);
 
+  const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
+
   const previousTrack =
-    index !== undefined && index > 0 ? tracks?.at(index - 1) : undefined;
+    index !== undefined && index > 0 ? sorted?.at(index - 1) : undefined;
 
   const nextTrack =
-    tracks && index !== undefined && index < tracks.length
-      ? tracks.at(index + 1)
+    sorted && index !== undefined && index < sorted.length
+      ? sorted.at(index + 1)
       : undefined;
 
   return (
     <>
       <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
-        {tracks?.map((track) => (
+        {sorted?.map((track) => (
           <>
             <span>{track.TrackNumber}</span>
             <button
@@ -142,3 +144,20 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
     </>
   );
 }
+
+const sortComparer = (trackA: TrackDto, trackB: TrackDto): number => {
+  const discNumberA = trackA.DiscNumber ?? 0;
+  const discNumberB = trackB.DiscNumber ?? 0;
+
+  const discSort =
+    discNumberA > discNumberB ? 1 : discNumberA < discNumberB ? -1 : 0;
+
+  if (discSort !== 0) {
+    return discSort;
+  }
+
+  const trackNumberA = trackA.TrackNumber ?? 0;
+  const trackNumberB = trackB.TrackNumber ?? 0;
+
+  return trackNumberA > trackNumberB ? 1 : trackNumberA < trackNumberB ? -1 : 0;
+};
