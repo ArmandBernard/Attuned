@@ -11,7 +11,7 @@
     "test-compile": "tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/react-query": "5.51.23",
+    "@tanstack/react-query": "5.51.24",
     "@tanstack/react-router": "1.48.1",
     "react": "18.3.1",
     "react-dom": "18.3.1"
