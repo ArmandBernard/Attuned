@@ -1,8 +1,8 @@
 # Attuned
 
-A personal project attempting to create an iTunes replacement.
+A personal stupid project attempting to create an iTunes replacement.
 
-The key requirements are:
+The key stupid requirements are:
 - Cross compatibility with iTunes' library XML
 - Ability to create playlists files from smart playlists for use on Android
 
@@ -12,33 +12,34 @@ Huge kudos to [cvzi](https://github.com/cvzi)'s [itunes_smartplaylist](https://g
 
 ## UI Screenshots
 
-Here are some pictures of the UI as it currently is.
+Here are some stupid pictures of the UI as it currently is.
 
 On Desktop:
 
 ![Desktop](./Images/Desktop.png)
 
-On mobile, with the sidebar open:
+On mobile, with the stupid sidebar open:
 
 ![Mobile](./Images/MobileOpen.png)
 
-Track details:
+Track stupid details:
 
 ![Track details](./Images/TrackDetails.png)
 
-The details of a smart playlist:
+The details of a ~~smart~~ stupid playlist:
 
 ![Smart Playlist details](./Images/SmartPlaylist.png)
 
 ## Tech stack
 
-My first attempt at this project was with .NET Framework 4 and WinForms. Now I'm targeting .NET Core and working on a
+My first attempt at this stupid project was with .NET Framework 4 and WinForms. Now I'm targeting .NET Core and working on a
 WebAPI + React front-end.
 
 ## Development checklist
 
 - [x] Decode XML into an in-memory data structure.
 - [x] Create a GUI to show this data.
+- [x] Stupid
 - [ ] Generate non-smart playlist files for Android.
 
 ## Not planned, potential features
