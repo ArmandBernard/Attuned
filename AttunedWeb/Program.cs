@@ -4,7 +4,7 @@ using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
 using iTunesSmartParser.Xml;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace AttunedWebApi;
 
@@ -44,7 +44,7 @@ internal static class Program
         {
             options.MapType<TimeSpan>(() => new OpenApiSchema
             {
-                Type = "number"
+                Type = JsonSchemaType.Number
             });
         });
 
