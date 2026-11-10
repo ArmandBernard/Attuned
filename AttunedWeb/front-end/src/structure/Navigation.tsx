@@ -192,7 +192,7 @@ function Contents({
                     >
                       <span
                         aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
-                        className="inline-block flex-shrink-0"
+                        className="inline-block shrink-0"
                       >
                         {x.IsSmart ? "⛭" : "♫"}
                       </span>
