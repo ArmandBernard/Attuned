@@ -70,12 +70,12 @@ function Header({
           <div className="w-32 h-32 flex items-center justify-center">
             <img
               alt="album art"
-              className="max-w-32 max-h-32 h-auto w-auto rounded"
+              className="max-w-32 max-h-32 h-auto w-auto rounded-sm"
               src={`data:image/png;base64,${albumArt}`}
             />
           </div>
         ) : (
-          <div className="w-32 h-32 rounded bg-paper-2"></div>
+          <div className="w-32 h-32 rounded-sm bg-paper-2"></div>
         )}
         <div>
           <h1 className="text-xl">{album}</h1>

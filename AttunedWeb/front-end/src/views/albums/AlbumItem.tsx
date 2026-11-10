@@ -29,12 +29,12 @@ export function AlbumItem({ album, artist, items, onClick }: AlbumItemProps) {
         <div className="w-48 h-48 flex items-center justify-center">
           <img
             alt="album art"
-            className="max-w-48 max-h-48 h-auto w-auto rounded"
+            className="max-w-48 max-h-48 h-auto w-auto rounded-sm"
             src={`data:image/png;base64,${trackDetails.CoverArt}`}
           />
         </div>
       ) : (
-        <div className="w-48 h-48 rounded bg-paper-2"></div>
+        <div className="w-48 h-48 rounded-sm bg-paper-2"></div>
       )}
       <button className="truncate text-left">{album}</button>
       <div className="text-sm truncate">{artist}</div>
