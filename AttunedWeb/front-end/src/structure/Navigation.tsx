@@ -68,7 +68,7 @@ function Contents({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  navRef: RefObject<HTMLElement>;
+  navRef: RefObject<HTMLElement | null>;
   className?: string;
 }) {
   const params = useParams({ strict: false });
