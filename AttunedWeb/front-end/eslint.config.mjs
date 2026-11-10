@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { FlatCompat } from "@eslint/eslintrc";
 import eslint from "@eslint/js";
 import tsEslint from "typescript-eslint";
+import { globalIgnores } from "eslint/config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +19,10 @@ export default [
   eslint.configs.recommended,
   ...tsEslint.configs.recommended,
   ...fixupConfigRules(compat.extends("plugin:react-hooks/recommended")),
-  {
+  globalIgnores([
+    "dist/"
+  ]),
+  {    
     files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
     plugins: {
       react,
