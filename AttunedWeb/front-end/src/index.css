@@ -1,6 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+    --color-background: var(--background);
+    --color-alternating-row: var(--alternating-row);
+    --color-selected-row: var(--selected-row);
+    --color-text-color: var(--text-color);
+    --color-primary: var(--primary);
+    --color-love: var(--love);
+    --color-paper-1: var(--paper-1);
+    --color-paper-2: var(--paper-2);
+}
 
 body {
     @apply bg-background text-text-color;
