@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { apiBase } from "@utils/useRouteQuery.ts";
+import { MusicNotesIcon } from "@components/icons/MusicNotesIcon.tsx";
 
 interface CoverArtProps {
   trackId: number | undefined;
@@ -27,7 +28,7 @@ export function CoverArt({
     <div
       className={`${sizeClassName} rounded-sm bg-paper-2 flex items-center justify-center`}
     >
-      {!failed && (
+      {!failed ? (
         <img
           alt="album art"
           loading="lazy"
@@ -36,6 +37,10 @@ export function CoverArt({
           src={new URL(`cover/${trackId}`, apiBase).toString()}
           onError={() => setFailedId(trackId)}
         />
+      ) : (
+        <div className="p-[10%]">
+          <MusicNotesIcon className="fill-paper-1 h-full w-full" />
+        </div>
       )}
     </div>
   );
