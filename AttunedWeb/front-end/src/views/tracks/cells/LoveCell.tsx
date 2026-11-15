@@ -4,9 +4,7 @@ import { LoveStatus } from "@components/icons/LoveStatus.tsx";
 export const LoveCell: CellComponent<boolean | undefined> = (props) => {
   const { className, value, ...rest } = props;
 
-  const classNames = ["px-2 text-love text-center", className]
-    .filter(Boolean)
-    .join(" ");
+  const classNames = ["px-2 text-center", className].filter(Boolean).join(" ");
 
   return (
     <td aria-label={`${value} stars`} className={classNames} {...rest}>

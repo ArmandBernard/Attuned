@@ -1,6 +1,9 @@
 import { CellComponent } from "./CellComponent.ts";
+import { ReactNode } from "react";
 
-export const TextCell: CellComponent<string | undefined> = (props) => {
+export const TextCell: CellComponent<string | ReactNode | undefined> = (
+  props,
+) => {
   const { className, value, ...rest } = props;
 
   const classNames = ["px-2 truncate", className].filter(Boolean).join(" ");

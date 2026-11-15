@@ -5,7 +5,7 @@ import { Rating } from "@root/dtos/Rating.ts";
 export const RatingCell: CellComponent<Rating> = (props) => {
   const { className, value, ...rest } = props;
 
-  const classNames = ["px-2 whitespace-nowrap text-primary text-lg", className]
+  const classNames = ["px-2 whitespace-nowrap text-lg", className]
     .filter(Boolean)
     .join(" ");
 

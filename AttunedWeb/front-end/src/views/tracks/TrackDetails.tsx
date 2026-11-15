@@ -6,6 +6,10 @@ import { Rating } from "@root/dtos/Rating.ts";
 import { LoveStatus } from "@components/icons/LoveStatus.tsx";
 import { getLoveLabel } from "@utils/stringFormatters/getLoveLabel.ts";
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
+import CloseIcon from "@components/icons/CloseIcon.tsx";
+import IconButton from "@components/IconButton.tsx";
+import ChevronRightIcon from "@components/icons/ChevronRightIcon.tsx";
+import ChevronLeftIcon from "@components/icons/ChevronLeftIcon.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -89,28 +93,28 @@ function Header({
           <div className="text-base">{track.Album}</div>
         </div>
       </div>
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-2">
         {onPreviousTrack && (
-          <button
+          <IconButton
             aria-label="Previous track"
             title="Previous track"
             onClick={onPreviousTrack}
           >
-            ⮜
-          </button>
+            <ChevronLeftIcon />
+          </IconButton>
         )}
         {onNextTrack && (
-          <button
+          <IconButton
             aria-label="Next track"
             title="Next track"
             onClick={onNextTrack}
           >
-            ⮞
-          </button>
+            <ChevronRightIcon />
+          </IconButton>
         )}
-        <button aria-label="Close" title="Close" onClick={onClose}>
-          ✕
-        </button>
+        <IconButton aria-label="Close" title="Close" onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
       </div>
     </div>
   );

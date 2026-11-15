@@ -5,6 +5,10 @@ import { CellComponent } from "./cells/CellComponent.ts";
 import { trackFieldNameDictionary } from "./trackFieldNameDictionary.ts";
 import { FieldCellTypeDictionary } from "./FieldTypeDictionary.ts";
 import { CellTypes } from "./CellTypes.ts";
+import ChevronUpIcon from "@components/icons/ChevronUpIcon.tsx";
+import ChevronDownIcon from "@components/icons/ChevronDownIcon.tsx";
+import { TextCell } from "@views/tracks/cells/TextCell.tsx";
+import LinkButton from "@components/LinkButton.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -57,16 +61,12 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
     <table
       aria-label="Tracks"
       style={{
-        gridTemplateColumns: "auto " + fieldsToShow.map(() => "auto").join(" "),
+        gridTemplateColumns: fieldsToShow.map(() => "auto").join(" "),
       }}
       className="grid min-w-[72rem]"
     >
       <thead className="contents">
         <tr className="contents">
-          <th
-            className="border flex sticky top-0 bg-background"
-            aria-label="Track actions"
-          ></th>
           {fieldsToShow.map((field) => (
             <th
               className="border flex sticky top-0 bg-background"
@@ -79,7 +79,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
             >
               <button
                 aria-label={`sort by ${trackFieldNameDictionary[field]}`}
-                className="flex flex-1 px-2 gap-2"
+                className="flex flex-1 items-center pl-2 gap-2"
                 onClick={() => setSortFieldOrToggleSortDirection(field)}
               >
                 <span
@@ -93,10 +93,14 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
                 >
                   {trackFieldNameDictionary[field]}
                 </span>
-                <span aria-hidden>
+                <span className="fill-text-color h-6 w-6 py-1 px-1" aria-hidden>
                   {props.sortOrder &&
                     props.sortOrder.field === field &&
-                    (props.sortOrder.direction === "ascending" ? "˄" : "˅")}
+                    (props.sortOrder.direction === "ascending" ? (
+                      <ChevronUpIcon />
+                    ) : (
+                      <ChevronDownIcon />
+                    ))}
                 </span>
               </button>
             </th>
@@ -110,17 +114,22 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
               key={track.Id}
               className="contents [&>td]:odd:bg-alternating-row"
             >
-              <td>
-                <button
-                  className="px-2 text-primary font-bold"
-                  aria-label="View details"
-                  title="View details"
-                  onClick={() => props.setTrackToShow(track)}
-                >
-                  🗎
-                </button>
-              </td>
               {fieldsToShow.map((field) => {
+                if (field === "Name") {
+                  return (
+                    <TextCell
+                      key={field}
+                      value={
+                        <LinkButton
+                          className="max-w-full truncate"
+                          onClick={() => props.setTrackToShow(track)}
+                        >
+                          {track[field]}
+                        </LinkButton>
+                      }
+                    />
+                  );
+                }
                 const Cell = GetCellElement(field) as CellComponent<unknown>;
                 return <Cell key={field} value={track[field]} />;
               })}

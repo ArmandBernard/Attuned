@@ -6,6 +6,7 @@ import { TimeSpan } from "@root/dtos/TimeSpan.ts";
 import { PlaylistDetails } from "@views/playlists/PlaylistDetails.tsx";
 import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
 import { TracksGrid } from "@views/tracks/TracksGrid";
+import LinkButton from "@components/LinkButton.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -98,12 +99,12 @@ export const PlaylistsView: FunctionComponent<{
             )}
           </span>
           {playlist?.IsSmart && (
-            <button
-              className="inline-block text-primary"
+            <LinkButton
+              className="inline-block"
               onClick={() => setShowPlaylistDetails(true)}
             >
               View rules
-            </button>
+            </LinkButton>
           )}
         </div>
       )}
