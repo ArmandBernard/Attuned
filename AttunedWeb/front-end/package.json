@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "analyze": "tsc && vite build --mode analyze",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test-compile": "tsc --noEmit"
@@ -32,7 +33,8 @@
     "tailwindcss": "4.3.5",
     "typescript": "5.9.3",
     "typescript-eslint": "8.72.2",
-    "vite": "8.3.8"
+    "vite": "8.3.8",
+    "vite-bundle-analyzer": "1.3.9"
   },
   "overrides": {
     "eslint-plugin-react-hooks": {
