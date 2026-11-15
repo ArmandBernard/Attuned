@@ -42,6 +42,12 @@ export function AlbumsView() {
   const openAlbumTracks =
     openAlbum && grouped[`${openAlbum.album};${openAlbum.albumArtist}`];
 
+  const trackParams = useParams({
+    from: "/albums/$albumArtist/$album/$trackId",
+    shouldThrow: false,
+  });
+  const openedTrackId = trackParams ? parseInt(trackParams.trackId) : undefined;
+
   const closeAlbum = () => {
     void navigate({ to: "/albums" });
   };
@@ -75,6 +81,7 @@ export function AlbumsView() {
         album={openAlbum?.album}
         albumArtist={openAlbum?.albumArtist}
         tracks={openAlbumTracks}
+        openedTrackId={openedTrackId}
       />
     </main>
   );
