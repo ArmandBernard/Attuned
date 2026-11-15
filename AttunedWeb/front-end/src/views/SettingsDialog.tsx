@@ -1,6 +1,9 @@
 import { Dialog } from "@components/Dialog.tsx";
 import Toggle from "@components/Toggle.tsx";
-import { useState } from "react";
+import {
+  setReadonlyMode,
+  useIsReadonlyMode,
+} from "@utils/useIsReadonlyMode.ts";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
 import IconButton from "@components/IconButton.tsx";
 
@@ -10,7 +13,7 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
-  const [readonlyMode, setReadonlyMode] = useState<boolean>(true);
+  const readonlyMode = useIsReadonlyMode();
 
   return (
     <Dialog
@@ -37,10 +40,7 @@ export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
         </div>
         <label className="flex items-center justify-between gap-2">
           Enable read-only mode{" "}
-          <Toggle
-            checked={readonlyMode}
-            onChange={(checked) => setReadonlyMode(checked)}
-          />
+          <Toggle checked={readonlyMode} onChange={setReadonlyMode} />
         </label>
       </div>
     </Dialog>
