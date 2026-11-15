@@ -3,6 +3,8 @@ import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { PlaylistDto } from "@dtos";
 import { Link, useMatchRoute, useParams } from "@tanstack/react-router";
 import { Dialog } from "@components/Dialog.tsx";
+import CloseIcon from "@components/icons/CloseIcon.tsx";
+import IconButton from "@components/IconButton.tsx";
 
 const mediaPlaylistNames = [
   "Music",
@@ -110,13 +112,14 @@ function Contents({
     <nav ref={navRef} tabIndex={0} className={navClassNames.join(" ")}>
       <div className="flex px-4 pt-4 pb-2 bg-background justify-between">
         <h2 className="text-2xl">Navigation</h2>
-        <button
-          className="sm:hidden text-2xl"
-          aria-label="close nav"
+        <IconButton
+          className="sm:hidden"
+          aria-label="Close"
+          title="Close"
           onClick={onClose}
         >
-          ✕
-        </button>
+          <CloseIcon />
+        </IconButton>
       </div>
       <div className="bg-background h-full overflow-y-auto overflow-x-hidden">
         <ul>
