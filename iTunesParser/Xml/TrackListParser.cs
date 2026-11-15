@@ -66,6 +66,7 @@ public class TrackListParser : ITrackListParser
             Artist = properties.GetValueOrDefault("Artist", null),
             Composer = properties.GetValueOrDefault("Composer", null),
             Album = properties.GetValueOrDefault("Album", null),
+            AlbumArtist = properties.GetValueOrDefault("Album Artist", null),
             Genre = properties.GetValueOrDefault("Genre", null),
             Location = properties["Location"]!,
         };

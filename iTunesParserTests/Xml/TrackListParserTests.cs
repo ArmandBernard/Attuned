@@ -46,6 +46,7 @@ public class TrackListParserTests
                     <key>Library Folder Count</key><integer>-1</integer>
                     <key>Name</key><string>Resonance</string>
                     <key>Artist</key><string>TM Revolution</string>
+                    <key>Album Artist</key><string>Studio Bones</string>
                     <key>Album</key><string>Soul Eater</string>
                     <key>Genre</key><string>Anime</string>
                     <key>Kind</key><string>MPEG audio file</string>
@@ -79,6 +80,7 @@ public class TrackListParserTests
                     <key>Name</key><string>STRENGTH.</string>
                     <key>Artist</key><string>Abingdon Boys School</string>
                     <key>Album</key><string>Soul Eater</string>
+                    <key>Album Artist</key><string>Studio Bones</string>
                     <key>Genre</key><string>Anime</string>
                     <key>Kind</key><string>MPEG audio file</string>
                     <key>Location</key><string>file://localhost/D:/Users/arman/Documents/MEGA/MUSIC/Soul%20Eater/STRENGTH_.mp3</string>
@@ -95,6 +97,7 @@ public class TrackListParserTests
         new()
         {
             Album = "Soul Eater",
+            AlbumArtist = "Studio Bones",
             Artist = "TM Revolution",
             Bpm = null,
             BitRate = 128,
@@ -122,6 +125,7 @@ public class TrackListParserTests
         new()
         {
             Album = "Soul Eater",
+            AlbumArtist = "Studio Bones",
             Artist = "Abingdon Boys School",
             Bpm = null,
             BitRate = 320,

@@ -3,12 +3,17 @@ import { useRouteQuery } from "@utils/useRouteQuery.ts";
 
 interface AlbumItemProps {
   album: string;
-  artist: string;
+  albumArtist: string;
   items: TrackDto[];
   onClick: () => void;
 }
 
-export function AlbumItem({ album, artist, items, onClick }: AlbumItemProps) {
+export function AlbumItem({
+  album,
+  albumArtist,
+  items,
+  onClick,
+}: AlbumItemProps) {
   const firstTrack = items.length > 0 ? items[0] : undefined;
 
   const { data: trackDetails } = useRouteQuery<
@@ -37,7 +42,7 @@ export function AlbumItem({ album, artist, items, onClick }: AlbumItemProps) {
         <div className="w-48 h-48 rounded-sm bg-paper-2"></div>
       )}
       <button className="truncate text-left cursor-pointer">{album}</button>
-      <div className="text-sm truncate">{artist}</div>
+      <div className="text-sm truncate">{albumArtist}</div>
     </div>
   );
 }

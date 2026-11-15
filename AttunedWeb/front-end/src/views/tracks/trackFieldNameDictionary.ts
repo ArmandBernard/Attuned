@@ -2,6 +2,7 @@ import { TrackDto } from "@dtos";
 
 export const trackFieldNameDictionary: Record<keyof TrackDto, string> = {
   Album: "Album",
+  AlbumArtist: "Album Artist",
   Artist: "Artist",
   BitRate: "Bit Rate",
   Bpm: "Beats Per Minute",

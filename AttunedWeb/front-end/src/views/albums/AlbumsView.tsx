@@ -7,33 +7,30 @@ import { AlbumDetails } from "@views/albums/AlbumDetails.tsx";
 
 export function AlbumsView() {
   const [openAlbum, setOpenAlbum] = useState<
-    { album: string; artist: string } | undefined
+    { album: string; albumArtist: string } | undefined
   >(undefined);
-  const { data: tracks, isLoading: isLoadingTracks } = useRouteQuery<
+  const { data: unsortedTracks, isLoading: isLoadingTracks } = useRouteQuery<
     TrackDto[]
   >({
     url: "track",
   });
 
-  const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
+  const sorted = useMemo(
+    () => unsortedTracks?.toSorted(sortComparer),
+    [unsortedTracks],
+  );
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, TrackDto[]>();
-    sorted?.forEach((track) => {
-      const key = `${track.Album};${track.Artist}`;
-      const collection = map.get(key);
-      if (!collection) {
-        map.set(key, [track]);
-      } else {
-        collection.push(track);
-      }
-    });
-
-    return map;
-  }, [sorted]);
+  const grouped = useMemo(
+    () =>
+      Object.groupBy(
+        sorted ?? [],
+        (track) => `${track.Album};${track.AlbumArtist}`,
+      ),
+    [sorted],
+  );
 
   const openAlbumTracks =
-    openAlbum && grouped.get(`${openAlbum.album};${openAlbum.artist}`);
+    openAlbum && grouped[`${openAlbum.album};${openAlbum.albumArtist}`];
 
   return (
     <main className="flex flex-1 flex-col items-center">
@@ -41,16 +38,19 @@ export function AlbumsView() {
         <FullScreenLoading />
       ) : (
         <div className="p-4 justify-items-center grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {[...grouped].map((x) => {
-            const album = x[1][0].Album;
-            const artist = x[1][0].Artist;
+          {Object.entries(grouped).map(([group, tracks]) => {
+            if (!tracks) return null;
+
+            const album = tracks[0].Album;
+            const albumArtist = tracks[0].AlbumArtist;
 
             return (
               <AlbumItem
+                key={group}
                 album={album}
-                artist={artist}
-                items={x[1]}
-                onClick={() => setOpenAlbum({ album, artist })}
+                albumArtist={albumArtist}
+                items={tracks}
+                onClick={() => setOpenAlbum({ album, albumArtist })}
               />
             );
           })}
@@ -60,7 +60,7 @@ export function AlbumsView() {
         show={openAlbum !== undefined}
         onClose={() => setOpenAlbum(undefined)}
         album={openAlbum?.album}
-        artist={openAlbum?.artist}
+        albumArtist={openAlbum?.albumArtist}
         tracks={openAlbumTracks}
       />
     </main>

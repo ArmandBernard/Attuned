@@ -14,7 +14,7 @@ interface TrackDetailProps {
   show: boolean;
   onClose: () => void;
   album: string | undefined;
-  artist: string | undefined;
+  albumArtist: string | undefined;
   tracks: TrackDto[] | undefined;
 }
 
@@ -22,7 +22,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
   show,
   onClose,
   album,
-  artist,
+  albumArtist,
   tracks,
 }) => {
   const firstTrack = tracks && tracks.length > 0 ? tracks[0] : undefined;
@@ -39,6 +39,12 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
     },
   });
 
+  const distinctArtists = new Set([
+    ...(albumArtist ? [albumArtist] : []),
+    ...(tracks?.map((t) => t.Artist) ?? []),
+  ]);
+  const showArtist = distinctArtists.size > 1;
+
   return (
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
@@ -48,23 +54,23 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
     >
       <Header
         album={album}
-        artist={artist}
+        albumArtist={albumArtist ?? firstTrack?.Artist}
         albumArt={trackDetails?.CoverArt}
         onClose={onClose}
       />
-      <Details tracks={tracks} />
+      <Details tracks={tracks} showArtist={showArtist} />
     </Dialog>
   );
 };
 
 function Header({
   album,
-  artist,
+  albumArtist,
   albumArt,
   onClose,
 }: {
   album: string | undefined;
-  artist: string | undefined;
+  albumArtist: string | undefined;
   albumArt: string | undefined;
   onClose: () => void;
 }) {
@@ -84,7 +90,7 @@ function Header({
         )}
         <div>
           <h1 className="text-xl">{album}</h1>
-          <div className="text-base">{artist}</div>
+          <div className="text-base">{albumArtist}</div>
         </div>
       </div>
       <IconButton
@@ -99,14 +105,20 @@ function Header({
   );
 }
 
-function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
+function Details({
+  tracks,
+  showArtist,
+}: {
+  tracks: TrackDto[] | undefined;
+  showArtist: boolean;
+}) {
   const [openedTrack, setOpenedTrack] = useState<TrackDto | undefined>(
     undefined,
   );
 
-  const index = openedTrack && tracks?.indexOf(openedTrack);
+  const sorted = useMemo(() => tracks?.toSorted(sortComparer), [tracks]);
 
-  const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
+  const index = openedTrack && sorted?.indexOf(openedTrack);
 
   const previousTrack =
     index !== undefined && index > 0 ? sorted?.at(index - 1) : undefined;
@@ -122,7 +134,7 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
 
   return (
     <>
-      <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
+      <ul className="grid grid-cols-[auto_1fr_auto_auto] items-center p-4 gap-x-4 gap-y-2">
         {Object.entries(groupedByDisc).map(([disc, tracks]) => {
           return (
             <>
@@ -135,12 +147,17 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
               {tracks?.map((track) => (
                 <>
                   <span>{track.TrackNumber}</span>
-                  <LinkButton
-                    className="text-left"
-                    onClick={() => setOpenedTrack(track)}
-                  >
-                    {track.Name}
-                  </LinkButton>
+                  <div>
+                    <LinkButton
+                      className="block"
+                      onClick={() => setOpenedTrack(track)}
+                    >
+                      {track.Name}
+                    </LinkButton>
+                    {showArtist && (
+                      <div className="text-sm">{track.Artist}</div>
+                    )}
+                  </div>
                   <span>{getRatingString(track.Rating as Rating)}</span>
                   <span>
                     {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
