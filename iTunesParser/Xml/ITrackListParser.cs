@@ -8,4 +8,5 @@ public interface ITrackListParser
     IEnumerable<Track> ParseDocument(XDocument doc);
     Track ParseTrackElement(XElement tracksElement);
     TrackDetails? GetById(XDocument doc, int id);
+    CoverArt? GetCoverArt(XDocument doc, int id);
 }

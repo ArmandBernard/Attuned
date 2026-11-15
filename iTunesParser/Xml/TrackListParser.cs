@@ -22,6 +22,35 @@ public class TrackListParser : ITrackListParser
         return LoadImage(LoadTagInfo(new TrackDetails(track)));
     }
 
+    public CoverArt? GetCoverArt(XDocument doc, int id)
+    {
+        var trackNode = GetTracksNode(doc).PlistDictGet(id.ToString());
+
+        if (trackNode == null)
+        {
+            return null;
+        }
+
+        var localLocation = new TrackDetails(ParseTrackElement(trackNode)).LocalLocation;
+
+        if (localLocation == null || !File.Exists(localLocation))
+        {
+            return null;
+        }
+
+        using var file = TagLib.File.Create(localLocation);
+
+        if (file.Tag.Pictures.Length < 1)
+        {
+            return null;
+        }
+
+        var picture = file.Tag.Pictures[0];
+
+        return new CoverArt(picture.Data.Data,
+            string.IsNullOrEmpty(picture.MimeType) ? "image/jpeg" : picture.MimeType);
+    }
+
     /// <summary>
     /// Get the node which contains all tracks
     /// </summary>
