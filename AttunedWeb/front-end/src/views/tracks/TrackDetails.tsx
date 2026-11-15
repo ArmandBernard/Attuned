@@ -11,22 +11,27 @@ import IconButton from "@components/IconButton.tsx";
 import ChevronRightIcon from "@components/icons/ChevronRightIcon.tsx";
 import ChevronLeftIcon from "@components/icons/ChevronLeftIcon.tsx";
 import { CoverArt } from "@components/CoverArt.tsx";
+import { useNavigate } from "@tanstack/react-router";
+import RouteIconButton from "@components/RouteIconButton.tsx";
 
 interface TrackDetailProps {
-  show: boolean;
-  onPreviousTrack: (() => void) | undefined;
-  onNextTrack: (() => void) | undefined;
-  onClose: () => void;
+  previousTrack: TrackDto | undefined;
+  nextTrack: TrackDto | undefined;
   track: TrackDto | undefined;
 }
 
+// Only shows when `track` is set, which happens on a route ending in $trackId
+// (albums or playlists). Navigation is therefore relative, so this doesn't need
+// to know which route it is on: "." is the current route with a different
+// trackId, and ".." is the parent route with no track open.
 export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
-  show,
-  onPreviousTrack,
-  onNextTrack,
-  onClose,
+  previousTrack,
+  nextTrack,
   track,
 }) => {
+  const navigate = useNavigate();
+  const onClose = () => void navigate({ to: ".." });
+
   const { data: trackDetails } = useRouteQuery<
     TrackDetailsDto,
     unknown,
@@ -49,13 +54,13 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
   return (
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
-      show={show}
+      show
       onClose={onClose}
     >
       <Header
         track={availableDetails}
-        onPreviousTrack={onPreviousTrack}
-        onNextTrack={onNextTrack}
+        previousTrack={previousTrack}
+        nextTrack={nextTrack}
         onClose={onClose}
       />
       <Details track={availableDetails} />
@@ -65,13 +70,13 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
 
 function Header({
   track,
-  onPreviousTrack,
-  onNextTrack,
+  previousTrack,
+  nextTrack,
   onClose,
 }: {
   track: TrackDto | TrackDetailsDto;
-  onPreviousTrack: (() => void) | undefined;
-  onNextTrack: (() => void) | undefined;
+  previousTrack: TrackDto | undefined;
+  nextTrack: TrackDto | undefined;
   onClose: () => void;
 }) {
   return (
@@ -89,23 +94,25 @@ function Header({
         </div>
       </div>
       <div className="flex items-start gap-2">
-        {onPreviousTrack && (
-          <IconButton
+        {previousTrack && (
+          <RouteIconButton
             aria-label="Previous track"
             title="Previous track"
-            onClick={onPreviousTrack}
+            to="."
+            params={(prev) => ({ ...prev, trackId: String(previousTrack.Id) })}
           >
             <ChevronLeftIcon />
-          </IconButton>
+          </RouteIconButton>
         )}
-        {onNextTrack && (
-          <IconButton
+        {nextTrack && (
+          <RouteIconButton
             aria-label="Next track"
             title="Next track"
-            onClick={onNextTrack}
+            to="."
+            params={(prev) => ({ ...prev, trackId: String(nextTrack.Id) })}
           >
             <ChevronRightIcon />
-          </IconButton>
+          </RouteIconButton>
         )}
         <IconButton aria-label="Close" title="Close" onClick={onClose}>
           <CloseIcon />
