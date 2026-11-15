@@ -3,6 +3,8 @@ import { routeTree } from "@root/routing/routeTree.tsx";
 import { FullScreenLoading } from "@components/FullScreenLoading.tsx";
 
 const router = createRouter({
+  // preload a route's when its link is hovered or focused
+  defaultPreload: "intent",
   routeTree,
   // shown while a lazy route chunk loads
   defaultPendingComponent: FullScreenLoading,
