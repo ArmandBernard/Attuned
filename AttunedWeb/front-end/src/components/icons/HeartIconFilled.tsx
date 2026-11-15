@@ -1,0 +1,9 @@
+import { SVGProps } from "react";
+
+export default function HeartIconFilled(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" {...props}>
+      <path d="M12,21l-1.45-1.3q-2.53-2.27-4.18-3.92q-1.65-1.65-2.63-2.96Q2.78,11.5 2.39,10.4T2,8.15Q2,5.8 3.58,4.22T7.5,2.65q1.3,0 2.48,0.55T12,4.75q0.85-1 2.03-1.55T16.5,2.65q2.35,0 3.93,1.57T22,8.15q0,1.15-0.39,2.25t-1.36,2.41q-0.97,1.31-2.63,2.96q-1.65,1.65-4.17,3.92L12,21Z" />
+    </svg>
+  );
+}
