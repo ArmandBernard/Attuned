@@ -9,7 +9,6 @@
     "analyze": "tsc && vite build --mode analyze",
     "lint": "oxlint --deny-warnings",
     "preview": "vite preview",
-    "test-compile": "tsc --noEmit",
     "format": "oxfmt",
     "format:check": "oxfmt --check"
   },
@@ -27,6 +26,7 @@
     "@vitejs/plugin-react": "6.3.0",
     "oxfmt": "^0.78.0",
     "oxlint": "^1.93.0",
+    "oxlint-tsgolint": "^7.0.2007",
     "tailwindcss": "4.3.5",
     "typescript": "5.9.3",
     "vite": "8.3.8",

@@ -8,5 +8,6 @@
     "react/rules-of-hooks": "error",
     "react/exhaustive-deps": "error"
   },
+  "options": { "typeAware": true, "typeCheck": true },
   "ignorePatterns": ["dist/"]
 }

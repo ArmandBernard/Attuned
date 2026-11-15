@@ -40,7 +40,4 @@ jobs:
       - name: Format check
         working-directory: ${{env.working-directory}}
         run: npm run format:check
-      - name: Compile
-        working-directory: ${{env.working-directory}}
-        run: npm run test-compile
 
