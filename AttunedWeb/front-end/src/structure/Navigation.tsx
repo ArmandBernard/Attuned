@@ -107,12 +107,7 @@ function Contents({
   ].filter(Boolean);
 
   return (
-    <nav
-      ref={navRef}
-      tabIndex={0}
-      className={navClassNames.join(" ")}
-      onKeyDown={(e) => e.key === "Escape" && close()}
-    >
+    <nav ref={navRef} tabIndex={0} className={navClassNames.join(" ")}>
       <div className="flex px-4 pt-4 pb-2 bg-background justify-between">
         <h2 className="text-2xl">Navigation</h2>
         <button
