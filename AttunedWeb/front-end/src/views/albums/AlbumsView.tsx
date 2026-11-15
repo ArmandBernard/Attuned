@@ -9,13 +9,16 @@ export function AlbumsView() {
   const [openAlbum, setOpenAlbum] = useState<
     { album: string; albumArtist: string } | undefined
   >(undefined);
-  const { data: tracks, isLoading: isLoadingTracks } = useRouteQuery<
+  const { data: unsortedTracks, isLoading: isLoadingTracks } = useRouteQuery<
     TrackDto[]
   >({
     url: "track",
   });
 
-  const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
+  const sorted = useMemo(
+    () => unsortedTracks?.toSorted(sortComparer),
+    [unsortedTracks],
+  );
 
   const grouped = useMemo(
     () =>

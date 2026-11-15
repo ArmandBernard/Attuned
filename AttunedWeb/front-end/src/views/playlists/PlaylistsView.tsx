@@ -55,7 +55,7 @@ export const PlaylistsView: FunctionComponent<{
   const sorted = useMemo(
     () =>
       sortOrder
-        ? filtered?.sort((a, b) => sortComparer(a, b, sortOrder))
+        ? filtered?.toSorted((a, b) => sortComparer(a, b, sortOrder))
         : filtered,
     [filtered, sortOrder],
   );
