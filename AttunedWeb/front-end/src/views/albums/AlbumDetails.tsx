@@ -14,7 +14,7 @@ interface TrackDetailProps {
   show: boolean;
   onClose: () => void;
   album: string | undefined;
-  artist: string | undefined;
+  albumArtist: string | undefined;
   tracks: TrackDto[] | undefined;
 }
 
@@ -22,7 +22,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
   show,
   onClose,
   album,
-  artist,
+  albumArtist,
   tracks,
 }) => {
   const firstTrack = tracks && tracks.length > 0 ? tracks[0] : undefined;
@@ -48,7 +48,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
     >
       <Header
         album={album}
-        artist={artist}
+        albumArtist={albumArtist}
         albumArt={trackDetails?.CoverArt}
         onClose={onClose}
       />
@@ -59,12 +59,12 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
 
 function Header({
   album,
-  artist,
+  albumArtist,
   albumArt,
   onClose,
 }: {
   album: string | undefined;
-  artist: string | undefined;
+  albumArtist: string | undefined;
   albumArt: string | undefined;
   onClose: () => void;
 }) {
@@ -84,7 +84,7 @@ function Header({
         )}
         <div>
           <h1 className="text-xl">{album}</h1>
-          <div className="text-base">{artist}</div>
+          <div className="text-base">{albumArtist}</div>
         </div>
       </div>
       <IconButton

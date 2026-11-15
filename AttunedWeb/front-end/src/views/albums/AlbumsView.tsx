@@ -7,7 +7,7 @@ import { AlbumDetails } from "@views/albums/AlbumDetails.tsx";
 
 export function AlbumsView() {
   const [openAlbum, setOpenAlbum] = useState<
-    { album: string; artist: string } | undefined
+    { album: string; albumArtist: string } | undefined
   >(undefined);
   const { data: tracks, isLoading: isLoadingTracks } = useRouteQuery<
     TrackDto[]
@@ -20,7 +20,7 @@ export function AlbumsView() {
   const grouped = useMemo(() => {
     const map = new Map<string, TrackDto[]>();
     sorted?.forEach((track) => {
-      const key = `${track.Album};${track.Artist}`;
+      const key = `${track.Album};${track.AlbumArtist}`;
       const collection = map.get(key);
       if (!collection) {
         map.set(key, [track]);
@@ -33,7 +33,7 @@ export function AlbumsView() {
   }, [sorted]);
 
   const openAlbumTracks =
-    openAlbum && grouped.get(`${openAlbum.album};${openAlbum.artist}`);
+    openAlbum && grouped.get(`${openAlbum.album};${openAlbum.albumArtist}`);
 
   return (
     <main className="flex flex-1 flex-col items-center">
@@ -43,14 +43,14 @@ export function AlbumsView() {
         <div className="p-4 justify-items-center grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {[...grouped].map((x) => {
             const album = x[1][0].Album;
-            const artist = x[1][0].Artist;
+            const albumArtist = x[1][0].AlbumArtist;
 
             return (
               <AlbumItem
                 album={album}
-                artist={artist}
+                albumArtist={albumArtist}
                 items={x[1]}
-                onClick={() => setOpenAlbum({ album, artist })}
+                onClick={() => setOpenAlbum({ album, albumArtist })}
               />
             );
           })}
@@ -60,7 +60,7 @@ export function AlbumsView() {
         show={openAlbum !== undefined}
         onClose={() => setOpenAlbum(undefined)}
         album={openAlbum?.album}
-        artist={openAlbum?.artist}
+        albumArtist={openAlbum?.albumArtist}
         tracks={openAlbumTracks}
       />
     </main>
