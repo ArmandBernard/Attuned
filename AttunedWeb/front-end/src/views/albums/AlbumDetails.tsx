@@ -5,6 +5,8 @@ import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
+import IconButton from "@components/IconButton.tsx";
+import CloseIcon from "@components/icons/CloseIcon.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -40,6 +42,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
       show={show}
       onClose={onClose}
+      closeOnBackgroundClick
     >
       <Header
         album={album}
@@ -64,7 +67,7 @@ function Header({
   onClose: () => void;
 }) {
   return (
-    <div className="flex justify-between py-3 px-4 text-xl bg-paper-1">
+    <div className="p-4 text-xl bg-paper-1">
       <div className="flex items-center gap-4">
         {albumArt ? (
           <div className="w-32 h-32 flex items-center justify-center">
@@ -82,11 +85,14 @@ function Header({
           <div className="text-base">{artist}</div>
         </div>
       </div>
-      <div className="flex items-start gap-4">
-        <button aria-label="Close" title="Close" onClick={onClose}>
-          ✕
-        </button>
-      </div>
+      <IconButton
+        aria-label="Close"
+        title="Close"
+        className="absolute top-2 right-2"
+        onClick={onClose}
+      >
+        <CloseIcon />
+      </IconButton>
     </div>
   );
 }
