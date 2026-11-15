@@ -1,3 +1,3 @@
 export type TimeSpan = number & {
-    __brand: "TimeSpan"
-}
+  __brand: "TimeSpan";
+};

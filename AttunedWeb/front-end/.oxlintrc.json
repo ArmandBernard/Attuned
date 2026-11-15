@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "oxc"],
+  "categories": { "correctness": "error" },
+  "env": { "browser": true, "es2024": true },
+  "rules": {
+    "eqeqeq": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "error"
+  },
+  "options": { "typeAware": true, "typeCheck": true },
+  "ignorePatterns": ["dist/"]
+}

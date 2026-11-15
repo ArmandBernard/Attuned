@@ -37,7 +37,7 @@ jobs:
       - name: Lint
         working-directory: ${{env.working-directory}}
         run: npm run lint
-      - name: Compile
+      - name: Format check
         working-directory: ${{env.working-directory}}
-        run: npm run test-compile
+        run: npm run format:check
 
