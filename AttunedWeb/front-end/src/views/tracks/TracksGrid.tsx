@@ -8,7 +8,7 @@ import { CellTypes } from "./CellTypes.ts";
 import ChevronUpIcon from "@components/icons/ChevronUpIcon.tsx";
 import ChevronDownIcon from "@components/icons/ChevronDownIcon.tsx";
 import { TextCell } from "@views/tracks/cells/TextCell.tsx";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import RouteLink from "@components/RouteLink.tsx";
 import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
 
@@ -39,15 +39,25 @@ export function TracksGrid({
   sortOrder,
   setSortOrder,
 }: TracksGridProps) {
-  const { playlistId } = useParams({
+  const navigate = useNavigate();
+
+  const playlistParams = useParams({
     from: "/playlists/$playlistId",
+    shouldThrow: false,
   });
-  const trackParams = useParams({
+  const playlistTrackParams = useParams({
     from: "/playlists/$playlistId/$trackId",
     shouldThrow: false,
   });
+  const allTracksTrackParams = useParams({
+    from: "/allTracks/tracks/$trackId",
+    shouldThrow: false,
+  });
 
-  const trackId = trackParams ? parseInt(trackParams.trackId) : undefined;
+  const params = playlistTrackParams ?? allTracksTrackParams ?? playlistParams;
+
+  const trackId =
+    params && "trackId" in params ? parseInt(params.trackId) : undefined;
 
   const trackIndex = useMemo(
     () =>
@@ -159,13 +169,26 @@ export function TracksGrid({
                     <TextCell
                       key={field}
                       value={
-                        <RouteLink
-                          className="max-w-full truncate"
-                          to="/playlists/$playlistId/$trackId"
-                          params={{ playlistId, trackId: String(track.Id) }}
-                        >
-                          {track[field]}
-                        </RouteLink>
+                        params && "playlistId" in params ? (
+                          <RouteLink
+                            className="max-w-full truncate"
+                            to="/playlists/$playlistId/$trackId"
+                            params={{
+                              playlistId: params.playlistId,
+                              trackId: String(track.Id),
+                            }}
+                          >
+                            {track[field]}
+                          </RouteLink>
+                        ) : (
+                          <RouteLink
+                            className="max-w-full truncate"
+                            to="/tracks/$trackId"
+                            params={{ trackId: String(track.Id) }}
+                          >
+                            {track[field]}
+                          </RouteLink>
+                        )
                       }
                     />
                   );
@@ -181,6 +204,12 @@ export function TracksGrid({
         previousTrack={previousTrack}
         nextTrack={nextTrack}
         track={currentTrack}
+        onClose={() =>
+          void navigate({
+            // "/tracks/$trackId" has no "/tracks" parent route to go ".." to
+            to: params && "playlistId" in params ? ".." : "/",
+          })
+        }
       />
     </>
   );

@@ -18,6 +18,9 @@ interface TrackDetailProps {
   previousTrack: TrackDto | undefined;
   nextTrack: TrackDto | undefined;
   track: TrackDto | undefined;
+  // Overrides the default close behaviour of navigating to the parent route,
+  // for routes whose parent is not a sensible place to go back to.
+  onClose?: () => void;
 }
 
 // Only shows when `track` is set, which happens on a route ending in $trackId
@@ -28,9 +31,10 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
   previousTrack,
   nextTrack,
   track,
+  onClose: onCloseOverride,
 }) => {
   const navigate = useNavigate();
-  const onClose = () => void navigate({ to: ".." });
+  const onClose = onCloseOverride ?? (() => void navigate({ to: ".." }));
 
   const { data: trackDetails } = useRouteQuery<
     TrackDetailsDto,
@@ -56,6 +60,7 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
       show
       onClose={onClose}
+      closeOnBackgroundClick
     >
       <Header
         track={availableDetails}
