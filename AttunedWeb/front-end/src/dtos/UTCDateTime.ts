@@ -1,3 +1,3 @@
 export type UTCDateTime = string & {
-    __brand: "UTCDateTime"
-}
+  __brand: "UTCDateTime";
+};

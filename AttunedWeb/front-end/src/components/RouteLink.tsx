@@ -2,7 +2,10 @@ import { ComponentProps } from "react";
 import { createLink } from "@tanstack/react-router";
 
 // createLink keeps Link's generics, so `to` and `params` stay type-checked
-const RouteLink = createLink(function({ className, ...props }: ComponentProps<"a">) {
+const RouteLink = createLink(function ({
+  className,
+  ...props
+}: ComponentProps<"a">) {
   return (
     <a
       {...props}
