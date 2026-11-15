@@ -1,7 +1,7 @@
 import { Dialog } from "@components/Dialog.tsx";
 import { FunctionComponent, useMemo, useState } from "react";
-import { TrackDetailsDto, TrackDto } from "@dtos";
-import { useRouteQuery } from "@utils/useRouteQuery.ts";
+import { TrackDto } from "@dtos";
+import { CoverArt } from "@components/CoverArt.tsx";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
@@ -27,18 +27,6 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
 }) => {
   const firstTrack = tracks && tracks.length > 0 ? tracks[0] : undefined;
 
-  const { data: trackDetails } = useRouteQuery<
-    TrackDetailsDto,
-    unknown,
-    { id: number }
-  >({
-    enabled: firstTrack !== undefined,
-    url: "track/{id}",
-    parameters: {
-      id: firstTrack?.Id as number,
-    },
-  });
-
   const distinctArtists = new Set([
     ...(albumArtist ? [albumArtist] : []),
     ...(tracks?.map((t) => t.Artist) ?? []),
@@ -55,7 +43,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
       <Header
         album={album}
         albumArtist={albumArtist ?? firstTrack?.Artist}
-        albumArt={trackDetails?.CoverArt}
+        trackId={firstTrack?.Id}
         onClose={onClose}
       />
       <Details tracks={tracks} showArtist={showArtist} />
@@ -66,28 +54,22 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
 function Header({
   album,
   albumArtist,
-  albumArt,
+  trackId,
   onClose,
 }: {
   album: string | undefined;
   albumArtist: string | undefined;
-  albumArt: string | undefined;
+  trackId: number | undefined;
   onClose: () => void;
 }) {
   return (
     <div className="p-4 text-xl bg-paper-1 sticky top-0">
       <div className="flex items-center gap-4">
-        {albumArt ? (
-          <div className="w-32 h-32 flex items-center justify-center">
-            <img
-              alt="album art"
-              className="max-w-32 max-h-32 h-auto w-auto rounded-sm"
-              src={`data:image/png;base64,${albumArt}`}
-            />
-          </div>
-        ) : (
-          <div className="w-32 h-32 rounded-sm bg-paper-2"></div>
-        )}
+        <CoverArt
+          trackId={trackId}
+          sizeClassName="w-32 h-32"
+          maxSizeClassName="max-w-32 max-h-32"
+        />
         <div>
           <h1 className="text-xl">{album}</h1>
           <div className="text-base">{albumArtist}</div>
