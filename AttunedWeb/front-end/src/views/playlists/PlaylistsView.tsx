@@ -4,7 +4,6 @@ import { FunctionComponent, useMemo, useState } from "react";
 import { getDurationString } from "@utils/stringFormatters/getDurationString.ts";
 import { TimeSpan } from "@root/dtos/TimeSpan.ts";
 import { PlaylistDetails } from "@views/playlists/PlaylistDetails.tsx";
-import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
 import { TracksGrid } from "@views/tracks/TracksGrid";
 import LinkButton from "@components/LinkButton.tsx";
 
@@ -19,7 +18,6 @@ export const PlaylistsView: FunctionComponent<{
 }> = ({ playlist, title }) => {
   const [showPlaylistDetails, setShowPlaylistDetails] =
     useState<boolean>(false);
-  const [trackToShow, setTrackToShow] = useState<TrackDto | undefined>();
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
   const { data: playlistDetails, isFetching: isFetchingPlaylistDetails } =
@@ -59,21 +57,6 @@ export const PlaylistsView: FunctionComponent<{
         : filtered,
     [filtered, sortOrder],
   );
-
-  const trackIndex = useMemo(
-    () => trackToShow && sorted?.map((x) => x.Id).indexOf(trackToShow.Id),
-    [sorted, trackToShow],
-  );
-
-  const navigatePrevious =
-    sorted && trackIndex !== undefined && trackIndex > 0
-      ? () => setTrackToShow(sorted[trackIndex - 1])
-      : undefined;
-
-  const navigateNext =
-    sorted && trackIndex !== undefined && trackIndex < sorted.length - 1
-      ? () => setTrackToShow(sorted[trackIndex + 1])
-      : undefined;
 
   return (
     <div className="p-4 h-full flex flex-col gap-2">
@@ -117,16 +100,8 @@ export const PlaylistsView: FunctionComponent<{
           tracks={sorted}
           sortOrder={sortOrder}
           setSortOrder={(field) => setSortOrder(field)}
-          setTrackToShow={setTrackToShow}
         />
       </div>
-      <TrackDetails
-        show={trackToShow !== undefined}
-        onPreviousTrack={navigatePrevious}
-        onNextTrack={navigateNext}
-        onClose={() => setTrackToShow(undefined)}
-        track={trackToShow}
-      />
     </div>
   );
 };

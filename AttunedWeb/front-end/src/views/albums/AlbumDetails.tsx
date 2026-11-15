@@ -1,5 +1,5 @@
 import { Dialog } from "@components/Dialog.tsx";
-import { FunctionComponent, useMemo, useState } from "react";
+import { FunctionComponent, useMemo } from "react";
 import { TrackDto } from "@dtos";
 import { CoverArt } from "@components/CoverArt.tsx";
 import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
@@ -8,7 +8,7 @@ import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeStri
 import IconButton from "@components/IconButton.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
 import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
-import LinkButton from "@components/LinkButton.tsx";
+import RouteLink from "@components/RouteLink.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -16,6 +16,7 @@ interface TrackDetailProps {
   album: string | undefined;
   albumArtist: string | undefined;
   tracks: TrackDto[] | undefined;
+  openedTrackId: number | undefined;
 }
 
 export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
@@ -24,6 +25,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
   album,
   albumArtist,
   tracks,
+  openedTrackId,
 }) => {
   const firstTrack = tracks && tracks.length > 0 ? tracks[0] : undefined;
 
@@ -46,7 +48,11 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
         trackId={firstTrack?.Id}
         onClose={onClose}
       />
-      <Details tracks={tracks} showArtist={showArtist} />
+      <Details
+        tracks={tracks}
+        showArtist={showArtist}
+        openedTrackId={openedTrackId}
+      />
     </Dialog>
   );
 };
@@ -90,17 +96,21 @@ function Header({
 function Details({
   tracks,
   showArtist,
+  openedTrackId,
 }: {
   tracks: TrackDto[] | undefined;
   showArtist: boolean;
+  openedTrackId: number | undefined;
 }) {
-  const [openedTrack, setOpenedTrack] = useState<TrackDto | undefined>(
-    undefined,
-  );
-
   const sorted = useMemo(() => tracks?.toSorted(sortComparer), [tracks]);
 
-  const index = openedTrack && sorted?.indexOf(openedTrack);
+  const index =
+    openedTrackId === undefined
+      ? undefined
+      : sorted?.findIndex((track) => track.Id === openedTrackId);
+
+  const openedTrack =
+    sorted && index !== undefined && index >= 0 ? sorted[index] : undefined;
 
   const previousTrack =
     index !== undefined && index > 0 ? sorted?.at(index - 1) : undefined;
@@ -130,12 +140,17 @@ function Details({
                 <>
                   <span>{track.TrackNumber}</span>
                   <div>
-                    <LinkButton
+                    <RouteLink
                       className="block"
-                      onClick={() => setOpenedTrack(track)}
+                      to="/albums/$albumArtist/$album/$trackId"
+                      params={{
+                        album: track.Album,
+                        trackId: String(track.Id),
+                        albumArtist: track.AlbumArtist,
+                      }}
                     >
                       {track.Name}
-                    </LinkButton>
+                    </RouteLink>
                     {showArtist && (
                       <div className="text-sm">{track.Artist}</div>
                     )}
@@ -151,10 +166,8 @@ function Details({
         })}
       </ul>
       <TrackDetails
-        show={openedTrack !== undefined}
-        onPreviousTrack={previousTrack && (() => setOpenedTrack(previousTrack))}
-        onNextTrack={nextTrack && (() => setOpenedTrack(nextTrack))}
-        onClose={() => setOpenedTrack(undefined)}
+        previousTrack={previousTrack}
+        nextTrack={nextTrack}
         track={openedTrack}
       />
     </>

@@ -1,14 +1,24 @@
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { TrackDto } from "@dtos";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { AlbumItem } from "@views/albums/AlbumItem.tsx";
 import { FullScreenLoading } from "@components/FullScreenLoading.tsx";
 import { AlbumDetails } from "@views/albums/AlbumDetails.tsx";
 
 export function AlbumsView() {
-  const [openAlbum, setOpenAlbum] = useState<
-    { album: string; albumArtist: string } | undefined
-  >(undefined);
+  const navigate = useNavigate();
+  const params = useParams({
+    from: "/albums/$albumArtist/$album",
+    shouldThrow: false,
+  });
+
+  let openAlbum = undefined;
+
+  if (params) {
+    openAlbum = { album: params.album, albumArtist: params.albumArtist };
+  }
+
   const { data: unsortedTracks, isLoading: isLoadingTracks } = useRouteQuery<
     TrackDto[]
   >({
@@ -32,6 +42,16 @@ export function AlbumsView() {
   const openAlbumTracks =
     openAlbum && grouped[`${openAlbum.album};${openAlbum.albumArtist}`];
 
+  const trackParams = useParams({
+    from: "/albums/$albumArtist/$album/$trackId",
+    shouldThrow: false,
+  });
+  const openedTrackId = trackParams ? parseInt(trackParams.trackId) : undefined;
+
+  const closeAlbum = () => {
+    void navigate({ to: "/albums" });
+  };
+
   return (
     <main className="flex flex-1 flex-col items-center">
       {isLoadingTracks ? (
@@ -50,7 +70,6 @@ export function AlbumsView() {
                 album={album}
                 albumArtist={albumArtist}
                 items={tracks}
-                onClick={() => setOpenAlbum({ album, albumArtist })}
               />
             );
           })}
@@ -58,10 +77,11 @@ export function AlbumsView() {
       )}
       <AlbumDetails
         show={openAlbum !== undefined}
-        onClose={() => setOpenAlbum(undefined)}
+        onClose={closeAlbum}
         album={openAlbum?.album}
         albumArtist={openAlbum?.albumArtist}
         tracks={openAlbumTracks}
+        openedTrackId={openedTrackId}
       />
     </main>
   );
