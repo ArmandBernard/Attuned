@@ -59,6 +59,7 @@ export interface TrackDto
 	Artist: string;
 	Composer: string;
 	Album: string;
+	AlbumArtist: string;
 	Genre: string;
 	PlayCount: number | undefined;
 	PlayDate: UTCDateTime | undefined;
