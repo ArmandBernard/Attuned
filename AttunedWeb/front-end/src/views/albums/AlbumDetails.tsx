@@ -39,6 +39,12 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
     },
   });
 
+  const distinctArtists = new Set([
+    ...(albumArtist ? [albumArtist] : []),
+    ...(tracks?.map((t) => t.Artist) ?? []),
+  ]);
+  const showArtist = distinctArtists.size > 1;
+
   return (
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
@@ -52,7 +58,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
         albumArt={trackDetails?.CoverArt}
         onClose={onClose}
       />
-      <Details tracks={tracks} />
+      <Details tracks={tracks} showArtist={showArtist} />
     </Dialog>
   );
 };
@@ -99,7 +105,13 @@ function Header({
   );
 }
 
-function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
+function Details({
+  tracks,
+  showArtist,
+}: {
+  tracks: TrackDto[] | undefined;
+  showArtist: boolean;
+}) {
   const [openedTrack, setOpenedTrack] = useState<TrackDto | undefined>(
     undefined,
   );
@@ -122,7 +134,7 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
 
   return (
     <>
-      <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
+      <ul className="grid grid-cols-[auto_1fr_auto_auto] items-center p-4 gap-x-4 gap-y-2">
         {Object.entries(groupedByDisc).map(([disc, tracks]) => {
           return (
             <>
@@ -135,12 +147,17 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
               {tracks?.map((track) => (
                 <>
                   <span>{track.TrackNumber}</span>
-                  <LinkButton
-                    className="text-left"
-                    onClick={() => setOpenedTrack(track)}
-                  >
-                    {track.Name}
-                  </LinkButton>
+                  <div>
+                    <LinkButton
+                      className="block"
+                      onClick={() => setOpenedTrack(track)}
+                    >
+                      {track.Name}
+                    </LinkButton>
+                    {showArtist && (
+                      <div className="text-sm">{track.Artist}</div>
+                    )}
+                  </div>
                   <span>{getRatingString(track.Rating as Rating)}</span>
                   <span>
                     {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
