@@ -8,6 +8,7 @@ import { CellTypes } from "./CellTypes.ts";
 import ChevronUpIcon from "@components/icons/ChevronUpIcon.tsx";
 import ChevronDownIcon from "@components/icons/ChevronDownIcon.tsx";
 import { TextCell } from "@views/tracks/cells/TextCell.tsx";
+import LinkButton from "@components/LinkButton.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -119,12 +120,12 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
                     <TextCell
                       key={field}
                       value={
-                        <button
-                          className="max-w-full text-primary truncate underline decoration-current/50 hover:decoration-current cursor-pointer"
+                        <LinkButton
+                          className="max-w-full truncate"
                           onClick={() => props.setTrackToShow(track)}
                         >
                           {track[field]}
-                        </button>
+                        </LinkButton>
                       }
                     />
                   );
