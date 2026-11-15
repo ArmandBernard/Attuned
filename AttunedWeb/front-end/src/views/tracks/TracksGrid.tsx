@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, memo, SetStateAction, useMemo, useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { TrackDto } from "@dtos";
 import { GetCellElement } from "./GetCellElement.ts";
 import { CellComponent } from "./cells/CellComponent.ts";
@@ -33,6 +34,86 @@ const RightAlignedFields: Record<CellTypes, boolean> = {
   string: false,
   time: true,
 };
+
+// Rows are virtualized, so heights and column widths need to be fixed to
+// avoid shifting.
+const ROW_HEIGHT = 28;
+const HEADER_HEIGHT = 32;
+// The columns to show, in order, with their width as a CSS grid track size.
+const columnWidths = {
+  Name: "minmax(200px, 2fr)",
+  Artist: "minmax(150px, 1fr)",
+  Album: "minmax(150px, 1.5fr)",
+  TotalTime: "4rem",
+  Rating: "6rem",
+  Loved: "4rem",
+  Genre: "minmax(50px, 1fr)",
+  PlayCount: "5rem",
+  DateAdded: "11rem",
+} as const satisfies Partial<Record<keyof TrackDto, string>>;
+
+const fieldsToShow = Object.keys(columnWidths) as (keyof typeof columnWidths)[];
+
+const gridTemplateColumns = Object.values(columnWidths).join(" ");
+
+const TrackRow = memo(function TrackRow({
+  track,
+  index,
+  start,
+  playlistId,
+}: {
+  track: TrackDto;
+  index: number;
+  start: number;
+  // undefined on the "All tracks" view
+  playlistId: string | undefined;
+}) {
+  return (
+    <tr
+      aria-rowindex={index + 2} // 1-based, after the header row
+      className={
+        "absolute left-0 top-0 w-full grid items-center " +
+        (index % 2 === 1 ? "[&>td]:bg-alternating-row bg-alternating-row" : "")
+      }
+      style={{
+        gridTemplateColumns,
+        height: ROW_HEIGHT,
+        transform: `translateY(${start}px)`,
+      }}
+    >
+      {fieldsToShow.map((field) => {
+        if (field === "Name") {
+          return (
+            <TextCell
+              key={field}
+              value={
+                playlistId !== undefined ? (
+                  <RouteLink
+                    className="max-w-full truncate"
+                    to="/playlists/$playlistId/$trackId"
+                    params={{ playlistId, trackId: String(track.Id) }}
+                  >
+                    {track[field]}
+                  </RouteLink>
+                ) : (
+                  <RouteLink
+                    className="max-w-full truncate"
+                    to="/tracks/$trackId"
+                    params={{ trackId: String(track.Id) }}
+                  >
+                    {track[field]}
+                  </RouteLink>
+                )
+              }
+            />
+          );
+        }
+        const Cell = GetCellElement(field) as CellComponent<unknown>;
+        return <Cell key={field} value={track[field]} />;
+      })}
+    </tr>
+  );
+});
 
 export function TracksGrid({
   tracks,
@@ -80,17 +161,22 @@ export function TracksGrid({
       ? tracks[trackIndex + 1]
       : undefined;
 
-  const fieldsToShow: (keyof TrackDto)[] = [
-    "Name",
-    "Artist",
-    "Album",
-    "TotalTime",
-    "Rating",
-    "Loved",
-    "Genre",
-    "PlayCount",
-    "DateAdded",
-  ];
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Safe as we don't pass these values to memoized components
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const virtualizer = useVirtualizer({
+    count: tracks?.length ?? 0,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => ROW_HEIGHT,
+    getItemKey: (index) => tracks?.[index]?.Id ?? index,
+    // the header is above the rows inside the same scroll element
+    scrollMargin: HEADER_HEIGHT,
+    overscan: 20, // good balance of not too much flashing when rapidly scrolling and not too many items loaded at once.
+  });
+
+  const playlistId =
+    params && "playlistId" in params ? params.playlistId : undefined;
 
   const setSortFieldOrToggleSortDirection = (clickedField: keyof TrackDto) =>
     setSortOrder((value) => ({
@@ -105,101 +191,82 @@ export function TracksGrid({
 
   return (
     <>
-      <table
-        aria-label="Tracks"
-        style={{
-          gridTemplateColumns: fieldsToShow.map(() => "auto").join(" "),
-        }}
-        className="grid min-w-[72rem]"
-      >
-        <thead className="contents">
-          <tr className="contents">
-            {fieldsToShow.map((field) => (
-              <th
-                className="border flex sticky top-0 bg-background"
-                aria-sort={
-                  sortOrder && sortOrder.field === field
-                    ? sortOrder.direction
-                    : undefined
-                }
-                key={field}
-              >
-                <button
-                  aria-label={`sort by ${trackFieldNameDictionary[field]}`}
-                  className="flex flex-1 items-center pl-2 gap-2"
-                  onClick={() => setSortFieldOrToggleSortDirection(field)}
-                >
-                  <span
-                    className={[
-                      "flex flex-1",
-                      RightAlignedFields[FieldCellTypeDictionary[field]] &&
-                        "justify-end",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
-                    {trackFieldNameDictionary[field]}
-                  </span>
-                  <span
-                    className="fill-text-color h-6 w-6 py-1 px-1"
-                    aria-hidden
-                  >
-                    {sortOrder &&
-                      sortOrder.field === field &&
-                      (sortOrder.direction === "ascending" ? (
-                        <ChevronUpIcon />
-                      ) : (
-                        <ChevronDownIcon />
-                      ))}
-                  </span>
-                </button>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="contents">
-          {tracks?.map((track) => (
+      <div ref={scrollRef} className="h-full overflow-scroll">
+        <table
+          aria-label="Tracks"
+          aria-rowcount={(tracks?.length ?? 0) + 1}
+          className="grid min-w-[80rem]"
+        >
+          <thead className="sticky top-0 z-10 grid">
             <tr
-              key={track.Id}
-              className="contents [&>td]:odd:bg-alternating-row"
+              className="grid"
+              style={{ gridTemplateColumns, height: HEADER_HEIGHT }}
             >
-              {fieldsToShow.map((field) => {
-                if (field === "Name") {
-                  return (
-                    <TextCell
-                      key={field}
-                      value={
-                        params && "playlistId" in params ? (
-                          <RouteLink
-                            className="max-w-full truncate"
-                            to="/playlists/$playlistId/$trackId"
-                            params={{
-                              playlistId: params.playlistId,
-                              trackId: String(track.Id),
-                            }}
-                          >
-                            {track[field]}
-                          </RouteLink>
+              {fieldsToShow.map((field) => (
+                <th
+                  className="border flex bg-background box-border"
+                  aria-sort={
+                    sortOrder && sortOrder.field === field
+                      ? sortOrder.direction
+                      : undefined
+                  }
+                  key={field}
+                >
+                  <button
+                    aria-label={`sort by ${trackFieldNameDictionary[field]}`}
+                    className="flex flex-1 items-center pl-2 gap-2"
+                    onClick={() => setSortFieldOrToggleSortDirection(field)}
+                  >
+                    <span
+                      className={[
+                        "flex flex-1",
+                        RightAlignedFields[FieldCellTypeDictionary[field]] &&
+                          "justify-end",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      {trackFieldNameDictionary[field]}
+                    </span>
+                    <span
+                      className="fill-text-color h-6 w-6 py-1 px-1"
+                      aria-hidden
+                    >
+                      {sortOrder &&
+                        sortOrder.field === field &&
+                        (sortOrder.direction === "ascending" ? (
+                          <ChevronUpIcon />
                         ) : (
-                          <RouteLink
-                            className="max-w-full truncate"
-                            to="/tracks/$trackId"
-                            params={{ trackId: String(track.Id) }}
-                          >
-                            {track[field]}
-                          </RouteLink>
-                        )
-                      }
-                    />
-                  );
-                }
-                const Cell = GetCellElement(field) as CellComponent<unknown>;
-                return <Cell key={field} value={track[field]} />;
-              })}
+                          <ChevronDownIcon />
+                        ))}
+                    </span>
+                  </button>
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody
+            className="grid relative"
+            style={{
+              height:
+                virtualizer.getTotalSize() - virtualizer.options.scrollMargin,
+            }}
+          >
+            {tracks &&
+              virtualizer
+                .getVirtualItems()
+                .map((item) => (
+                  <TrackRow
+                    key={item.key}
+                    track={tracks[item.index]}
+                    index={item.index}
+                    start={item.start - virtualizer.options.scrollMargin}
+                    playlistId={playlistId}
+                  />
+                ))}
+          </tbody>
+        </table>
+      </div>
       <TrackDetails
         previousTrack={previousTrack}
         nextTrack={nextTrack}

@@ -91,11 +91,7 @@ export const PlaylistsView: FunctionComponent<{
           )}
         </div>
       )}
-      <div
-        className="flex-1 overflow-scroll"
-        aria-busy={isFetching}
-        aria-live="polite"
-      >
+      <div className="flex-1 min-h-0" aria-busy={isFetching} aria-live="polite">
         <TracksGrid
           tracks={sorted}
           sortOrder={sortOrder}
