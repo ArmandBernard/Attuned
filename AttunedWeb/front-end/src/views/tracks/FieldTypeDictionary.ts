@@ -3,6 +3,7 @@ import { CellTypes } from "./CellTypes.ts";
 
 export const FieldCellTypeDictionary: Record<keyof TrackDto, CellTypes> = {
   Album: "string",
+  AlbumArtist: "string",
   Artist: "string",
   BitRate: "number",
   Bpm: "number",
