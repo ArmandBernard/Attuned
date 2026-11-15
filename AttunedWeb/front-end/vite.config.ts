@@ -1,10 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { analyzer } from "vite-bundle-analyzer";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
+export default defineConfig(({ mode }) => ({
+  // "npm run analyze" builds in analyze mode, which opens the bundle report
+  plugins: [
+    react(),
+    tailwindcss(),
+    ...(mode === "analyze" ? [analyzer()] : []),
+  ],
   resolve: {
     alias: {
       "@dtos": "/src/dtos/Dtos.ts",
@@ -14,4 +20,4 @@ export default defineConfig({
       "@views": "/src/views",
     },
   },
-});
+}));
