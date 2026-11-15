@@ -5,6 +5,8 @@ import { Link, useMatchRoute, useParams } from "@tanstack/react-router";
 import { Dialog } from "@components/Dialog.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
 import IconButton from "@components/IconButton.tsx";
+import SmartPlaylistIcon from "@components/icons/SmartPlaylistIcon.tsx";
+import PlaylistIcon from "@components/icons/PlaylistIcon.tsx";
 
 const mediaPlaylistNames = [
   "Music",
@@ -180,7 +182,7 @@ function Contents({
                   <li aria-current={x.Id === selectedPlaylist?.Id} key={x.Id}>
                     <Link
                       className={[
-                        "truncate flex gap-1 flex-1 pl-6 pr-4",
+                        "truncate flex gap-1 items-baseline flex-1 pl-6 pr-4",
                         x.Id === selectedPlaylist?.Id && "bg-selected-row",
                       ]
                         .filter(Boolean)
@@ -190,9 +192,13 @@ function Contents({
                     >
                       <span
                         aria-label={x.IsSmart ? "Smart playlist" : "playlist"}
-                        className="inline-block shrink-0"
+                        className="inline-block h-4 w-4 self-center"
                       >
-                        {x.IsSmart ? "⛭" : "♫"}
+                        {x.IsSmart ? (
+                          <SmartPlaylistIcon className="fill-text-color" />
+                        ) : (
+                          <PlaylistIcon className="fill-text-color" />
+                        )}
                       </span>
                       <span className="truncate">{x.Name}</span>
                     </Link>
