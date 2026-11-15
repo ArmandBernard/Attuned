@@ -57,18 +57,18 @@ internal static class Program
 
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
-        builder.Services.AddSingleton<IXmlSource>(_ => new XmlSource(xmlPath));
+        builder.Services.AddSingleton<IITunesXmlReader>(provider => provider.GetRequiredService<XmlSource>());
 
         builder.Services.AddSingleton<IRepository<TrackDto, TrackDetailsDto>>(provider =>
             new CachingRepository<TrackDto, TrackDetailsDto>(
-                new TrackRepository(provider.GetRequiredService<IXmlSource>(),
+                new TrackRepository(provider.GetRequiredService<IITunesXmlReader>(),
                     provider.GetRequiredService<ITrackListParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );
         builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
             new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
-                new PlaylistRepository(provider.GetRequiredService<IXmlSource>(), provider.GetRequiredService<IPlaylistParser>()),
+                new PlaylistRepository(provider.GetRequiredService<IITunesXmlReader>(), provider.GetRequiredService<IPlaylistParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );

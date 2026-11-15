@@ -3,11 +3,11 @@ using iTunesSmartParser.Xml;
 namespace iTunesParserTests.Xml;
 
 [TestFixture]
-public class XmlSourceTests
+public class ITunesXmlReaderTests
 {
     private const string PATH = "iTunesMusicLibrary.xml";
 
-    private readonly XmlSource _xmlSource = new(PATH);
+    private readonly ITunesXmlReader _xmlSource = new(PATH);
 
     private readonly ITrackListParser _trackListParser = new TrackListParser();
 
