@@ -69,7 +69,7 @@ function Header({
   onClose: () => void;
 }) {
   return (
-    <div className="p-4 text-xl bg-paper-1">
+    <div className="p-4 text-xl bg-paper-1 sticky top-0">
       <div className="flex items-center gap-4">
         {albumArt ? (
           <div className="w-32 h-32 flex items-center justify-center">
