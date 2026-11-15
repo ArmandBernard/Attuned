@@ -131,9 +131,15 @@ public record Track
     public string? Composer { get; init; }
 
     /// <summary>
-    /// The album this track belongs to
+    /// The name of the album this track belongs to
     /// </summary>
     public string? Album { get; init; }
+    
+    /// <summary>
+    /// The artist of the album this track belongs to. This is grouped with the Album to distinguish between different
+    /// albums of the same name
+    /// </summary>
+    public string? AlbumArtist { get; init; }
 
     /// <summary>
     /// The genre of music this track best fits
