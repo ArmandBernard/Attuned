@@ -3,6 +3,8 @@ import { PlaylistDetailsDto } from "@dtos";
 import { Dialog } from "@components/Dialog.tsx";
 import { Limits } from "./Limits.tsx";
 import { Conjunctions } from "./Conjunctions.tsx";
+import CloseIcon from "@components/icons/CloseIcon.tsx";
+import IconButton from "@components/IconButton.tsx";
 
 interface PlaylistDetailsProps {
   playlist: PlaylistDetailsDto;
@@ -23,7 +25,9 @@ export const PlaylistDetails: FunctionComponent<PlaylistDetailsProps> = ({
     >
       <div className="flex justify-between py-3 px-4 text-xl">
         <h1>{playlist.Name}</h1>
-        <button onClick={onClose}>✕</button>
+        <IconButton aria-label="Close" title="Close" onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
       </div>
       <div className="flex flex-col gap-2 px-4 pb-4">
         <label>
