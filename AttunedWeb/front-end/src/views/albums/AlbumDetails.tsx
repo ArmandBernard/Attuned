@@ -48,7 +48,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
     >
       <Header
         album={album}
-        albumArtist={albumArtist}
+        albumArtist={albumArtist ?? firstTrack?.Artist}
         albumArt={trackDetails?.CoverArt}
         onClose={onClose}
       />
