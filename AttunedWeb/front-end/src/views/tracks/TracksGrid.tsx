@@ -7,6 +7,7 @@ import { FieldCellTypeDictionary } from "./FieldTypeDictionary.ts";
 import { CellTypes } from "./CellTypes.ts";
 import ChevronUpIcon from "@components/icons/ChevronUpIcon.tsx";
 import ChevronDownIcon from "@components/icons/ChevronDownIcon.tsx";
+import { TextCell } from "@views/tracks/cells/TextCell.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -59,16 +60,12 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
     <table
       aria-label="Tracks"
       style={{
-        gridTemplateColumns: "auto " + fieldsToShow.map(() => "auto").join(" "),
+        gridTemplateColumns: fieldsToShow.map(() => "auto").join(" "),
       }}
       className="grid min-w-[72rem]"
     >
       <thead className="contents">
         <tr className="contents">
-          <th
-            className="border flex sticky top-0 bg-background"
-            aria-label="Track actions"
-          ></th>
           {fieldsToShow.map((field) => (
             <th
               className="border flex sticky top-0 bg-background"
@@ -116,17 +113,22 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
               key={track.Id}
               className="contents [&>td]:odd:bg-alternating-row"
             >
-              <td>
-                <button
-                  className="px-2 text-primary font-bold"
-                  aria-label="View details"
-                  title="View details"
-                  onClick={() => props.setTrackToShow(track)}
-                >
-                  🗎
-                </button>
-              </td>
               {fieldsToShow.map((field) => {
+                if (field === "Name") {
+                  return (
+                    <TextCell
+                      key={field}
+                      value={
+                        <button
+                          className="max-w-full text-primary truncate underline decoration-current/50 hover:decoration-current cursor-pointer"
+                          onClick={() => props.setTrackToShow(track)}
+                        >
+                          {track[field]}
+                        </button>
+                      }
+                    />
+                  );
+                }
                 const Cell = GetCellElement(field) as CellComponent<unknown>;
                 return <Cell key={field} value={track[field]} />;
               })}
