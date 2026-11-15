@@ -7,7 +7,7 @@ export default function IconButton(
     <button
       {...props}
       className={
-        "cursor-pointer hover:bg-hover h-8 w-8 rounded-full flex justify-center items-center " +
+        "cursor-pointer hover:bg-hover h-8 w-8 p-1 rounded-full flex justify-center items-center fill-text-color " +
         props.className
       }
     >
