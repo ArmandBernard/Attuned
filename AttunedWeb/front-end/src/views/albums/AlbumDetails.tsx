@@ -116,34 +116,40 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
       ? sorted.at(index + 1)
       : undefined;
 
-  const discSwapIndices = sorted ? findDiscSwaps(sorted) : [];
+  const groupedByDisc = sorted
+    ? Object.groupBy(sorted, (item) => item.DiscNumber ?? "none")
+    : [];
 
   return (
     <>
       <ul className="grid grid-cols-[auto_1fr_auto_auto] p-4 gap-x-4 gap-y-2">
-        {sorted?.map((track, index) => (
-          <>
-            {discSwapIndices.includes(index) && (
-              <>
-                <span></span>
-                <span className="col-span-3 font-bold">
-                  Disc {track.DiscNumber}
-                </span>
-              </>
-            )}
-            <span>{track.TrackNumber}</span>
-            <LinkButton
-              className="text-left"
-              onClick={() => setOpenedTrack(track)}
-            >
-              {track.Name}
-            </LinkButton>
-            <span>{getRatingString(track.Rating as Rating)}</span>
-            <span>
-              {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
-            </span>
-          </>
-        ))}
+        {Object.entries(groupedByDisc).map(([disc, tracks]) => {
+          return (
+            <>
+              {disc !== "none" && (
+                <>
+                  <span></span>
+                  <span className="col-span-3 font-bold">Disc {disc}</span>
+                </>
+              )}
+              {tracks?.map((track) => (
+                <>
+                  <span>{track.TrackNumber}</span>
+                  <LinkButton
+                    className="text-left"
+                    onClick={() => setOpenedTrack(track)}
+                  >
+                    {track.Name}
+                  </LinkButton>
+                  <span>{getRatingString(track.Rating as Rating)}</span>
+                  <span>
+                    {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
+                  </span>
+                </>
+              ))}
+            </>
+          );
+        })}
       </ul>
       <TrackDetails
         show={openedTrack !== undefined}
@@ -171,20 +177,4 @@ const sortComparer = (trackA: TrackDto, trackB: TrackDto): number => {
   const trackNumberB = trackB.TrackNumber ?? 0;
 
   return trackNumberA > trackNumberB ? 1 : trackNumberA < trackNumberB ? -1 : 0;
-};
-
-const findDiscSwaps = (tracks: TrackDto[]) => {
-  let disc: number | undefined = undefined;
-  let index: number = 0;
-  const discSwapIndices = [];
-
-  for (const track of tracks) {
-    if (track.DiscNumber !== disc) {
-      discSwapIndices.push(index);
-      disc = track.DiscNumber;
-    }
-    index++;
-  }
-
-  return discSwapIndices;
 };
