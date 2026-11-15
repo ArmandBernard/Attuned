@@ -37,7 +37,6 @@ export interface TrackDetailsDto
 	Channels: number | undefined;
 	Type: string;
 	Codec: string;
-	CoverArt: string;
 }
 export interface TrackDto
 {
