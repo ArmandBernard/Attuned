@@ -5,6 +5,18 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1"/>
     <title>Attuned</title>
+    <script>
+      // Sets the dark class before first paint so there is no flash of the wrong theme while the
+      // bundle loads. Keep in sync with ThemeLayer, which takes over once the app is running.
+      (function () {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+    <!-- Linked here rather than imported from index.tsx so it is render-blocking in dev too,
+         avoiding a flash of unstyled content while the bundle loads. -->
+    <link rel="stylesheet" href="/src/index.css"/>
 </head>
 <body>
 <div id="root"></div>
