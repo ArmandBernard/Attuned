@@ -1,5 +1,5 @@
-import { TrackDetailsDto, TrackDto } from "@dtos";
-import { useRouteQuery } from "@utils/useRouteQuery.ts";
+import { TrackDto } from "@dtos";
+import { CoverArt } from "@components/CoverArt.tsx";
 
 interface AlbumItemProps {
   album: string;
@@ -16,31 +16,13 @@ export function AlbumItem({
 }: AlbumItemProps) {
   const firstTrack = items.length > 0 ? items[0] : undefined;
 
-  const { data: trackDetails } = useRouteQuery<
-    TrackDetailsDto,
-    unknown,
-    { id: number }
-  >({
-    enabled: firstTrack !== undefined,
-    url: "track/{id}",
-    parameters: {
-      id: firstTrack?.Id as number,
-    },
-  });
-
   return (
     <div className="flex flex-col w-48 cursor-pointer" onClick={onClick}>
-      {trackDetails?.CoverArt ? (
-        <div className="w-48 h-48 flex items-center justify-center">
-          <img
-            alt="album art"
-            className="max-w-48 max-h-48 h-auto w-auto rounded-sm"
-            src={`data:image/png;base64,${trackDetails.CoverArt}`}
-          />
-        </div>
-      ) : (
-        <div className="w-48 h-48 rounded-sm bg-paper-2"></div>
-      )}
+      <CoverArt
+        trackId={firstTrack?.Id}
+        sizeClassName="w-48 h-48"
+        maxSizeClassName="max-w-48 max-h-48"
+      />
       <button className="truncate text-left cursor-pointer">{album}</button>
       <div className="text-sm truncate">{albumArtist}</div>
     </div>

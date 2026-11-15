@@ -37,10 +37,10 @@ export function useRouteQuery<
   });
 }
 
-const base = "http://localhost:5280";
+export const apiBase = "http://localhost:5280";
 
 const buildUrl = (path: string, parameters: ValidParams | undefined) => {
-  const url = new URL(path, base);
+  const url = new URL(path, apiBase);
 
   if (parameters === undefined) {
     return url;

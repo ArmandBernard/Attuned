@@ -43,11 +43,6 @@ public record TrackDetailsDto
 
     public string? Codec { get; set; }
 
-    /// <summary>
-    /// Base64 encoded image data 
-    /// </summary>
-    public string? CoverArt { get; set; }
-
     public static TrackDetailsDto FromTrackDetails(TrackDetails track) =>
         new()
         {
@@ -79,7 +74,6 @@ public record TrackDetailsDto
             
             Channels = track.Channels,
             Type = track.Type,
-            Codec = track.Codec,
-            CoverArt = track.CoverArt != null ? Convert.ToBase64String(track.CoverArt) : null
+            Codec = track.Codec
         };
 }

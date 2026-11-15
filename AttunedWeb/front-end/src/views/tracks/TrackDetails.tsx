@@ -10,6 +10,7 @@ import CloseIcon from "@components/icons/CloseIcon.tsx";
 import IconButton from "@components/IconButton.tsx";
 import ChevronRightIcon from "@components/icons/ChevronRightIcon.tsx";
 import ChevronLeftIcon from "@components/icons/ChevronLeftIcon.tsx";
+import { CoverArt } from "@components/CoverArt.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -76,17 +77,11 @@ function Header({
   return (
     <div className="flex justify-between py-3 px-4 text-xl bg-paper-1">
       <div className="flex items-center gap-4">
-        {"CoverArt" in track ? (
-          <div className="w-32 h-32 flex items-center justify-center">
-            <img
-              alt="album art"
-              className="max-w-32 max-h-32 h-auto w-auto rounded-sm"
-              src={`data:image/png;base64,${track.CoverArt}`}
-            />
-          </div>
-        ) : (
-          <div className="w-32 h-32 rounded-sm bg-paper-2"></div>
-        )}
+        <CoverArt
+          trackId={track.Id}
+          sizeClassName="w-32 h-32"
+          maxSizeClassName="max-w-32 max-h-32"
+        />
         <div>
           <h1 className="text-xl">{track.Name}</h1>
           <div className="text-base">{track.Artist}</div>
