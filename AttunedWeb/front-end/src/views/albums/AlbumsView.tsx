@@ -17,23 +17,17 @@ export function AlbumsView() {
 
   const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, TrackDto[]>();
-    sorted?.forEach((track) => {
-      const key = `${track.Album};${track.AlbumArtist}`;
-      const collection = map.get(key);
-      if (!collection) {
-        map.set(key, [track]);
-      } else {
-        collection.push(track);
-      }
-    });
-
-    return map;
-  }, [sorted]);
+  const grouped = useMemo(
+    () =>
+      Object.groupBy(
+        sorted ?? [],
+        (track) => `${track.Album};${track.AlbumArtist}`,
+      ),
+    [sorted],
+  );
 
   const openAlbumTracks =
-    openAlbum && grouped.get(`${openAlbum.album};${openAlbum.albumArtist}`);
+    openAlbum && grouped[`${openAlbum.album};${openAlbum.albumArtist}`];
 
   return (
     <main className="flex flex-1 flex-col items-center">
@@ -41,15 +35,18 @@ export function AlbumsView() {
         <FullScreenLoading />
       ) : (
         <div className="p-4 justify-items-center grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {[...grouped].map((x) => {
-            const album = x[1][0].Album;
-            const albumArtist = x[1][0].AlbumArtist;
+          {Object.entries(grouped).map(([group, tracks]) => {
+            if (!tracks) return null;
+
+            const album = tracks[0].Album;
+            const albumArtist = tracks[0].AlbumArtist;
 
             return (
               <AlbumItem
+                key={group}
                 album={album}
                 albumArtist={albumArtist}
-                items={x[1]}
+                items={tracks}
                 onClick={() => setOpenAlbum({ album, albumArtist })}
               />
             );
