@@ -116,9 +116,9 @@ function Details({
     undefined,
   );
 
-  const index = openedTrack && tracks?.indexOf(openedTrack);
+  const sorted = useMemo(() => tracks?.toSorted(sortComparer), [tracks]);
 
-  const sorted = useMemo(() => tracks?.sort(sortComparer), [tracks]);
+  const index = openedTrack && sorted?.indexOf(openedTrack);
 
   const previousTrack =
     index !== undefined && index > 0 ? sorted?.at(index - 1) : undefined;
