@@ -1,0 +1,9 @@
+import { SVGProps } from "react";
+
+export default function SmartPlaylistIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" {...props}>
+      <path d="M8.71,16.71Q9,16.43 9,16T8.71,15.29T8,15q-0.42,0-0.71,0.29T7,16t0.29,0.71T8,17t0.71-0.29Zm0-4Q9,12.43 9,12T8.71,11.29T8,11q-0.42,0-0.71,0.29T7,12t0.29,0.71T8,13t0.71-0.29Zm0-4Q9,8.42 9,8Q9,7.57 8.71,7.29T8,7Q7.58,7 7.29,7.29T7,8Q7,8.42 7.29,8.71T8,9T8.71,8.71ZM11,17h6V15H11v2Zm0-4h6V11H11v2Zm0-4h6V7H11V9ZM5,21q-0.83,0-1.41-0.59T3,19V5Q3,4.17 3.59,3.59T5,3H19q0.83,0 1.41,0.59T21,5V19q0,0.82-0.59,1.41T19,21H5Z" />
+    </svg>
+  );
+}
