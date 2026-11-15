@@ -8,6 +8,7 @@ import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeStri
 import IconButton from "@components/IconButton.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
 import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
+import LinkButton from "@components/LinkButton.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -131,12 +132,12 @@ function Details({ tracks }: { tracks: TrackDto[] | undefined }) {
               </>
             )}
             <span>{track.TrackNumber}</span>
-            <button
-              className="underline text-left"
+            <LinkButton
+              className="text-left"
               onClick={() => setOpenedTrack(track)}
             >
               {track.Name}
-            </button>
+            </LinkButton>
             <span>{getRatingString(track.Rating as Rating)}</span>
             <span>
               {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
