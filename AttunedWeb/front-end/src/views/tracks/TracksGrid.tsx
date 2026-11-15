@@ -5,6 +5,8 @@ import { CellComponent } from "./cells/CellComponent.ts";
 import { trackFieldNameDictionary } from "./trackFieldNameDictionary.ts";
 import { FieldCellTypeDictionary } from "./FieldTypeDictionary.ts";
 import { CellTypes } from "./CellTypes.ts";
+import ChevronUpIcon from "@components/icons/ChevronUpIcon.tsx";
+import ChevronDownIcon from "@components/icons/ChevronDownIcon.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
@@ -79,7 +81,7 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
             >
               <button
                 aria-label={`sort by ${trackFieldNameDictionary[field]}`}
-                className="flex flex-1 px-2 gap-2"
+                className="flex flex-1 items-center pl-2 gap-2"
                 onClick={() => setSortFieldOrToggleSortDirection(field)}
               >
                 <span
@@ -93,10 +95,14 @@ export const TracksGrid: FunctionComponent<TracksGridProps> = (props) => {
                 >
                   {trackFieldNameDictionary[field]}
                 </span>
-                <span aria-hidden>
+                <span className="fill-text-color h-6 w-6 py-1 px-1" aria-hidden>
                   {props.sortOrder &&
                     props.sortOrder.field === field &&
-                    (props.sortOrder.direction === "ascending" ? "˄" : "˅")}
+                    (props.sortOrder.direction === "ascending" ? (
+                      <ChevronUpIcon />
+                    ) : (
+                      <ChevronDownIcon />
+                    ))}
                 </span>
               </button>
             </th>
