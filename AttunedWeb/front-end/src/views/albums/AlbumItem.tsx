@@ -36,7 +36,7 @@ export function AlbumItem({ album, artist, items, onClick }: AlbumItemProps) {
       ) : (
         <div className="w-48 h-48 rounded-sm bg-paper-2"></div>
       )}
-      <button className="truncate text-left">{album}</button>
+      <button className="truncate text-left cursor-pointer">{album}</button>
       <div className="text-sm truncate">{artist}</div>
     </div>
   );

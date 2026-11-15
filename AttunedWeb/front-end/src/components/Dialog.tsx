@@ -54,7 +54,7 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
     return (
       <dialog
         {...rest}
-        className={props.className}
+        className={"overscroll-contain " + props.className}
         ref={innerRef}
         onClick={(e) => {
           if (props.closeOnBackgroundClick && e.target === innerRef.current) {

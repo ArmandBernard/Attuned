@@ -74,14 +74,5 @@ const sortComparer = (trackA: TrackDto, trackB: TrackDto): number => {
     return albumOrder;
   }
 
-  const artistOrder = trackA.Artist?.localeCompare(trackB.Artist);
-
-  if (artistOrder !== 0) {
-    return artistOrder;
-  }
-
-  const trackANumber = trackA.TrackNumber ?? 0;
-  const trackBNumber = trackB.TrackNumber ?? 0;
-
-  return trackANumber > trackBNumber ? 1 : trackANumber < trackBNumber ? -1 : 0;
+  return trackA.Artist?.localeCompare(trackB.Artist);
 };
