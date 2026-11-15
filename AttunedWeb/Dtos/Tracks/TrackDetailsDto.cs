@@ -28,6 +28,7 @@ public record TrackDetailsDto
     public string? Artist { get; init; }
     public string? Composer { get; init; }
     public string? Album { get; init; }
+    public string? AlbumArtist { get; init; }
     public string? Genre { get; init; }
     public int? PlayCount { get; init; }
     public DateTime? PlayDate { get; init; }
@@ -68,6 +69,7 @@ public record TrackDetailsDto
             Artist = track.Artist,
             Composer = track.Composer,
             Album = track.Album,
+            AlbumArtist = track.AlbumArtist,
             Genre = track.Genre,
             PlayCount = track.PlayCount,
             PlayDate = track.PlayDate,
