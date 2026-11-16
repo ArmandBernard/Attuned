@@ -3,6 +3,7 @@ using AttunedWebApi.Converters;
 using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
+using iTunesSmartParser.Data;
 using iTunesSmartParser.Xml;
 using Microsoft.OpenApi;
 
@@ -46,6 +47,24 @@ internal static class Program
             options.MapType<TimeSpan>(() => new OpenApiSchema
             {
                 Type = JsonSchemaType.Number
+            });
+
+            // Optional<T> is only a wrapper that tells "left out" from "null", so document the wrapped type
+            options.MapType<Option<string?>>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.String | JsonSchemaType.Null
+            });
+            options.MapType<Option<int?>>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.Integer | JsonSchemaType.Null
+            });
+            options.MapType<Option<int>>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.Integer
+            });
+            options.MapType<Option<bool?>>(() => new OpenApiSchema
+            {
+                Type = JsonSchemaType.Boolean | JsonSchemaType.Null
             });
         });
 
