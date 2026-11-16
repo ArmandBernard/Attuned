@@ -3,11 +3,11 @@ using iTunesSmartParser.Xml;
 
 namespace AttunedWebApi.Repositories;
 
-public class PlaylistRepository(IXmlSource xmlSource, IPlaylistParser playlistParser) : IRepository<PlaylistDto, PlaylistDetailsDto>
+public class PlaylistRepository(IITunesXmlReader xmlReader, IPlaylistParser playlistParser) : IRepository<PlaylistDto, PlaylistDetailsDto>
 {
     public async Task<IEnumerable<PlaylistDto>> Get(CancellationToken token)
     {
-        var doc = await xmlSource.GetXDocument(token);
+        var doc = await xmlReader.GetXDocument(token);
         
         return playlistParser.ParseDocument(doc)
             .Where(x => x.Name != "Downloaded" && x.Name != "Library")
@@ -16,7 +16,7 @@ public class PlaylistRepository(IXmlSource xmlSource, IPlaylistParser playlistPa
 
     public async Task<PlaylistDetailsDto?> GetById(int id, CancellationToken token)
     {
-        var doc = await xmlSource.GetXDocument(token);
+        var doc = await xmlReader.GetXDocument(token);
 
         var playlist = playlistParser.GetById(doc, id);
         

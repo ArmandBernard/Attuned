@@ -97,8 +97,14 @@ public static class PListParser
     /// <param name="key">The key to look up</param>
     /// <returns></returns>
     public static XElement? PlistDictGet(this XElement element, string key) =>
-        (XElement?) element.Elements("key").FirstOrDefault(x => x.Value == key)?.NextNode;
+        element.Elements("key").FirstOrDefault(x => x.Value == key)?.NextElement();
 
     public static IEnumerable<XElement> PlistDictKeys(this XElement element) =>
-        element.Elements("key").Select(x => (XElement?) x.NextNode).Where(x => x != null).Select(x => x!);
+        element.Elements("key").Select(x => x.NextElement()).Where(x => x != null).Select(x => x!);
+
+    /// <summary>
+    /// The element following this one, skipping any whitespace between them (which is present when a document is loaded
+    /// with its formatting preserved)
+    /// </summary>
+    public static XElement? NextElement(this XElement element) => element.ElementsAfterSelf().FirstOrDefault();
 }

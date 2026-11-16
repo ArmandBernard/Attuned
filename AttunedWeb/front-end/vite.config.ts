@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { analyzer } from "vite-bundle-analyzer";
@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => ({
     tailwindcss(),
     ...(mode === "analyze" ? [analyzer()] : []),
   ],
+  test: {
+    environment: "jsdom",
+  },
   resolve: {
     alias: {
       "@dtos": "/src/dtos/Dtos.ts",
