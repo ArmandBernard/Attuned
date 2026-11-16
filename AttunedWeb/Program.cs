@@ -34,6 +34,7 @@ internal static class Program
         {
             options.JsonSerializerOptions.Converters.Add(new TimeSpanJsonConverter());
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.Converters.Add(new OptionJsonConverterFactory());
             options.JsonSerializerOptions.PropertyNamingPolicy = null;
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         });
@@ -57,15 +58,27 @@ internal static class Program
 
         builder.Services.AddSingleton<ITrackListParser, TrackListParser>();
         builder.Services.AddSingleton<IPlaylistParser, PlaylistParser>();
-        builder.Services.AddSingleton<IITunesXmlReader>(provider => provider.GetRequiredService<XmlSource>());
 
-        builder.Services.AddSingleton<IRepository<TrackDto, TrackDetailsDto>>(provider =>
+        builder.Services.AddSingleton<IITunesXmlReader>(_ => new ITunesXmlReader(xmlPath));
+        builder.Services.AddSingleton<IITunesXmlWriter>(_ => new ITunesXmlWriter(xmlPath));
+
+        builder.Services.AddSingleton<ITrackListWriter, TrackListWriter>();
+
+        builder.Services.AddSingleton(provider =>
             new CachingRepository<TrackDto, TrackDetailsDto>(
                 new TrackRepository(provider.GetRequiredService<IITunesXmlReader>(),
                     provider.GetRequiredService<ITrackListParser>()),
                 new TimeSpan(0, 1, 0)
             )
         );
+        builder.Services.AddSingleton<IRepository<TrackDto, TrackDetailsDto>>(provider =>
+            provider.GetRequiredService<CachingRepository<TrackDto, TrackDetailsDto>>());
+        // writing to tracks has to drop the cached track list
+        builder.Services.AddSingleton<ITrackWriter>(provider =>
+            new TrackWriter(provider.GetRequiredService<IITunesXmlReader>(),
+                provider.GetRequiredService<IITunesXmlWriter>(),
+                provider.GetRequiredService<ITrackListWriter>(),
+                provider.GetRequiredService<CachingRepository<TrackDto, TrackDetailsDto>>()));
         builder.Services.AddSingleton<IRepository<PlaylistDto, PlaylistDetailsDto>>(provider =>
             new CachingRepository<PlaylistDto, PlaylistDetailsDto>(
                 new PlaylistRepository(provider.GetRequiredService<IITunesXmlReader>(), provider.GetRequiredService<IPlaylistParser>()),
