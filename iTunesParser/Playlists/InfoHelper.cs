@@ -7,17 +7,17 @@ public class InfoHelper
 {
     // INFO OFFSETS
     // Offsets for bytes which...
-    const int LIVEUPDATE = 0; // determine whether live updating is enabled - Absolute offset
-    const int MATCHBOOL = 1; // determine whether logical matching is to be performed - Absolute offset
+    internal const int LIVEUPDATE = 0; // determine whether live updating is enabled - Absolute offset
+    internal const int MATCHBOOL = 1; // determine whether logical matching is to be performed - Absolute offset
 
-    const int SELECTIONMETHOD = 7; // determine by what criteria limited playlists are populated - Absolute offset
+    internal const int SELECTIONMETHOD = 7; // determine by what criteria limited playlists are populated - Absolute offset
 
-    const int LIMITBOOL = 2; // determine whether results are limited - Absolute offset
-    const int LIMITMETHOD = 3; // determine by what criteria the results are limited - Absolute offset
-    const int LIMITINT = 8; // determine the limited - Absolute offset
-    const int LIMITCHECKED = 12; // determine whether to exclude unchecked items - Absolute offset
+    internal const int LIMITBOOL = 2; // determine whether results are limited - Absolute offset
+    internal const int LIMITMETHOD = 3; // determine by what criteria the results are limited - Absolute offset
+    internal const int LIMITINT = 8; // determine the limited - Absolute offset
+    internal const int LIMITCHECKED = 12; // determine whether to exclude unchecked items - Absolute offset
 
-    const int
+    internal const int
         SELECTIONMETHODSIGN = 13; // determine whether certain selection methods are "most" or "least" - Absolute offset
 
     private byte[] Info { get; }
