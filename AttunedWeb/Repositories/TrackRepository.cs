@@ -13,11 +13,20 @@ public class TrackRepository(IITunesXmlReader xmlReader, ITrackListParser trackL
         return trackListParser.ParseDocument(doc).Select(TrackDto.FromTrack);
     }
 
-    public async Task<TrackDetailsDto?> GetById(int id, CancellationToken token)
+    public async Task<TrackDto?> GetById(int id, CancellationToken token)
     {
         var doc = await xmlReader.GetXDocument(token);
 
         var track = trackListParser.GetById(doc, id);
+
+        return track != null ? TrackDto.FromTrack(track) : null;
+    }
+
+    public async Task<TrackDetailsDto?> GetDetailsById(int id, CancellationToken token)
+    {
+        var doc = await xmlReader.GetXDocument(token);
+
+        var track = trackListParser.GetDetailsById(doc, id);
 
         return track != null ? TrackDetailsDto.FromTrackDetails(track) : null;
     }

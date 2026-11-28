@@ -21,7 +21,7 @@ public class PlaylistController(IRepository<PlaylistDto, PlaylistDetailsDto> pla
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlaylistDetailsDto))]
     public async Task<IActionResult> Get(int id, CancellationToken token)
     {
-        var playlist = await playlistRepository.GetById(id, token);
+        var playlist = await playlistRepository.GetDetailsById(id, token);
 
         return playlist != null ? Ok(playlist) : NotFound();
     }

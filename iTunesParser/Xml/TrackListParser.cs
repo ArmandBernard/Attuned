@@ -8,18 +8,18 @@ public class TrackListParser : ITrackListParser
     public IEnumerable<Track> ParseDocument(XDocument doc) =>
         GetTracksNode(doc).PlistDictKeys().Select(ParseTrackElement);
 
-    public TrackDetails? GetById(XDocument doc, int id)
+    public Track? GetById(XDocument doc, int id)
     {
         var trackNode = GetTracksNode(doc).PlistDictGet(id.ToString());
 
-        if (trackNode == null)
-        {
-            return null;
-        }
+        return trackNode == null ? null : ParseTrackElement(trackNode);
+    }
 
-        var track = ParseTrackElement(trackNode);
+    public TrackDetails? GetDetailsById(XDocument doc, int id)
+    {
+        var track = GetById(doc, id);
 
-        return LoadImage(LoadTagInfo(new TrackDetails(track)));
+        return track == null ? null : LoadImage(LoadTagInfo(new TrackDetails(track)));
     }
 
     public CoverArt? GetCoverArt(XDocument doc, int id)

@@ -23,7 +23,7 @@ public class TrackController(IRepository<TrackDto, TrackDetailsDto> trackReposit
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TrackDetailsDto))]
     public async Task<IActionResult> GetById(int id, CancellationToken token)
     {
-        return Ok(await trackRepository.GetById(id, token));
+        return Ok(await trackRepository.GetDetailsById(id, token));
     }
 
     /// <summary>

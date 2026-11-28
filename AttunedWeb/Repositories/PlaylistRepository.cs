@@ -14,11 +14,20 @@ public class PlaylistRepository(IITunesXmlReader xmlReader, IPlaylistParser play
             .Select(PlaylistDto.FromPlaylist);
     }
 
-    public async Task<PlaylistDetailsDto?> GetById(int id, CancellationToken token)
+    public async Task<PlaylistDto?> GetById(int id, CancellationToken token)
     {
         var doc = await xmlReader.GetXDocument(token);
 
         var playlist = playlistParser.GetById(doc, id);
+
+        return playlist != null ? PlaylistDto.FromPlaylist(playlist) : null;
+    }
+
+    public async Task<PlaylistDetailsDto?> GetDetailsById(int id, CancellationToken token)
+    {
+        var doc = await xmlReader.GetXDocument(token);
+
+        var playlist = playlistParser.GetDetailsById(doc, id);
         
         return playlist != null ? PlaylistDetailsDto.FromPlaylistDetails(playlist) : null;
     }
