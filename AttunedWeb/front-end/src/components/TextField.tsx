@@ -5,8 +5,8 @@ export function TextField(props: InputHTMLAttributes<HTMLInputElement>) {
   const [editing] = useContext(EditingContext);
 
   if (!editing) {
-    return <span className={props.className}>{props.value}</span>;
+    return <div className={"py-px " + props.className}>{props.value}</div>;
   }
 
-  return <input className="border" {...props} />;
+  return <input {...props} className={"border " + props.className} />;
 }
