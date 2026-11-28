@@ -1,6 +1,7 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { buildUrl, ValidParams } from "@utils/buildUrl.ts";
+import { useIsReadonlyMode } from "@utils/useIsReadonlyMode.ts";
 
 type Method = "PATCH" | "POST";
 
@@ -32,13 +33,19 @@ export function useRouteMutation<
   TBody = unknown,
 >(props: UseRouteMutationProps<TData, TError, TParams, TBody>) {
   const { url, method, ...rest } = props;
+  const isReadonlyMode = useIsReadonlyMode();
 
   const mutateFn = useCallback(
     async ({ parameters, body }: MutationRequestOptions<TParams, TBody>) => {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "X-Readonly-Mode": isReadonlyMode.toString(),
+      };
+
       const response = await fetch(buildUrl(url, parameters), {
         method: method,
         body: JSON.stringify(body),
-        headers: [],
+        headers: headers,
       });
 
       if (!response.ok) {
@@ -46,7 +53,7 @@ export function useRouteMutation<
       }
       return response.json();
     },
-    [url, method],
+    [url, method, isReadonlyMode],
   );
 
   return useMutation<TData, TError, MutationRequestOptions<TParams, TBody>>({
