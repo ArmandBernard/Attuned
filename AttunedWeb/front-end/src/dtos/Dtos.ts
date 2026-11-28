@@ -69,21 +69,20 @@ export interface TrackDto
 }
 export interface TrackPatchDto
 {
-	Name: any;
-	Artist: any;
-	Composer: any;
-	Album: any;
-	AlbumArtist: any;
-	Genre: any;
-	Year: any;
-	Bpm: any;
-	DiscNumber: any;
-	DiscCount: any;
-	TrackNumber: any;
-	TrackCount: any;
-	Rating: any;
-	Loved: any;
-	Unrecognised: { [key:string]: any };
+	Name?: string | null;
+	Artist?: string | null;
+	Composer?: string | null;
+	Album?: string | null;
+	AlbumArtist?: string | null;
+	Genre?: string | null;
+	Year?: number | null;
+	Bpm?: number | null;
+	DiscNumber?: number | null;
+	DiscCount?: number | null;
+	TrackNumber?: number | null;
+	TrackCount?: number | null;
+	Rating?: number;
+	Loved?: boolean | null;
 }
 export interface BooleanRuleDto
 {
