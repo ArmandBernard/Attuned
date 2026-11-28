@@ -39,6 +39,8 @@ WebAPI + React front-end.
 
 - [x] Decode XML into an in-memory data structure.
 - [x] Create a GUI to show this data.
+- [x] Enable editing of track data via the GUI.
+- Enable editing of smart playlists via the GUI
 - [ ] Generate non-smart playlist files for Android.
 
 ## Not planned, potential features
@@ -46,5 +48,3 @@ WebAPI + React front-end.
 - Media player
 - Enable syncing files to Android.
 - Write code to allow generation of XML file.
-- Enable editing of track data via the GUI.
-- Enable editing of smart playlists via the GUI
