@@ -2,6 +2,7 @@ using System.Reflection;
 using iTunesSmartParser.Data;
 using Reinforced.Typings;
 using Reinforced.Typings.Ast;
+using Reinforced.Typings.Ast.TypeNames;
 using Reinforced.Typings.Generators;
 
 namespace AttunedWebApi.CodeGen;
@@ -28,6 +29,8 @@ public class DtoInterfaceGenerator : InterfaceCodeGenerator
         return node;
     }
 
+    private static readonly NullabilityInfoContext _nullability = new();
+
     private static void HandleCustomTypes(RtField field, PropertyInfo property)
     {
         if (property is {PropertyType: {IsGenericType: true} type} &&
@@ -35,6 +38,12 @@ public class DtoInterfaceGenerator : InterfaceCodeGenerator
         {
             // makes fields optional (as opposed to nullable)
             field.Identifier.IsNullable = true;
+        }
+        
+        if (!property.PropertyType.IsValueType &&
+                 _nullability.Create(property).ReadState == NullabilityState.Nullable)
+        {
+            field.Type = new RtSimpleTypeName($"{field.Type} | undefined");
         }
     }
 }

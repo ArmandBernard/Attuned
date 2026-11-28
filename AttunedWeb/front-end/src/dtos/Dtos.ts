@@ -23,20 +23,20 @@ export interface TrackDetailsDto
 	DiscCount: number | undefined;
 	TrackNumber: number | undefined;
 	TrackCount: number | undefined;
-	Name: string;
-	Artist: string;
-	Composer: string;
-	Album: string;
-	AlbumArtist: string;
-	Genre: string;
+	Name: string | undefined;
+	Artist: string | undefined;
+	Composer: string | undefined;
+	Album: string | undefined;
+	AlbumArtist: string | undefined;
+	Genre: string | undefined;
 	PlayCount: number | undefined;
 	PlayDate: UTCDateTime | undefined;
 	SkipCount: number | undefined;
 	Rating: number;
 	Loved: boolean | undefined;
 	Channels: number | undefined;
-	Type: string;
-	Codec: string;
+	Type: string | undefined;
+	Codec: string | undefined;
 }
 export interface TrackDto
 {
@@ -55,12 +55,12 @@ export interface TrackDto
 	DiscCount: number | undefined;
 	TrackNumber: number | undefined;
 	TrackCount: number | undefined;
-	Name: string;
-	Artist: string;
-	Composer: string;
-	Album: string;
-	AlbumArtist: string;
-	Genre: string;
+	Name: string | undefined;
+	Artist: string | undefined;
+	Composer: string | undefined;
+	Album: string | undefined;
+	AlbumArtist: string | undefined;
+	Genre: string | undefined;
 	PlayCount: number | undefined;
 	PlayDate: UTCDateTime | undefined;
 	SkipCount: number | undefined;

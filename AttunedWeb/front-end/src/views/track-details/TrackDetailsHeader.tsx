@@ -49,6 +49,8 @@ export function TrackDetailsHeader({
                   ...prev,
                   trackId: String(previousTrack.Id),
                 })}
+                search
+                resetScroll={false}
               >
                 <ChevronLeftIcon />
               </RouteIconButton>
@@ -59,6 +61,8 @@ export function TrackDetailsHeader({
                 title="Next track"
                 to="."
                 params={(prev) => ({ ...prev, trackId: String(nextTrack.Id) })}
+                search
+                resetScroll={false}
               >
                 <ChevronRightIcon />
               </RouteIconButton>
