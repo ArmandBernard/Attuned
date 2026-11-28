@@ -36,9 +36,11 @@ public class TrackController(IRepository<TrackDto, TrackDetailsDto> trackReposit
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Patch(int id, TrackPatchDto patch, CancellationToken token)
+    public async Task<IActionResult> Patch(int id, TrackPatchDto patchDto, CancellationToken token)
     {
-        if (patch.ToPatch().IsEmpty)
+        var patch = patchDto.ToPatch();
+        
+        if (patch.IsEmpty)
         {
             // nothing to change, so there is no need to write anything. Just say how the track is.
             var existing = await trackRepository.GetById(id, token);
@@ -46,8 +48,7 @@ public class TrackController(IRepository<TrackDto, TrackDetailsDto> trackReposit
             return existing == null ? NotFound() : Ok(existing);
         }
 
-
-        var track = await trackWriter.Patch(id, patch.ToPatch(), token);
+        var track = await trackWriter.Patch(id, patch, token);
 
         return track == null ? NotFound() : Ok(track);
     }
