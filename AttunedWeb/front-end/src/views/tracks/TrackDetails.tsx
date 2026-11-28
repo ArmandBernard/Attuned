@@ -171,10 +171,10 @@ function Header({
 }
 
 function Details({ track }: { track: TrackDto }) {
-  const [modifications, setModifications] = useState<TrackPatchDto>();
+  const [patchDto, setPatchDto] = useState<TrackPatchDto>({});
   const [editing, setEditing] = useContext(EditingContext);
 
-  const effectiveTrack = { ...track, ...modifications };
+  const modified = { ...track, ...patchDto };
 
   const queryClient = useQueryClient();
 
@@ -189,12 +189,12 @@ function Details({ track }: { track: TrackDto }) {
 
   async function handleSave() {
     await patchTrack({
-      body: modifications,
+      body: patchDto,
       parameters: {
         id: track.Id,
       },
     });
-    setModifications({});
+    setPatchDto({});
     setEditing(false);
     await queryClient.invalidateQueries({ queryKey: ["track/{id}"] });
     await queryClient.invalidateQueries({ queryKey: ["track"] });
@@ -202,83 +202,32 @@ function Details({ track }: { track: TrackDto }) {
 
   function handleCancel() {
     setEditing(false);
-    setModifications({});
+    setPatchDto({});
   }
 
   return (
     <div className="flex flex-col p-4 gap-4">
       <dl className="grid grid-cols-[auto_1fr] gap-x-4">
-        <FieldValuePair fieldName="Name">
-          <TextField
-            value={effectiveTrack.Name ?? ""}
-            onChange={(e) =>
-              setModifications((modifications) => ({
-                ...modifications,
-                Name: e.target.value,
-              }))
-            }
-          />
-        </FieldValuePair>
-        <FieldValuePair fieldName="Artist">
-          <TextField
-            value={effectiveTrack.Artist ?? ""}
-            onChange={(e) =>
-              setModifications((modifications) => ({
-                ...modifications,
-                Artist: e.target.value,
-              }))
-            }
-          />
-        </FieldValuePair>
-        <FieldValuePair fieldName="Album">
-          <TextField
-            value={effectiveTrack.Album ?? ""}
-            onChange={(e) =>
-              setModifications((modifications) => ({
-                ...modifications,
-                Album: e.target.value,
-              }))
-            }
-          />
-        </FieldValuePair>
-        <FieldValuePair fieldName="Composer">
-          <TextField
-            value={effectiveTrack.Composer ?? ""}
-            onChange={(e) =>
-              setModifications((modifications) => ({
-                ...modifications,
-                Composer: e.target.value,
-              }))
-            }
-          />
-        </FieldValuePair>
-        <FieldValuePair fieldName="Genre">
-          <TextField
-            value={effectiveTrack.Genre ?? ""}
-            onChange={(e) =>
-              setModifications((modifications) => ({
-                ...modifications,
-                Genre: e.target.value,
-              }))
-            }
-          />
-        </FieldValuePair>
-        <FieldValuePair fieldName="Year">{effectiveTrack.Year}</FieldValuePair>
+        <TextFieldPair item={modified} field="Name" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Artist" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Album" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Composer" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Genre" patch={setPatchDto} />
+        <FieldValuePair fieldName="Year">{modified.Year}</FieldValuePair>
+
         <FieldValuePair fieldName="Track">
-          {effectiveTrack.TrackNumber ?? "?"} of{" "}
-          {effectiveTrack.TrackCount ?? "?"}
+          {modified.TrackNumber ?? "?"} of {modified.TrackCount ?? "?"}
         </FieldValuePair>
         <FieldValuePair fieldName="Disc">
-          {effectiveTrack.DiscNumber ?? "?"} of{" "}
-          {effectiveTrack.DiscCount ?? "?"}
+          {modified.DiscNumber ?? "?"} of {modified.DiscCount ?? "?"}
         </FieldValuePair>
         <FieldValuePair fieldName="Rating">
           <span className="flex gap-4">
             <span
-              aria-label={`${effectiveTrack.Rating} stars`}
+              aria-label={`${modified.Rating} stars`}
               className="text-primary"
             >
-              {getRatingString(effectiveTrack.Rating as Rating)}
+              {getRatingString(modified.Rating as Rating)}
             </span>
             <span className="text-love" aria-label={getLoveLabel(track.Loved)}>
               <LoveStatus
@@ -289,7 +238,7 @@ function Details({ track }: { track: TrackDto }) {
           </span>
         </FieldValuePair>
         <FieldValuePair fieldName="Play count">
-          {effectiveTrack.PlayCount}
+          {modified.PlayCount}
         </FieldValuePair>
       </dl>
 
@@ -329,5 +278,32 @@ function FieldValuePair({
       <dt className="font-bold">{fieldName}</dt>
       <dd>{children}</dd>
     </>
+  );
+}
+
+function TextFieldPair<T extends object>({
+  item,
+  field,
+  fieldName,
+  patch,
+}: {
+  item: T;
+  field: keyof T;
+  fieldName?: string;
+  patch: Dispatch<SetStateAction<TrackPatchDto>>;
+}) {
+  return (
+    <FieldValuePair fieldName={fieldName ?? (field as string)}>
+      <TextField
+        className="w-full"
+        value={(item[field] as string) ?? ""}
+        onChange={(e) =>
+          patch((modifications) => ({
+            ...modifications,
+            [field]: e.target.value,
+          }))
+        }
+      />
+    </FieldValuePair>
   );
 }
