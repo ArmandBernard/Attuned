@@ -27,8 +27,7 @@ public class TrackController(IRepository<TrackDto, TrackDetailsDto> trackReposit
     }
 
     /// <summary>
-    /// Update only the properties that are provided. Requires read-only mode to be off, which the client signals
-    /// with the "X-Readonly-Mode: false" header.
+    /// Update only the properties that are provided.
     /// </summary>
     [HttpPatch]
     [Route("{id:int}")]
