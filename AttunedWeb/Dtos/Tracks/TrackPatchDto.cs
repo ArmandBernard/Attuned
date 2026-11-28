@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AttunedWebApi.CodeGen;
 using AttunedWebApi.Validation;
 using iTunesSmartParser.Data;
 
@@ -10,6 +11,7 @@ namespace AttunedWebApi.Dtos.Tracks;
 /// A partial update to a track. Properties left out of the request are not changed. Properties sent as null are
 /// cleared (except Rating, which is cleared by sending 0).
 /// </summary>
+[TypescriptDto]
 public record TrackPatchDto : IValidatableObject
 {
     public Option<string?> Name { get; init; }
