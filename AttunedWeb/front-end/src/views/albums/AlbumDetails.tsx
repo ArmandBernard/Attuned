@@ -6,7 +6,7 @@ import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
 import IconButton from "@components/IconButton.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
-import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
+import { TrackDetails } from "@views/track-details/TrackDetails.tsx";
 import RouteLink from "@components/RouteLink.tsx";
 import { ReadonlyRating } from "@components/ReadonlyRating.tsx";
 

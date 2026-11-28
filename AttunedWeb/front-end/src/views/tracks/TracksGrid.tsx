@@ -11,7 +11,7 @@ import ChevronDownIcon from "@components/icons/ChevronDownIcon.tsx";
 import { TextCell } from "@views/tracks/cells/TextCell.tsx";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import RouteLink from "@components/RouteLink.tsx";
-import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
+import { TrackDetails } from "@views/track-details/TrackDetails.tsx";
 
 interface SortOrder {
   field: keyof TrackDto;
