@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 import { TrackDetailsDto, TrackDto, TrackPatchDto } from "@dtos";
-import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { LoveStatus } from "@components/icons/LoveStatus.tsx";
 import { getLoveLabel } from "@utils/stringFormatters/getLoveLabel.ts";
@@ -27,6 +26,7 @@ import Button from "@components/Button.tsx";
 import { useRouteMutation } from "@utils/useRouteMutation.ts";
 import { ErrorAlert } from "@components/ErrorAlert.tsx";
 import { useQueryClient } from "@tanstack/react-query";
+import { RatingField } from "@components/RatingField.tsx";
 
 interface TrackDetailProps {
   previousTrack: TrackDto | undefined;
@@ -209,13 +209,13 @@ function Details({ track }: { track: TrackDto }) {
 
   return (
     <div className="flex flex-col p-4 gap-4">
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
         <TextFieldPair item={modified} field="Name" patch={setPatchDto} />
         <TextFieldPair item={modified} field="Artist" patch={setPatchDto} />
         <TextFieldPair item={modified} field="Album" patch={setPatchDto} />
         <TextFieldPair item={modified} field="Composer" patch={setPatchDto} />
         <TextFieldPair item={modified} field="Genre" patch={setPatchDto} />
-        <FieldValuePair fieldName="Year">{modified.Year}</FieldValuePair>
+        <TextFieldPair item={modified} field="Year" patch={setPatchDto} />
 
         <XOfYFieldPair
           item={modified}
@@ -232,13 +232,13 @@ function Details({ track }: { track: TrackDto }) {
           patch={setPatchDto}
         />
         <FieldValuePair fieldName="Rating">
-          <span className="flex gap-4">
-            <span
-              aria-label={`${modified.Rating} stars`}
-              className="text-primary"
-            >
-              {getRatingString(modified.Rating as Rating)}
-            </span>
+          <span className="flex gap-4 items-center">
+            <RatingField
+              value={modified.Rating as Rating}
+              onChange={(Rating) =>
+                setPatchDto((previous) => ({ ...previous, Rating }))
+              }
+            />
             <span className="text-love" aria-label={getLoveLabel(track.Loved)}>
               <LoveStatus
                 loved={track.Loved}
