@@ -3,7 +3,7 @@ import { TrackDto, TrackPatchDto } from "@dtos";
 import { EditingContext } from "@utils/EditingContext.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouteMutation } from "@utils/useRouteMutation.ts";
-import { RatingField } from "@components/RatingField.tsx";
+import { RatingField } from "@components/fields/RatingField.tsx";
 import { Rating } from "@root/dtos/Rating.ts";
 import { getLoveLabel } from "@utils/stringFormatters/getLoveLabel.ts";
 import { LoveStatus } from "@components/icons/LoveStatus.tsx";

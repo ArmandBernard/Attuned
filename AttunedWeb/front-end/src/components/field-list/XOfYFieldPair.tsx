@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useContext } from "react";
 import { TrackPatchDto } from "@dtos";
 import { EditingContext } from "@utils/EditingContext.ts";
-import { TextField } from "@components/TextField.tsx";
+import { TextField } from "@components/fields/TextField.tsx";
 import { FieldValuePair } from "@components/field-list/FieldValuePair.tsx";
 
 export function XOfYFieldPair<T extends object>({

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { TrackPatchDto } from "@dtos";
-import { TextField } from "@components/TextField.tsx";
+import { TextField } from "@components/fields/TextField.tsx";
 import { FieldValuePair } from "@components/field-list/FieldValuePair.tsx";
 
 export function TextFieldPair<T extends object>({
