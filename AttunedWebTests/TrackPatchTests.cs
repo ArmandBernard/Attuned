@@ -239,6 +239,35 @@ public class TrackPatchTests
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         (await File.ReadAllTextAsync(_libraryPath)).Should().Be(before);
+        File.Exists(_libraryPath + ".bak").Should().BeFalse("nothing was written");
+    }
+
+    [Test]
+    public async Task Patch_NothingToPatch_ReturnsTheTrackAsItIs()
+    {
+        var response = await _client.SendAsync(PatchRequest("/Track/1", "{}"));
+
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        body.GetProperty("Id").GetInt32().Should().Be(1);
+        body.GetProperty("Name").GetString().Should().Be("Original name");
+        body.GetProperty("Artist").GetString().Should().Be("Original artist");
+    }
+
+    [Test]
+    public async Task Patch_NothingToPatch_UnknownTrack_Is404()
+    {
+        var response = await _client.SendAsync(PatchRequest("/Track/99", "{}"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Test]
+    public async Task Patch_NothingToPatch_WhenReadonlyModeIsOn_IsStillForbidden()
+    {
+        // the read-only guard applies to the endpoint, whether or not there is anything to change
+        var response = await _client.SendAsync(PatchRequest("/Track/1", "{}", readonlyHeader: null));
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
     [Test]
