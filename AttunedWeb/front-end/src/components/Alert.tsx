@@ -1,10 +1,27 @@
 import { HTMLAttributes } from "react";
 
-export function Alert({ children, ...rest }: HTMLAttributes<HTMLDivElement>) {
+type Severity = "error" | "warning";
+
+export function Alert({
+  children,
+  severity,
+  ...rest
+}: HTMLAttributes<HTMLDivElement> & { severity: Severity }) {
+  let colorClassNames = "";
+
+  switch (severity) {
+    case "error":
+      colorClassNames = "bg-error/30";
+      break;
+    case "warning":
+      colorClassNames = "bg-warning/30";
+      break;
+  }
+
   return (
     <div
       {...rest}
-      className={`bg-error/30 rounded-sm py-2 px-3 ${rest.className}`}
+      className={`${colorClassNames} text-sm rounded-sm py-2 px-3 ${rest.className}`}
     >
       {children}
     </div>

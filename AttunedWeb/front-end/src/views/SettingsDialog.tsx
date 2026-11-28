@@ -6,6 +6,7 @@ import {
 } from "@utils/useIsReadonlyMode.ts";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
 import IconButton from "@components/IconButton.tsx";
+import { Alert } from "@components/Alert.tsx";
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -34,10 +35,10 @@ export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
         </IconButton>
 
         <h2 className="text-lg">Read-only mode</h2>
-        <div className="text-sm bg-warning/25 p-2 rounded-sm">
+        <Alert severity="warning">
           Turning off read-only mode will allow changes to be made to your
           iTunes library. This is still experimental.
-        </div>
+        </Alert>
         <label className="flex items-center justify-between gap-2">
           Enable read-only mode{" "}
           <Toggle checked={readonlyMode} onChange={setReadonlyMode} />

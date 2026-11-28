@@ -14,13 +14,17 @@ export function ErrorAlert({
 
   if (error instanceof APIError) {
     return (
-      <Alert {...rest}>
+      <Alert severity="error" {...rest}>
         <ASPNetErrorView error={error} />
       </Alert>
     );
   }
 
-  return <Alert {...rest}>{error.message}</Alert>;
+  return (
+    <Alert severity="error" {...rest}>
+      {error.message}
+    </Alert>
+  );
 }
 
 function ASPNetErrorView({ error }: { error: APIError }) {
