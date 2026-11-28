@@ -13,10 +13,8 @@ public record PlaylistDetailsDto
     public required IEnumerable<int> Items { get; init; }
     public required bool IsSmart { get; init; }
     
-    [TypescriptNullable(Type = nameof(LimitDto))]
     public required LimitDto? Limit { get; init; }
     
-    [TypescriptNullable(Type = nameof(ConjunctionDto))]
     public required ConjunctionDto? RuleConjunction { get; init; }
     public bool LiveUpdating { get; init; }
 
