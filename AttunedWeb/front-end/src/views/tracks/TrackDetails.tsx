@@ -310,7 +310,7 @@ function TextFieldPair<T extends object>({
         onChange={(e) =>
           patch((modifications) => ({
             ...modifications,
-            [field]: e.target.value,
+            [field]: e.target.value === "" ? null : e.target.value,
           }))
         }
       />
@@ -342,7 +342,7 @@ function XOfYFieldPair<T extends object>({
         onChange={(e) =>
           patch((modifications) => ({
             ...modifications,
-            [field1]: e.target.value,
+            [field1]: e.target.value === "" ? null : e.target.value,
           }))
         }
       />
@@ -354,7 +354,7 @@ function XOfYFieldPair<T extends object>({
         onChange={(e) =>
           patch((modifications) => ({
             ...modifications,
-            [field2]: e.target.value,
+            [field2]: e.target.value === "" ? null : e.target.value,
           }))
         }
       />
