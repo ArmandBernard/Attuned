@@ -191,6 +191,8 @@ function Details({ track }: { track: TrackDto }) {
         id: track.Id,
       },
     });
+    setModifications({});
+    setEditing(false);
   }
 
   function handleCancel() {
