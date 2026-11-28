@@ -44,7 +44,7 @@ export function AlbumsView() {
   const openedTrackId = trackParams ? parseInt(trackParams.trackId) : undefined;
 
   const closeAlbum = () => {
-    void navigate({ to: "/albums" });
+    void navigate({ to: "/albums", resetScroll: false });
   };
 
   return (

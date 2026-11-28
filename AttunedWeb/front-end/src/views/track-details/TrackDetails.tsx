@@ -35,7 +35,7 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
       onCloseOverride();
     } else {
       // keep the search params, as the album that is open is in them
-      void navigate({ to: "..", search: true });
+      void navigate({ to: "..", search: true, resetScroll: false });
     }
   }
 

@@ -145,6 +145,7 @@ function Details({
                       to="/albums/$trackId"
                       params={{ trackId: String(track.Id) }}
                       search
+                      resetScroll={false}
                     >
                       {track.Name}
                     </RouteLink>

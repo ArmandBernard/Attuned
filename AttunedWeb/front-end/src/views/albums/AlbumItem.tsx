@@ -16,6 +16,7 @@ export function AlbumItem({ album, albumArtist, items }: AlbumItemProps) {
       className="flex flex-col w-48 cursor-pointer"
       to="/albums"
       search={{ album, albumArtist: albumArtist }}
+      resetScroll={false}
     >
       <CoverArt
         trackId={firstTrack?.Id}
