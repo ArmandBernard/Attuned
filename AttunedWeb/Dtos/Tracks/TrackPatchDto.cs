@@ -63,11 +63,6 @@ public record TrackPatchDto : IValidatableObject
             yield return new ValidationResult($"\"{name}\" is not a property that can be patched.", [name]);
         }
 
-        if (ToPatch().IsEmpty && Unrecognised is not { Count: > 0 })
-        {
-            yield return new ValidationResult("At least one property to change must be provided.");
-        }
-
         if (Rating is {HasValue: true, Value: < 0 or > 5})
         {
             yield return new ValidationResult("Rating must be between 0 and 5.", [nameof(Rating)]);

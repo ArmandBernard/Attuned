@@ -38,6 +38,15 @@ public class TrackController(IRepository<TrackDto, TrackDetailsDto> trackReposit
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Patch(int id, TrackPatchDto patch, CancellationToken token)
     {
+        if (patch.ToPatch().IsEmpty)
+        {
+            // nothing to change, so there is no need to write anything. Just say how the track is.
+            var existing = await trackRepository.GetById(id, token);
+
+            return existing == null ? NotFound() : Ok(existing);
+        }
+
+
         var track = await trackWriter.Patch(id, patch.ToPatch(), token);
 
         return track == null ? NotFound() : Ok(track);

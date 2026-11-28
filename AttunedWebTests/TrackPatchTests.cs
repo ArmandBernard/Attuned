@@ -212,7 +212,6 @@ public class TrackPatchTests
         (await File.ReadAllTextAsync(_libraryPath)).Should().Be(before);
     }
 
-    [TestCase("{}", TestName = "Patch_EmptyObject_IsRejected")]
     [TestCase("""{"Rating":6}""", TestName = "Patch_RatingAboveFive_IsRejected")]
     [TestCase("""{"Rating":-1}""", TestName = "Patch_NegativeRating_IsRejected")]
     [TestCase("""{"Rating":null}""", TestName = "Patch_NullRating_IsRejected")]
@@ -228,6 +227,17 @@ public class TrackPatchTests
         var response = await _client.SendAsync(PatchRequest("/Track/1", json));
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        (await File.ReadAllTextAsync(_libraryPath)).Should().Be(before);
+    }
+
+    [Test]
+    public async Task Patch_NothingToPatch_ReturnsOk()
+    {
+        var before = await File.ReadAllTextAsync(_libraryPath);
+
+        var response = await _client.SendAsync(PatchRequest("/Track/1", "{}"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         (await File.ReadAllTextAsync(_libraryPath)).Should().Be(before);
     }
 
