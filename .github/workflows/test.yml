@@ -19,6 +19,13 @@ jobs:
         run: dotnet restore
       - name: Test
         run: dotnet test --verbosity normal --logger "GitHubActions;summary-include-passed=false;summary-include-skipped=true"
+      # Building the web project regenerates the TypeScript DTOs, so a difference means they were not committed
+      - name: Check the generated TypeScript DTOs are up to date
+        run: |
+          git diff --exit-code -- AttunedWeb/front-end/src/dtos || {
+            echo "::error::The generated DTOs (Dtos.ts) are out of date. Build AttunedWeb locally and commit the result."
+            exit 1
+          }
   test-front-end:
     name: Test front-end
     runs-on: ubuntu-latest
