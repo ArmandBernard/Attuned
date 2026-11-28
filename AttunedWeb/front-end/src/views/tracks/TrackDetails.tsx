@@ -194,6 +194,11 @@ function Details({ track }: { track: TrackDto }) {
     });
   }
 
+  function handleCancel() {
+    setEditing(false);
+    setModifications({});
+  }
+
   return (
     <div className="flex flex-col p-4">
       <div className="grid grid-cols-[auto_1fr] gap-x-2">
@@ -287,7 +292,7 @@ function Details({ track }: { track: TrackDto }) {
           <Button
             variant="secondary"
             disabled={isPending}
-            onClick={() => setEditing(false)}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
