@@ -2,12 +2,14 @@ import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { buildUrl, ValidParams } from "@utils/buildUrl.ts";
 
+type Method = "PATCH" | "POST";
+
 type UseRouteMutationProps<
   TData,
   TError = unknown,
   TParams extends ValidParams = undefined,
   TBody = unknown,
-> = { url: string } & ReactMutationOptions<
+> = { url: string; method: Method } & ReactMutationOptions<
   TData,
   TError,
   MutationRequestOptions<TParams, TBody>
@@ -29,11 +31,12 @@ export function useRouteMutation<
   TParams extends ValidParams = undefined,
   TBody = unknown,
 >(props: UseRouteMutationProps<TData, TError, TParams, TBody>) {
-  const { url, ...rest } = props;
+  const { url, method, ...rest } = props;
 
   const mutateFn = useCallback(
     async ({ parameters, body }: MutationRequestOptions<TParams, TBody>) => {
       const response = await fetch(buildUrl(url, parameters), {
+        method: method,
         body: JSON.stringify(body),
         headers: [],
       });
@@ -43,7 +46,7 @@ export function useRouteMutation<
       }
       return response.json();
     },
-    [url],
+    [url, method],
   );
 
   return useMutation<TData, TError, MutationRequestOptions<TParams, TBody>>({

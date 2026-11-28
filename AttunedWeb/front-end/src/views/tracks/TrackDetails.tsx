@@ -183,6 +183,7 @@ function Details({ track }: { track: TrackDto }) {
     TrackPatchDto
   >({
     url: "track/{id}",
+    method: "PATCH",
   });
 
   async function handleSave() {
