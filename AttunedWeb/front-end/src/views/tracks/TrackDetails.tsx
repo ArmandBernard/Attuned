@@ -24,6 +24,7 @@ import EditIcon from "@components/icons/EditIcon.tsx";
 import { EditingContext } from "@utils/EditingContext.ts";
 import { TextField } from "@components/TextField.tsx";
 import Button from "@components/Button.tsx";
+import { useRouteMutation } from "@utils/useRouteMutation.ts";
 
 interface TrackDetailProps {
   previousTrack: TrackDto | undefined;
@@ -175,6 +176,24 @@ function Details({ track }: { track: TrackDto }) {
 
   const effectiveTrack = { ...track, ...modifications };
 
+  const { mutateAsync, isPending } = useRouteMutation<
+    TrackDto,
+    unknown,
+    { id: number },
+    TrackPatchDto
+  >({
+    url: "track/{id}",
+  });
+
+  async function handleSave() {
+    await mutateAsync({
+      body: modifications,
+      parameters: {
+        id: track.Id,
+      },
+    });
+  }
+
   return (
     <div className="flex flex-col p-4">
       <div className="grid grid-cols-[auto_1fr] gap-x-2">
@@ -265,10 +284,16 @@ function Details({ track }: { track: TrackDto }) {
 
       {editing && (
         <div className="self-end flex gap-2">
-          <Button variant="secondary" onClick={() => setEditing(false)}>
+          <Button
+            variant="secondary"
+            disabled={isPending}
+            onClick={() => setEditing(false)}
+          >
             Cancel
           </Button>
-          <Button variant="primary">Save</Button>
+          <Button variant="primary" disabled={isPending} onClick={handleSave}>
+            Save
+          </Button>
         </div>
       )}
     </div>
