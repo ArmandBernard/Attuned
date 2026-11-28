@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AttunedWebApi.Validation;
 using iTunesSmartParser.Data;
 
 namespace AttunedWebApi.Dtos.Tracks;
@@ -17,17 +18,17 @@ public record TrackPatchDto : IValidatableObject
     public Option<string?> Album { get; init; }
     public Option<string?> AlbumArtist { get; init; }
     public Option<string?> Genre { get; init; }
-    public Option<int?> Year { get; init; }
-    public Option<int?> Bpm { get; init; }
-    public Option<int?> DiscNumber { get; init; }
-    public Option<int?> DiscCount { get; init; }
-    public Option<int?> TrackNumber { get; init; }
-    public Option<int?> TrackCount { get; init; }
+    [OptionRange(0)] public Option<int?> Year { get; init; }
+    [OptionRange(0)] public Option<int?> Bpm { get; init; }
+    [OptionRange(0)] public Option<int?> DiscNumber { get; init; }
+    [OptionRange(0)] public Option<int?> DiscCount { get; init; }
+    [OptionRange(0)] public Option<int?> TrackNumber { get; init; }
+    [OptionRange(0)] public Option<int?> TrackCount { get; init; }
 
     /// <summary>
     /// Rating out of 5. 0 is unrated.
     /// </summary>
-    public Option<int> Rating { get; init; }
+    [OptionRange(0, 5)] public Option<int> Rating { get; init; }
     public Option<bool?> Loved { get; init; }
 
     /// <summary>
@@ -61,24 +62,6 @@ public record TrackPatchDto : IValidatableObject
         foreach (var name in Unrecognised?.Keys.ToList() ?? [])
         {
             yield return new ValidationResult($"\"{name}\" is not a property that can be patched.", [name]);
-        }
-
-        if (Rating is {HasValue: true, Value: < 0 or > 5})
-        {
-            yield return new ValidationResult("Rating must be between 0 and 5.", [nameof(Rating)]);
-        }
-
-        foreach (var (name, optional) in new[]
-                 {
-                     (nameof(Year), Year), (nameof(Bpm), Bpm), (nameof(DiscNumber), DiscNumber),
-                     (nameof(DiscCount), DiscCount), (nameof(TrackNumber), TrackNumber),
-                     (nameof(TrackCount), TrackCount)
-                 })
-        {
-            if (optional is { HasValue: true, Value: < 0 })
-            {
-                yield return new ValidationResult($"{name} cannot be negative.", [name]);
-            }
         }
     }
 }
