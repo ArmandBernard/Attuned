@@ -51,3 +51,5 @@ html.dark {
   --paper-1: #404040; /* neutral-700 */
   --paper-2: #525252; /* neutral-600 */
 }
+
+@custom-variant aria-disabled (&[aria-disabled="true"]);
