@@ -215,12 +215,20 @@ function Details({ track }: { track: TrackDto }) {
         <TextFieldPair item={modified} field="Genre" patch={setPatchDto} />
         <FieldValuePair fieldName="Year">{modified.Year}</FieldValuePair>
 
-        <FieldValuePair fieldName="Track">
-          {modified.TrackNumber ?? "?"} of {modified.TrackCount ?? "?"}
-        </FieldValuePair>
-        <FieldValuePair fieldName="Disc">
-          {modified.DiscNumber ?? "?"} of {modified.DiscCount ?? "?"}
-        </FieldValuePair>
+        <XOfYFieldPair
+          item={modified}
+          fieldName="Track"
+          field1="TrackNumber"
+          field2="TrackCount"
+          patch={setPatchDto}
+        />
+        <XOfYFieldPair
+          item={modified}
+          fieldName="Disc"
+          field1="DiscNumber"
+          field2="DiscCount"
+          patch={setPatchDto}
+        />
         <FieldValuePair fieldName="Rating">
           <span className="flex gap-4">
             <span
@@ -301,6 +309,50 @@ function TextFieldPair<T extends object>({
           patch((modifications) => ({
             ...modifications,
             [field]: e.target.value,
+          }))
+        }
+      />
+    </FieldValuePair>
+  );
+}
+
+function XOfYFieldPair<T extends object>({
+  item,
+  field1,
+  field2,
+  fieldName,
+  patch,
+}: {
+  item: T;
+  field1: keyof T;
+  field2: keyof T;
+  fieldName?: string;
+  patch: Dispatch<SetStateAction<TrackPatchDto>>;
+}) {
+  const [editing] = useContext(EditingContext);
+
+  return (
+    <FieldValuePair fieldName={fieldName ?? (field1 as string)}>
+      <TextField
+        className="w-16 inline"
+        inputMode="numeric"
+        value={(item[field1] as string) ?? (editing ? "" : "?")}
+        onChange={(e) =>
+          patch((modifications) => ({
+            ...modifications,
+            [field1]: e.target.value,
+          }))
+        }
+      />
+      <span> of </span>
+      <TextField
+        className="w-16 inline"
+        inputMode="numeric"
+        value={(item[field2] as string) ?? (editing ? "" : "?")}
+        onChange={(e) =>
+          patch((modifications) => ({
+            ...modifications,
+            [field2]: e.target.value,
           }))
         }
       />
