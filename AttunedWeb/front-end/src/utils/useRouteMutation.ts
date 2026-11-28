@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { buildUrl, ValidParams } from "@utils/buildUrl.ts";
 import { useIsReadonlyMode } from "@utils/useIsReadonlyMode.ts";
 import { APIError } from "@utils/APIError.ts";
+import { RouteError } from "@utils/RouteError.ts";
 
 type Method = "PATCH" | "POST";
 
@@ -16,7 +17,7 @@ type UseRouteMutationProps<
 >;
 
 type ReactMutationOptions<TData, TVariables> = Omit<
-  UseMutationOptions<TData, APIError, TVariables>,
+  UseMutationOptions<TData, RouteError, TVariables>,
   "mutationKey" | "mutationFn"
 >;
 
@@ -54,8 +55,10 @@ export function useRouteMutation<
     [url, method, isReadonlyMode],
   );
 
-  return useMutation<TData, APIError, MutationRequestOptions<TParams, TBody>>({
-    ...rest,
-    mutationFn: mutateFn,
-  });
+  return useMutation<TData, RouteError, MutationRequestOptions<TParams, TBody>>(
+    {
+      ...rest,
+      mutationFn: mutateFn,
+    },
+  );
 }
