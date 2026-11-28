@@ -1,6 +1,8 @@
 import { HTMLAttributes } from "react";
 import { APIError } from "@utils/APIError.ts";
 import { RouteError } from "@utils/RouteError.ts";
+import { Alert } from "@components/Alert.tsx";
+import { AlertTitle } from "@components/AlertTitle.tsx";
 
 export function ErrorAlert({
   error,
@@ -21,17 +23,6 @@ export function ErrorAlert({
   return <Alert {...rest}>{error.message}</Alert>;
 }
 
-function Alert({ children, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      {...rest}
-      className={`bg-error/30 rounded-sm py-2 px-3 ${rest.className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
 function ASPNetErrorView({ error }: { error: APIError }) {
   const validationErrorMessages = [
     ...new Set(
@@ -45,8 +36,8 @@ function ASPNetErrorView({ error }: { error: APIError }) {
   if (validationErrorMessages.length === 0) {
     return (
       <>
-        <div className="font-bold mb-1">{error.title}</div>
-        <div>{error.detail}</div>
+        <AlertTitle>{error.title}</AlertTitle>
+        {error.detail}
       </>
     );
   }
@@ -68,7 +59,7 @@ function ValidationErrorView({
 }) {
   return (
     <>
-      <div className="font-bold mb-1">{error.title}</div>
+      <AlertTitle>{error.title}</AlertTitle>
       <ul className="list-disc pl-4">
         {validationErrorMessages.map((message) => (
           <li key={message}>{message}</li>
