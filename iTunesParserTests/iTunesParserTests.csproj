@@ -16,6 +16,10 @@
     <Content Include="*.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <!-- The private library used by the tests that can only be run locally. It is not in source control. -->
+    <Content Include="../iTunes Music Library.xml" Link="iTunesMusicLibrary.xml" Condition="Exists('../iTunes Music Library.xml')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

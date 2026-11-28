@@ -5,10 +5,8 @@ using iTunesSmartParser.Fields;
 
 namespace iTunesSmartParser.Playlists;
 
-public class CriteriaHelper
+public class CriteriaHelper(byte[] criteria)
 {
-    private readonly byte[] Criteria;
-
     #region constants
 
     // CRITERIA OFFSETS
@@ -28,7 +26,8 @@ public class CriteriaHelper
     const int SUBINT = 61; // begin the int field that counts subexpressions - Relative offset from FIELD
     const int SUBEXPRESSIONLENGTH = 192; // The length of a subexpression starting from FIELD
 
-    const int STRING = 54; // begin string data - Relative offset from FIELD
+    const int STRINGLENGTH = 49; // begin the int that is the length in bytes of the string - Relative offset from FIELD
+    const int STRING = 53; // begin string data - Relative offset from FIELD
     const int INTA = 57; // begin the first int - Relative offset from FIELD
     const int INTB = 24; // begin the second int - Relative offset from INTA
     const int PLAYLISTA = 20; // begin the first playlist field - Relative offset from FIELD
@@ -42,22 +41,22 @@ public class CriteriaHelper
 
     #endregion
 
-    public int Field(int offset) => Criteria[offset];
+    public int Field(int offset) => criteria[offset];
 
     #region logic properties
 
-    public bool LogicIsOr => Criteria[LOGICTYPE] == 1;
+    public bool LogicIsOr => criteria[LOGICTYPE] == 1;
 
-    public bool SubLogicIsOr(int offset) => Criteria[offset + SUBLOGICTYPE] == 1;
+    public bool SubLogicIsOr(int offset) => criteria[offset + SUBLOGICTYPE] == 1;
 
-    public Sign GetSign(int offset) => (Sign) Criteria[offset + LOGICSIGN];
+    public Sign GetSign(int offset) => (Sign) criteria[offset + LOGICSIGN];
 
-    public Operator GetRule(int offset) => (Operator) Criteria[offset + LOGICRULE];
+    public Operator GetRule(int offset) => (Operator) criteria[offset + LOGICRULE];
 
     public bool IsRangeField(int offset) =>
-        GetRule(offset) == Operator.Other && Criteria[offset + LOGICSIGN + 2] == 1;
+        GetRule(offset) == Operator.Other && criteria[offset + LOGICSIGN + 2] == 1;
 
-    public int NumberOfSubExpressions(int offset) => Utils.ByteToInt(Criteria.Skip(offset + SUBINT).Take(4));
+    public int NumberOfSubExpressions(int offset) => Utils.ByteToInt(criteria.Skip(offset + SUBINT).Take(4));
 
     public static int PostSubExpressionOffset(int offset) => offset + SUBEXPRESSIONLENGTH;
 
@@ -65,33 +64,24 @@ public class CriteriaHelper
 
     #region strings
 
-    public StringFields String(int offset) => (StringFields) Criteria[offset + STRING];
-
+    /// <summary>
+    /// Strings are stored as a length in bytes, followed by that many bytes of big endian UTF-16.
+    /// </summary>
     public string ReadStringContent(int offset)
     {
-        // get remaining bytes of criteria from start of string field
-        var remainingbytes = Criteria.Skip(offset + STRING).ToArray();
+        var start = offset + STRING;
 
-        // if there are uneven remaining bytes
-        if (remainingbytes.Length % 2 != 0)
-        {
-            // add a padding null byte
-            // (Needed for UTF16 parsing)
-            remainingbytes = remainingbytes.Concat(new byte[] {0}).ToArray();
-        }
+        var length = Utils.ByteToInt(criteria.Skip(offset + STRINGLENGTH).Take(4));
 
-        // iTunes uses UTF16 encoding for the string. Convert all of the remaining bytes to a string
-        var content = Encoding.Unicode.GetString(remainingbytes);
+        // don't read past the end if the data is cut short
+        length = Math.Clamp(length, 0, criteria.Length - start);
 
-        // The string should stop with either a null character or the end of the data.
-        // try to find the first null character
-        var stringEnd = content.IndexOf('\0');
-
-        // if there are nulls crop after first null. It's the end of the string.
-        return stringEnd != -1 ? content[..stringEnd] : content;
+        // a character is 2 bytes, so a half character at the end can't be read
+        return Encoding.BigEndianUnicode.GetString(criteria, start, length - length % 2);
     }
 
-    public static int PostStringOffset(int offset, string content) => offset + STRING + 2 * content.Length + 2;
+    // A rule's data ends 3 bytes before the next rule's FIELD, because the first 3 bytes of a field's 4 byte id are 0.
+    public static int PostStringOffset(int offset, string content) => offset + STRING + 2 * content.Length + 3;
 
     #endregion
 
@@ -103,7 +93,7 @@ public class CriteriaHelper
 
     private int HandleIntField(int offset, int valueOffset)
     {
-        var rawValue = Utils.ByteToInt(Criteria.Skip(offset + valueOffset).Take(4));
+        var rawValue = Utils.ByteToInt(criteria.Skip(offset + valueOffset).Take(4));
         
         // ratings field requires special attention as it gives weird numbers like 109 for 100%
         if ((IntFields) Field(offset) == IntFields.Rating)
@@ -118,21 +108,21 @@ public class CriteriaHelper
 
     #region dates
 
-    public DateTime DateA(int offset) => Utils.BytesToDateTime(Criteria.Skip(offset + INTA).Take(4));
+    public DateTime DateA(int offset) => Utils.BytesToDateTime(criteria.Skip(offset + INTA).Take(4));
 
-    public DateTime DateB(int offset) => Utils.BytesToDateTime(Criteria.Skip(offset + INTA + INTB).Take(4));
+    public DateTime DateB(int offset) => Utils.BytesToDateTime(criteria.Skip(offset + INTA + INTB).Take(4));
 
     public bool IsTimeSpanRule(int offset) =>
-        GetRule(offset) == Operator.Other && Criteria[offset + LOGICSIGN + 2] == 2;
+        GetRule(offset) == Operator.Other && criteria[offset + LOGICSIGN + 2] == 2;
 
     public TimeUnits TimeUnits(int offset) =>
-        (TimeUnits) Utils.ByteToInt(Criteria.Skip(offset + TIMEMULTIPLE).Take(4));
+        (TimeUnits) Utils.ByteToInt(criteria.Skip(offset + TIMEMULTIPLE).Take(4));
 
     // Determine the number of the given time unit
     // (I have no idea why this needs two's complement, needs to be capped or the + 1)
     public int TimeSpanValue(int offset)
     {
-        var bytes = Criteria.Skip(offset + TIMEVALUE).Take(4);
+        var bytes = criteria.Skip(offset + TIMEVALUE).Take(4);
 
         var flippedBytes = bytes.Select(b => (byte) ~b);
 
@@ -143,9 +133,9 @@ public class CriteriaHelper
 
     #region playlist ids
 
-    private int PlaylistA(int offset) => Utils.ByteToInt(Criteria.Skip(offset + PLAYLISTA).Take(4));
+    private int PlaylistA(int offset) => Utils.ByteToInt(criteria.Skip(offset + PLAYLISTA).Take(4));
 
-    private int PlaylistB(int offset) => Utils.ByteToInt(Criteria.Skip(offset + PLAYLISTA + PLAYLISTB).Take(4));
+    private int PlaylistB(int offset) => Utils.ByteToInt(criteria.Skip(offset + PLAYLISTA + PLAYLISTB).Take(4));
 
     // creates two 8 digit hex strings representing each number. E.g. (A: 1, B:255) would be 00000001000000FF
     public string PlaylistId(int offset) => $"{PlaylistA(offset):X8}{PlaylistB(offset):X8}";
@@ -154,10 +144,5 @@ public class CriteriaHelper
 
     public static int PostFixedLengthFieldOffset(int offset) => offset + INTA + INTLENGTH;
 
-    public bool KeepReading(int offset) => offset < Criteria.Length;
-
-    public CriteriaHelper(byte[] criteria)
-    {
-        Criteria = criteria;
-    }
+    public bool KeepReading(int offset) => offset < criteria.Length;
 }
