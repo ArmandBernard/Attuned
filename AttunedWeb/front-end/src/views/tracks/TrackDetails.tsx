@@ -25,6 +25,7 @@ import { EditingContext } from "@utils/EditingContext.ts";
 import { TextField } from "@components/TextField.tsx";
 import Button from "@components/Button.tsx";
 import { useRouteMutation } from "@utils/useRouteMutation.ts";
+import { ErrorAlert } from "@components/ErrorAlert.tsx";
 
 interface TrackDetailProps {
   previousTrack: TrackDto | undefined;
@@ -176,18 +177,17 @@ function Details({ track }: { track: TrackDto }) {
 
   const effectiveTrack = { ...track, ...modifications };
 
-  const { mutateAsync, isPending } = useRouteMutation<
-    TrackDto,
-    unknown,
-    { id: number },
-    TrackPatchDto
-  >({
+  const {
+    mutateAsync: patchTrack,
+    isPending: patchTrackIsPending,
+    error: patchTrackError,
+  } = useRouteMutation<TrackDto, { id: number }, TrackPatchDto>({
     url: "track/{id}",
     method: "PATCH",
   });
 
   async function handleSave() {
-    await mutateAsync({
+    await patchTrack({
       body: modifications,
       parameters: {
         id: track.Id,
@@ -201,7 +201,7 @@ function Details({ track }: { track: TrackDto }) {
   }
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-4 gap-4">
       <div className="grid grid-cols-[auto_1fr] gap-x-2">
         <FieldValuePair fieldName="Name">
           <TextField
@@ -288,16 +288,22 @@ function Details({ track }: { track: TrackDto }) {
         </FieldValuePair>
       </div>
 
+      <ErrorAlert error={patchTrackError} />
+
       {editing && (
         <div className="self-end flex gap-2">
           <Button
             variant="secondary"
-            disabled={isPending}
+            disabled={patchTrackIsPending}
             onClick={handleCancel}
           >
             Cancel
           </Button>
-          <Button variant="primary" disabled={isPending} onClick={handleSave}>
+          <Button
+            variant="primary"
+            disabled={patchTrackIsPending}
+            onClick={handleSave}
+          >
             Save
           </Button>
         </div>
