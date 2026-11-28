@@ -1,17 +1,37 @@
-import { ReactNode, useId } from "react";
+import { ReactNode, useContext, useId } from "react";
 import { Rating } from "@root/dtos/Rating.ts";
+import { EditingContext } from "@utils/EditingContext.ts";
+import { ReadonlyRating } from "@components/ReadonlyRating.tsx";
 import StarFilledIcon from "@components/icons/StarFilledIcon.tsx";
 import StarEmptyIcon from "@components/icons/StarEmptyIcon.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
-
-const STARS: Rating[] = [1, 2, 3, 4, 5];
 
 /**
  * A group of native radio buttons, drawn as stars.
  * The radios do the accessibility work: one tab stop, arrow keys to change
  * the value, and "n of 6, checked" announcements.
  */
-export function RatingInput({
+export function RatingField({
+  value,
+  onChange,
+  label = "Rating",
+}: {
+  value: Rating;
+  onChange: (value: Rating) => void;
+  label?: string;
+}) {
+  const [editing] = useContext(EditingContext);
+
+  if (!editing) {
+    return <ReadonlyRating value={value} className="h-6.5" />;
+  }
+
+  return <RatingInput value={value} onChange={onChange} label={label} />;
+}
+
+const STARS: Rating[] = [1, 2, 3, 4, 5];
+
+function RatingInput({
   value,
   onChange,
   label = "Rating",
