@@ -1,17 +1,15 @@
 import { CellComponent } from "./CellComponent.ts";
-import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
+import { ReadonlyRating } from "@components/ReadonlyRating.tsx";
 
 export const RatingCell: CellComponent<Rating> = (props) => {
   const { className, value, ...rest } = props;
 
-  const classNames = ["px-2 whitespace-nowrap text-lg", className]
-    .filter(Boolean)
-    .join(" ");
+  const classNames = ["px-2 truncate", className].filter(Boolean).join(" ");
 
   return (
-    <td aria-label={`${value} stars`} className={classNames} {...rest}>
-      {getRatingString(value)}
+    <td className={classNames} {...rest}>
+      <ReadonlyRating value={value} />
     </td>
   );
 };

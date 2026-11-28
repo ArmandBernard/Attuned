@@ -2,13 +2,13 @@ import { Dialog } from "@components/Dialog.tsx";
 import { FunctionComponent, useMemo } from "react";
 import { TrackDto } from "@dtos";
 import { CoverArt } from "@components/CoverArt.tsx";
-import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
 import { Rating } from "@root/dtos/Rating.ts";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
 import IconButton from "@components/IconButton.tsx";
 import CloseIcon from "@components/icons/CloseIcon.tsx";
 import { TrackDetails } from "@views/tracks/TrackDetails.tsx";
 import RouteLink from "@components/RouteLink.tsx";
+import { ReadonlyRating } from "@components/ReadonlyRating.tsx";
 
 interface TrackDetailProps {
   show: boolean;
@@ -155,7 +155,7 @@ function Details({
                       <div className="text-sm">{track.Artist}</div>
                     )}
                   </div>
-                  <span>{getRatingString(track.Rating as Rating)}</span>
+                  <ReadonlyRating value={track.Rating as Rating} />
                   <span>
                     {track.TotalTime && timeSpanToTimeString(track.TotalTime)}
                   </span>

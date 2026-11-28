@@ -67,6 +67,23 @@ export interface TrackDto
 	Rating: number;
 	Loved: boolean | undefined;
 }
+export interface TrackPatchDto
+{
+	Name?: string | null;
+	Artist?: string | null;
+	Composer?: string | null;
+	Album?: string | null;
+	AlbumArtist?: string | null;
+	Genre?: string | null;
+	Year?: number | null;
+	Bpm?: number | null;
+	DiscNumber?: number | null;
+	DiscCount?: number | null;
+	TrackNumber?: number | null;
+	TrackCount?: number | null;
+	Rating?: number;
+	Loved?: boolean | null;
+}
 export interface BooleanRuleDto
 {
 	Field: BoolFieldsDto;

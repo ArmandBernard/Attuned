@@ -35,6 +35,9 @@ internal static class Program
         builder.Services.AddControllers(options =>
         {
             options.ModelMetadataDetailsProviders.Add(new OptionValidationMetadataProvider());
+        }).ConfigureApiBehaviorOptions(options =>
+        {
+            options.InvalidModelStateResponseFactory = InvalidModelStateResponseFactory.CreateResponse;
         }).AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new TimeSpanJsonConverter());

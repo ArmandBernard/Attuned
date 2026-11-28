@@ -12,7 +12,8 @@ import {
   TimeSpanRuleDto,
 } from "@dtos";
 import { timeSpanToTimeString } from "@utils/stringFormatters/timeSpanToTimeString.ts";
-import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
+import { Rating } from "@root/dtos/Rating.ts";
+import { ReadonlyRating } from "@components/ReadonlyRating.tsx";
 
 export const Rule: FunctionComponent<{
   rule:
@@ -109,7 +110,7 @@ const valueFormatter = (
     case "Rating": {
       const value = property === "A" ? rule.ValueA : rule.ValueB;
       return value === undefined ? undefined : (
-        <span aria-label={`${value} stars`}>{getRatingString(value)}</span>
+        <ReadonlyRating value={value as Rating} className="h-5" />
       );
     }
     case "Int":

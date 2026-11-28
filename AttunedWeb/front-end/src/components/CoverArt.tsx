@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { apiBase } from "@utils/useRouteQuery.ts";
 import { MusicNotesIcon } from "@components/icons/MusicNotesIcon.tsx";
+import { apiBase } from "@utils/buildUrl.ts";
 
 interface CoverArtProps {
   trackId: number | undefined;

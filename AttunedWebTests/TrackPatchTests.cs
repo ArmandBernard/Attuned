@@ -294,4 +294,19 @@ public class TrackPatchTests
         bpm.Should().BeInRange(1, 10);
         XDocument.Load(_libraryPath).ToString().Should().Contain($"c{bpm}");
     }
+
+    [TestCase("TrackNumber", "\"abc\"", "TrackNumber must be a whole number.")]
+    [TestCase("Year", "1.5", "Year must be a whole number.")]
+    [TestCase("Loved", "\"maybe\"", "Loved must be true or false.")]
+    public async Task Patch_WithAValueOfTheWrongType_SaysWhichFieldAndWhatWasExpected(
+        string property, string value, string message)
+    {
+        var response = await _client.SendAsync(PatchRequest("/Track/1", $$"""{"{{property}}":{{value}}}"""));
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var errors = body.GetProperty("errors").EnumerateObject().ToList();
+        errors.Should().ContainSingle(because: body.ToString());
+        errors[0].Value.EnumerateArray().Select(x => x.GetString()).Should().Equal(message);
+    }
 }

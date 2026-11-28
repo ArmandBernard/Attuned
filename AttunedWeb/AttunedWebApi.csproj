@@ -4,10 +4,15 @@
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Reinforced.Typings generates the front-end DTOs (Dtos.ts) on build, but its package has no tool for net11.0.
+         Use its newest tool instead. It can only read a net11.0 assembly when it runs on the .NET 11 runtime, which
+         the RunReinforcedTypingsOnNewerRuntime target below arranges. -->
+    <RtForceTargetFramework>net10.0</RtForceTargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reinforced.Typings" Version="1.6.7" GeneratePathProperty="true" />
+    <PackageReference Include="Reinforced.Typings" Version="1.6.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="11.0.1" />
   </ItemGroup>
 
@@ -15,15 +20,22 @@
     <ProjectReference Include="..\iTunesParser\iTunesSmartParser.csproj" />
   </ItemGroup>
 
-  <!-- Reinforced.Typings generates the front-end DTOs (Dtos.ts) on build. It fails the whole build if its package has
-       no tool for the target framework, which is the case for net11.0. Skip generating until it does. -->
-  <Target Name="SkipReinforcedTypingsWithoutTool" BeforeTargets="CoreCompile"
-          Condition="!Exists('$(PkgReinforced_Typings)/tools/$(TargetFramework)/rtcli.exe')">
-    <PropertyGroup>
-      <RtDisable>true</RtDisable>
-    </PropertyGroup>
-    <Message Importance="high"
-             Text="Reinforced.Typings has no tool for $(TargetFramework), so Dtos.ts was not regenerated." />
+  <UsingTask TaskName="SetEnvironmentVariable" TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Name ParameterType="System.String" Required="true" />
+      <Value ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs"><![CDATA[Environment.SetEnvironmentVariable(Name, Value);]]></Code>
+    </Task>
+  </UsingTask>
+
+  <!-- The Reinforced.Typings tool for net10.0 runs on the .NET 10 runtime by default, which cannot load this net11.0
+       assembly ("Could not load System.Runtime, Version=11.0.0.0"). Letting it roll forward makes it run on the
+       newest runtime installed. -->
+  <Target Name="RunReinforcedTypingsOnNewerRuntime" BeforeTargets="ReinforcedTypingsGenerate">
+    <SetEnvironmentVariable Name="DOTNET_ROLL_FORWARD" Value="LatestMajor" />
   </Target>
 
 </Project>

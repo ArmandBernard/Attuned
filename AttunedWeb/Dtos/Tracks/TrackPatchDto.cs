@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AttunedWebApi.CodeGen;
 using AttunedWebApi.Validation;
 using iTunesSmartParser.Data;
+using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.Dtos.Tracks;
 
@@ -10,6 +12,7 @@ namespace AttunedWebApi.Dtos.Tracks;
 /// A partial update to a track. Properties left out of the request are not changed. Properties sent as null are
 /// cleared (except Rating, which is cleared by sending 0).
 /// </summary>
+[TypescriptDto]
 public record TrackPatchDto : IValidatableObject
 {
     public Option<string?> Name { get; init; }
@@ -36,6 +39,7 @@ public record TrackPatchDto : IValidatableObject
     /// </summary>
     [JsonExtensionData]
     [JsonInclude]
+    [TsIgnore]
     internal Dictionary<string, JsonElement>? Unrecognised { get; init; }
 
     public TrackPatch ToPatch() =>

@@ -19,7 +19,11 @@ public class OptionJsonConverterFactory : JsonConverterFactory
         public override bool HandleNull => true;
 
         public override Option<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-            Option<T>.Of(JsonSerializer.Deserialize<T>(ref reader, options)!);
+            // Reading with the inner converter directly (rather than JsonSerializer.Deserialize) keeps the property
+            // path on any error. Null still goes through Deserialize, as the inner converter is not called for it.
+            Option<T>.Of(reader.TokenType == JsonTokenType.Null
+                ? JsonSerializer.Deserialize<T>(ref reader, options)!
+                : ((JsonConverter<T>) options.GetConverter(typeof(T))).Read(ref reader, typeof(T), options)!);
 
         public override void Write(Utf8JsonWriter writer, Option<T> value, JsonSerializerOptions options)
         {

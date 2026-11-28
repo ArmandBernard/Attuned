@@ -1,7 +1,13 @@
 import { Dialog } from "@components/Dialog.tsx";
-import { FunctionComponent, ReactNode } from "react";
-import { TrackDetailsDto, TrackDto } from "@dtos";
-import { getRatingString } from "@utils/stringFormatters/getRatingString.ts";
+import {
+  Dispatch,
+  FunctionComponent,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
+import { TrackDetailsDto, TrackDto, TrackPatchDto } from "@dtos";
 import { Rating } from "@root/dtos/Rating.ts";
 import { LoveStatus } from "@components/icons/LoveStatus.tsx";
 import { getLoveLabel } from "@utils/stringFormatters/getLoveLabel.ts";
@@ -13,6 +19,14 @@ import ChevronLeftIcon from "@components/icons/ChevronLeftIcon.tsx";
 import { CoverArt } from "@components/CoverArt.tsx";
 import { useNavigate } from "@tanstack/react-router";
 import RouteIconButton from "@components/RouteIconButton.tsx";
+import EditIcon from "@components/icons/EditIcon.tsx";
+import { EditingContext } from "@utils/EditingContext.ts";
+import { TextField } from "@components/TextField.tsx";
+import Button from "@components/Button.tsx";
+import { useRouteMutation } from "@utils/useRouteMutation.ts";
+import { ErrorAlert } from "@components/ErrorAlert.tsx";
+import { useQueryClient } from "@tanstack/react-query";
+import { RatingField } from "@components/RatingField.tsx";
 
 interface TrackDetailProps {
   previousTrack: TrackDto | undefined;
@@ -34,19 +48,26 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
   onClose: onCloseOverride,
 }) => {
   const navigate = useNavigate();
-  const onClose = onCloseOverride ?? (() => void navigate({ to: ".." }));
+  const [editing, setEditing] = useState(false);
+  function handleClose() {
+    setEditing(false);
 
-  const { data: trackDetails } = useRouteQuery<
-    TrackDetailsDto,
-    unknown,
-    { id: number }
-  >({
-    enabled: track !== undefined,
-    url: "track/{id}",
-    parameters: {
-      id: track?.Id as number,
+    if (onCloseOverride) {
+      onCloseOverride();
+    } else {
+      void navigate({ to: ".." });
+    }
+  }
+
+  const { data: trackDetails } = useRouteQuery<TrackDetailsDto, { id: number }>(
+    {
+      enabled: track !== undefined,
+      url: "track/{id}",
+      parameters: {
+        id: track?.Id as number,
+      },
     },
-  });
+  );
 
   const availableDetails: TrackDetailsDto | TrackDto | undefined =
     trackDetails ?? track;
@@ -59,16 +80,20 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
     <Dialog
       className="max-sm:w-full sm:max-w-[700px] sm:w-4/5 bg-background text-text-color m-auto"
       show
-      onClose={onClose}
+      onClose={handleClose}
       closeOnBackgroundClick
     >
       <Header
         track={availableDetails}
         previousTrack={previousTrack}
         nextTrack={nextTrack}
-        onClose={onClose}
+        onClose={handleClose}
+        editing={editing}
+        setEditing={setEditing}
       />
-      <Details track={availableDetails} />
+      <EditingContext.Provider value={[editing, setEditing]}>
+        <Details track={availableDetails} />
+      </EditingContext.Provider>
     </Dialog>
   );
 };
@@ -78,11 +103,15 @@ function Header({
   previousTrack,
   nextTrack,
   onClose,
+  editing,
+  setEditing,
 }: {
   track: TrackDto | TrackDetailsDto;
   previousTrack: TrackDto | undefined;
   nextTrack: TrackDto | undefined;
   onClose: () => void;
+  editing: boolean;
+  setEditing: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <div className="flex justify-between py-3 px-4 text-xl bg-paper-1">
@@ -99,25 +128,39 @@ function Header({
         </div>
       </div>
       <div className="flex items-start gap-2">
-        {previousTrack && (
-          <RouteIconButton
-            aria-label="Previous track"
-            title="Previous track"
-            to="."
-            params={(prev) => ({ ...prev, trackId: String(previousTrack.Id) })}
-          >
-            <ChevronLeftIcon />
-          </RouteIconButton>
-        )}
-        {nextTrack && (
-          <RouteIconButton
-            aria-label="Next track"
-            title="Next track"
-            to="."
-            params={(prev) => ({ ...prev, trackId: String(nextTrack.Id) })}
-          >
-            <ChevronRightIcon />
-          </RouteIconButton>
+        {!editing && (
+          <>
+            {previousTrack && (
+              <RouteIconButton
+                aria-label="Previous track"
+                title="Previous track"
+                to="."
+                params={(prev) => ({
+                  ...prev,
+                  trackId: String(previousTrack.Id),
+                })}
+              >
+                <ChevronLeftIcon />
+              </RouteIconButton>
+            )}
+            {nextTrack && (
+              <RouteIconButton
+                aria-label="Next track"
+                title="Next track"
+                to="."
+                params={(prev) => ({ ...prev, trackId: String(nextTrack.Id) })}
+              >
+                <ChevronRightIcon />
+              </RouteIconButton>
+            )}
+            <IconButton
+              aria-label="Edit"
+              title="Edit"
+              onClick={() => setEditing(true)}
+            >
+              <EditIcon />
+            </IconButton>
+          </>
         )}
         <IconButton aria-label="Close" title="Close" onClick={onClose}>
           <CloseIcon />
@@ -128,31 +171,107 @@ function Header({
 }
 
 function Details({ track }: { track: TrackDto }) {
+  const [patchDto, setPatchDto] = useState<TrackPatchDto>({});
+  const [editing, setEditing] = useContext(EditingContext);
+
+  const modified = { ...track, ...patchDto };
+
+  const queryClient = useQueryClient();
+
+  const {
+    mutateAsync: patchTrack,
+    isPending: patchTrackIsPending,
+    error: patchTrackError,
+    reset: resetPatch,
+  } = useRouteMutation<TrackDto, { id: number }, TrackPatchDto>({
+    url: "track/{id}",
+    method: "PATCH",
+  });
+
+  async function handleSave() {
+    await patchTrack({
+      body: patchDto,
+      parameters: {
+        id: track.Id,
+      },
+    });
+    setPatchDto({});
+    setEditing(false);
+    await queryClient.invalidateQueries({ queryKey: ["track/{id}"] });
+    await queryClient.invalidateQueries({ queryKey: ["track"] });
+  }
+
+  function handleCancel() {
+    setEditing(false);
+    setPatchDto({});
+    resetPatch();
+  }
+
   return (
-    <div className="grid grid-cols-[auto_1fr] p-4 gap-x-2">
-      <FieldValuePair fieldName="Name">{track.Name}</FieldValuePair>
-      <FieldValuePair fieldName="Artist">{track.Artist}</FieldValuePair>
-      <FieldValuePair fieldName="Album">{track.Album}</FieldValuePair>
-      <FieldValuePair fieldName="Composer">{track.Composer}</FieldValuePair>
-      <FieldValuePair fieldName="Genre">{track.Genre}</FieldValuePair>
-      <FieldValuePair fieldName="Year">{track.Year}</FieldValuePair>
-      <FieldValuePair fieldName="Track">
-        {track.TrackNumber ?? "?"} of {track.TrackCount ?? "?"}
-      </FieldValuePair>
-      <FieldValuePair fieldName="Disc">
-        {track.DiscNumber ?? "?"} of {track.DiscCount ?? "?"}
-      </FieldValuePair>
-      <FieldValuePair fieldName="Rating">
-        <span className="flex gap-4">
-          <span aria-label={`${track.Rating} stars`} className="text-primary">
-            {getRatingString(track.Rating as Rating)}
+    <div className="flex flex-col p-4 gap-4">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+        <TextFieldPair item={modified} field="Name" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Artist" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Album" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Composer" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Genre" patch={setPatchDto} />
+        <TextFieldPair item={modified} field="Year" patch={setPatchDto} />
+
+        <XOfYFieldPair
+          item={modified}
+          fieldName="Track"
+          field1="TrackNumber"
+          field2="TrackCount"
+          patch={setPatchDto}
+        />
+        <XOfYFieldPair
+          item={modified}
+          fieldName="Disc"
+          field1="DiscNumber"
+          field2="DiscCount"
+          patch={setPatchDto}
+        />
+        <FieldValuePair fieldName="Rating">
+          <span className="flex gap-4 items-center">
+            <RatingField
+              value={modified.Rating as Rating}
+              onChange={(Rating) =>
+                setPatchDto((previous) => ({ ...previous, Rating }))
+              }
+            />
+            <span className="text-love" aria-label={getLoveLabel(track.Loved)}>
+              <LoveStatus
+                loved={track.Loved}
+                className="w-4 h-4 inline-block"
+              />
+            </span>
           </span>
-          <span className="text-love" aria-label={getLoveLabel(track.Loved)}>
-            <LoveStatus loved={track.Loved} className="w-4 h-4 inline-block" />
-          </span>
-        </span>
-      </FieldValuePair>
-      <FieldValuePair fieldName="Play count">{track.PlayCount}</FieldValuePair>
+        </FieldValuePair>
+        <FieldValuePair fieldName="Play count">
+          {modified.PlayCount}
+        </FieldValuePair>
+      </dl>
+
+      <ErrorAlert error={patchTrackError} />
+
+      {editing && (
+        <div className="self-end flex gap-2">
+          <Button
+            variant="secondary"
+            disabled={patchTrackIsPending}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            disabled={patchTrackIsPending}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -166,8 +285,79 @@ function FieldValuePair({
 }) {
   return (
     <>
-      <span className="font-bold">{fieldName}</span>
-      <span>{children}</span>
+      <dt className="font-bold">{fieldName}</dt>
+      <dd>{children}</dd>
     </>
+  );
+}
+
+function TextFieldPair<T extends object>({
+  item,
+  field,
+  fieldName,
+  patch,
+}: {
+  item: T;
+  field: keyof T;
+  fieldName?: string;
+  patch: Dispatch<SetStateAction<TrackPatchDto>>;
+}) {
+  return (
+    <FieldValuePair fieldName={fieldName ?? (field as string)}>
+      <TextField
+        className="w-full"
+        value={(item[field] as string) ?? ""}
+        onChange={(e) =>
+          patch((modifications) => ({
+            ...modifications,
+            [field]: e.target.value === "" ? null : e.target.value,
+          }))
+        }
+      />
+    </FieldValuePair>
+  );
+}
+
+function XOfYFieldPair<T extends object>({
+  item,
+  field1,
+  field2,
+  fieldName,
+  patch,
+}: {
+  item: T;
+  field1: keyof T;
+  field2: keyof T;
+  fieldName?: string;
+  patch: Dispatch<SetStateAction<TrackPatchDto>>;
+}) {
+  const [editing] = useContext(EditingContext);
+
+  return (
+    <FieldValuePair fieldName={fieldName ?? (field1 as string)}>
+      <TextField
+        className="w-16 inline"
+        inputMode="numeric"
+        value={(item[field1] as string) ?? (editing ? "" : "?")}
+        onChange={(e) =>
+          patch((modifications) => ({
+            ...modifications,
+            [field1]: e.target.value === "" ? null : e.target.value,
+          }))
+        }
+      />
+      <span> of </span>
+      <TextField
+        className="w-16 inline"
+        inputMode="numeric"
+        value={(item[field2] as string) ?? (editing ? "" : "?")}
+        onChange={(e) =>
+          patch((modifications) => ({
+            ...modifications,
+            [field2]: e.target.value === "" ? null : e.target.value,
+          }))
+        }
+      />
+    </FieldValuePair>
   );
 }

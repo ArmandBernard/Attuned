@@ -45,7 +45,7 @@ const columnWidths = {
   Artist: "minmax(150px, 1fr)",
   Album: "minmax(150px, 1.5fr)",
   TotalTime: "4rem",
-  Rating: "6rem",
+  Rating: "7.25rem",
   Loved: "4rem",
   Genre: "minmax(50px, 1fr)",
   PlayCount: "5rem",
