@@ -44,7 +44,7 @@ export const AlbumDetails: FunctionComponent<TrackDetailProps> = ({
     >
       <Header
         album={album}
-        albumArtist={albumArtist ?? firstTrack?.Artist}
+        albumArtist={albumArtist || firstTrack?.Artist}
         trackId={firstTrack?.Id}
         onClose={onClose}
       />
@@ -77,8 +77,8 @@ function Header({
           maxSizeClassName="max-w-32 max-h-32"
         />
         <div>
-          <h1 className="text-xl">{album}</h1>
-          <div className="text-base">{albumArtist}</div>
+          <h1 className="text-xl">{album || "Unknown album"}</h1>
+          <div className="text-base">{albumArtist || "Unknown artist"}</div>
         </div>
       </div>
       <IconButton
@@ -142,12 +142,9 @@ function Details({
                   <div>
                     <RouteLink
                       className="block"
-                      to="/albums/$albumArtist/$album/$trackId"
-                      params={{
-                        album: track.Album,
-                        trackId: String(track.Id),
-                        albumArtist: track.AlbumArtist,
-                      }}
+                      to="/albums/$trackId"
+                      params={{ trackId: String(track.Id) }}
+                      search
                     >
                       {track.Name}
                     </RouteLink>

@@ -1,23 +1,19 @@
 import { useRouteQuery } from "@utils/useRouteQuery.ts";
 import { TrackDto } from "@dtos";
 import { useMemo } from "react";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { AlbumItem } from "@views/albums/AlbumItem.tsx";
 import { FullScreenLoading } from "@components/FullScreenLoading.tsx";
 import { AlbumDetails } from "@views/albums/AlbumDetails.tsx";
 
 export function AlbumsView() {
   const navigate = useNavigate();
-  const params = useParams({
-    from: "/albums/$albumArtist/$album",
-    shouldThrow: false,
-  });
+  const search = useSearch({ from: "/albums" });
 
-  let openAlbum = undefined;
-
-  if (params) {
-    openAlbum = { album: params.album, albumArtist: params.albumArtist };
-  }
+  const openAlbum =
+    search.album === undefined
+      ? undefined
+      : { album: search.album, albumArtist: search.albumArtist ?? "" };
 
   const { data: unsortedTracks, isLoading: isLoadingTracks } = useRouteQuery<
     TrackDto[]
@@ -32,18 +28,17 @@ export function AlbumsView() {
 
   const grouped = useMemo(
     () =>
-      Object.groupBy(
-        sorted ?? [],
-        (track) => `${track.Album};${track.AlbumArtist}`,
-      ),
+      Object.groupBy(sorted ?? [], (track) => {
+        return albumKey(track.Album, track.AlbumArtist);
+      }),
     [sorted],
   );
 
   const openAlbumTracks =
-    openAlbum && grouped[`${openAlbum.album};${openAlbum.albumArtist}`];
+    openAlbum && grouped[albumKey(openAlbum.album, openAlbum.albumArtist)];
 
   const trackParams = useParams({
-    from: "/albums/$albumArtist/$album/$trackId",
+    from: "/albums/$trackId",
     shouldThrow: false,
   });
   const openedTrackId = trackParams ? parseInt(trackParams.trackId) : undefined;
@@ -63,6 +58,9 @@ export function AlbumsView() {
 
             const album = tracks[0].Album;
             const albumArtist = tracks[0].AlbumArtist;
+
+            // tracks with no album are not an album, so they are left out of the list
+            if (!album) return null;
 
             return (
               <AlbumItem
@@ -88,11 +86,16 @@ export function AlbumsView() {
 }
 
 const sortComparer = (trackA: TrackDto, trackB: TrackDto): number => {
-  const albumOrder = trackA.Album?.localeCompare(trackB.Album);
+  const albumOrder = (trackA.Album ?? "").localeCompare(trackB.Album ?? "");
 
   if (albumOrder !== 0) {
     return albumOrder;
   }
 
-  return trackA.Artist?.localeCompare(trackB.Artist);
+  return (trackA.Artist ?? "").localeCompare(trackB.Artist ?? "");
 };
+
+const albumKey = (
+  album: string | undefined,
+  albumArtist: string | undefined,
+): string => JSON.stringify([album ?? "", albumArtist ?? ""]);
