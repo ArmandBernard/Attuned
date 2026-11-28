@@ -3,6 +3,7 @@ using AttunedWebApi.Converters;
 using AttunedWebApi.Dtos.Playlists;
 using AttunedWebApi.Dtos.Tracks;
 using AttunedWebApi.Repositories;
+using AttunedWebApi.Validation;
 using iTunesSmartParser.Data;
 using iTunesSmartParser.Xml;
 using Microsoft.OpenApi;
@@ -31,7 +32,10 @@ internal static class Program
         });
 
         // Add services to the container.
-        builder.Services.AddControllers().AddJsonOptions(options =>
+        builder.Services.AddControllers(options =>
+        {
+            options.ModelMetadataDetailsProviders.Add(new OptionValidationMetadataProvider());
+        }).AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new TimeSpanJsonConverter());
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
