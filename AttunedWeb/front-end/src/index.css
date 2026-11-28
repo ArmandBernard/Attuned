@@ -8,6 +8,8 @@
   --color-text-color: var(--text-color);
   --color-primary: var(--primary);
   --color-on-primary: var(--on-primary);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
   --color-warning: var(--warning);
   --color-love: var(--love);
   --color-paper-1: var(--paper-1);
@@ -32,6 +34,8 @@ html:not(.dark) {
   --selected-row: #7dd3fc; /* sky-300 */
   --primary: #0ea5e9; /* sky-500 */
   --on-primary: black;
+  --error: var(--color-red-500);
+  --on-error: black;
   --warning: #fe9a00; /* amber-500 */
   --love: #e11d48; /* rose-600 */
   --paper-1: #f5f5f5; /* neutral-100 */
@@ -46,6 +50,8 @@ html.dark {
   --selected-row: #0369a1; /* sky-700 */
   --primary: #38bdf8; /* sky-400 */
   --on-primary: black;
+  --error: var(--color-red-400);
+  --on-error: black;
   --warning: #ffb900; /* amber-500 */
   --love: #f43f5e; /* rose-500 */
   --paper-1: #404040; /* neutral-700 */
