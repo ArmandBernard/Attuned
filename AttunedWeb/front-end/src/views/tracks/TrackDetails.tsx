@@ -26,6 +26,7 @@ import { TextField } from "@components/TextField.tsx";
 import Button from "@components/Button.tsx";
 import { useRouteMutation } from "@utils/useRouteMutation.ts";
 import { ErrorAlert } from "@components/ErrorAlert.tsx";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TrackDetailProps {
   previousTrack: TrackDto | undefined;
@@ -175,6 +176,8 @@ function Details({ track }: { track: TrackDto }) {
 
   const effectiveTrack = { ...track, ...modifications };
 
+  const queryClient = useQueryClient();
+
   const {
     mutateAsync: patchTrack,
     isPending: patchTrackIsPending,
@@ -193,6 +196,8 @@ function Details({ track }: { track: TrackDto }) {
     });
     setModifications({});
     setEditing(false);
+    await queryClient.invalidateQueries({ queryKey: ["track/{id}"] });
+    await queryClient.invalidateQueries({ queryKey: ["track"] });
   }
 
   function handleCancel() {
