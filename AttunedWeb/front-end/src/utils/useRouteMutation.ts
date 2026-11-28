@@ -2,22 +2,21 @@ import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { buildUrl, ValidParams } from "@utils/buildUrl.ts";
 import { useIsReadonlyMode } from "@utils/useIsReadonlyMode.ts";
+import { APIError } from "@utils/APIError.ts";
 
 type Method = "PATCH" | "POST";
 
 type UseRouteMutationProps<
   TData,
-  TError = unknown,
   TParams extends ValidParams = undefined,
   TBody = unknown,
 > = { url: string; method: Method } & ReactMutationOptions<
   TData,
-  TError,
   MutationRequestOptions<TParams, TBody>
 >;
 
-type ReactMutationOptions<TData, TError, TVariables> = Omit<
-  UseMutationOptions<TData, TError, TVariables>,
+type ReactMutationOptions<TData, TVariables> = Omit<
+  UseMutationOptions<TData, APIError, TVariables>,
   "mutationKey" | "mutationFn"
 >;
 
@@ -28,10 +27,9 @@ type MutationRequestOptions<TParams extends ValidParams, TBody> = {
 
 export function useRouteMutation<
   TData,
-  TError = unknown,
   TParams extends ValidParams = undefined,
   TBody = unknown,
->(props: UseRouteMutationProps<TData, TError, TParams, TBody>) {
+>(props: UseRouteMutationProps<TData, TParams, TBody>) {
   const { url, method, ...rest } = props;
   const isReadonlyMode = useIsReadonlyMode();
 
@@ -49,14 +47,14 @@ export function useRouteMutation<
       });
 
       if (!response.ok) {
-        throw new Error("fetch failed");
+        throw new APIError(response.status, await response.json());
       }
-      return response.json();
+      return await response.json();
     },
     [url, method, isReadonlyMode],
   );
 
-  return useMutation<TData, TError, MutationRequestOptions<TParams, TBody>>({
+  return useMutation<TData, APIError, MutationRequestOptions<TParams, TBody>>({
     ...rest,
     mutationFn: mutateFn,
   });
