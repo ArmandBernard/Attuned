@@ -182,6 +182,7 @@ function Details({ track }: { track: TrackDto }) {
     mutateAsync: patchTrack,
     isPending: patchTrackIsPending,
     error: patchTrackError,
+    reset: resetPatch,
   } = useRouteMutation<TrackDto, { id: number }, TrackPatchDto>({
     url: "track/{id}",
     method: "PATCH",
@@ -203,6 +204,7 @@ function Details({ track }: { track: TrackDto }) {
   function handleCancel() {
     setEditing(false);
     setPatchDto({});
+    resetPatch();
   }
 
   return (
