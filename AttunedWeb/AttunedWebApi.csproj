@@ -7,12 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Reinforced.Typings" Version="1.6.7" />
+    <PackageReference Include="Reinforced.Typings" Version="1.6.7" GeneratePathProperty="true" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="11.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\iTunesParser\iTunesSmartParser.csproj" />
   </ItemGroup>
+
+  <!-- Reinforced.Typings generates the front-end DTOs (Dtos.ts) on build. It fails the whole build if its package has
+       no tool for the target framework, which is the case for net11.0. Skip generating until it does. -->
+  <Target Name="SkipReinforcedTypingsWithoutTool" BeforeTargets="CoreCompile"
+          Condition="!Exists('$(PkgReinforced_Typings)/tools/$(TargetFramework)/rtcli.exe')">
+    <PropertyGroup>
+      <RtDisable>true</RtDisable>
+    </PropertyGroup>
+    <Message Importance="high"
+             Text="Reinforced.Typings has no tool for $(TargetFramework), so Dtos.ts was not regenerated." />
+  </Target>
 
 </Project>

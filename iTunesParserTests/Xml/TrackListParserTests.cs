@@ -92,8 +92,8 @@ public class TrackListParserTests
 
     private readonly TrackListParser _trackListParser = new();
 
-    private readonly IEnumerable<Track> _expectedTrackList = new Track[]
-    {
+    private readonly IEnumerable<Track> _expectedTrackList =
+    [
         new()
         {
             Album = "Soul Eater",
@@ -150,7 +150,7 @@ public class TrackListParserTests
             TrackNumber = 1,
             Year = 2009
         }
-    };
+    ];
 
     [Test]
     public void ParseDocument_GivenValidDocument_ShouldReturnExpectedTrackList()
@@ -160,5 +160,37 @@ public class TrackListParserTests
         var result = _trackListParser.ParseDocument(doc);
 
         result.Should().BeEquivalentTo(_expectedTrackList);
+    }
+
+    [TestCase(628)]
+    [TestCase(630)]
+    public void GetById_GivenValidDocumentAndId_ShouldReturnTheSameTrackAsParseDocument(int id)
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var result = _trackListParser.GetById(doc, id);
+
+        result.Should().BeEquivalentTo(_expectedTrackList.Single(x => x.Id == id));
+    }
+
+    [Test]
+    public void GetById_GivenValidDocumentAndMissingId_ShouldReturnNull()
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var result = _trackListParser.GetById(doc, 1);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public void GetById_ShouldNotNeedTheAudioFileToExist()
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var act = () => _trackListParser.GetById(doc, 630);
+
+        act.Should().NotThrow();
+        File.Exists(new TrackDetails(_trackListParser.GetById(doc, 630)!).LocalLocation).Should().BeFalse();
     }
 }

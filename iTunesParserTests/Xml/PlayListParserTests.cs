@@ -79,16 +79,17 @@ public class PlayListParserTests
         new Playlist("5 Stars+", 16371, true)
     };
 
-    private readonly PlaylistDetails _expectedPlaylistDetails = new PlaylistDetails(
+    private readonly Playlist _expectedPlaylist = new("5 Stars+", 16371, true);
+    
+    private readonly PlaylistDetails _expectedPlaylistDetails = new(
         "5 Stars+",
         16371,
         true,
-        new[]
-        {
+        [
             3702,
             3694,
-            3696,
-        },
+            3696
+        ],
         //"( ([MediaKind] = 'Music') OR ([MediaKind] = 'Music Video') )\n\tAND ( ([Rating] >= 2 AND [Rating] <= 5) )")
         new SmartPlaylistInformation(
             new Limit(false, LimitUnits.Items, 25, false, SelectionMethods.Random, true),
@@ -119,21 +120,41 @@ public class PlayListParserTests
     }
     
     [Test]
-    public void GetById_GivenValidDocumentAndId_ShouldReturnExpectedPlaylistDetails()
+    public void GetById_GivenValidDocumentAndId_ShouldReturnExpectedPlaylist()
     {
         var doc = XDocument.Parse(TEST_DOC);
 
         var result = _playlistParser.GetById(doc, 16371);
 
-        result.Should().BeEquivalentTo(_expectedPlaylistDetails);
+        result.Should().BeEquivalentTo(_expectedPlaylist);
     }
-    
+
     [Test]
     public void GetById_GivenValidDocumentAndMissingId_ShouldReturnNull()
     {
         var doc = XDocument.Parse(TEST_DOC);
 
         var result = _playlistParser.GetById(doc, 2);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public void GetDetailsById_GivenValidDocumentAndId_ShouldReturnExpectedPlaylistDetails()
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var result = _playlistParser.GetDetailsById(doc, 16371);
+
+        result.Should().BeEquivalentTo(_expectedPlaylistDetails);
+    }
+    
+    [Test]
+    public void GetDetailsById_GivenValidDocumentAndMissingId_ShouldReturnNull()
+    {
+        var doc = XDocument.Parse(TEST_DOC);
+
+        var result = _playlistParser.GetDetailsById(doc, 2);
 
         result.Should().BeNull();
     }

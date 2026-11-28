@@ -7,7 +7,7 @@ namespace AttunedWebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CoverController(IXmlSource xmlSource, ITrackListParser trackListParser) : ControllerBase
+public class CoverController(IITunesXmlReader xmlReader, ITrackListParser trackListParser) : ControllerBase
 {
     /// <summary>
     /// Get the cover art for a track as a raw image, so the browser can load, decode and cache it natively.
@@ -18,7 +18,7 @@ public class CoverController(IXmlSource xmlSource, ITrackListParser trackListPar
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByTrackId(int trackId, CancellationToken token)
     {
-        var doc = await xmlSource.GetXDocument(token);
+        var doc = await xmlReader.GetXDocument(token);
 
         var cover = trackListParser.GetCoverArt(doc, trackId);
 

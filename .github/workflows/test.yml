@@ -18,7 +18,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Test
-        run: dotnet test --verbosity normal
+        run: dotnet test --verbosity normal --logger "GitHubActions;summary-include-passed=false;summary-include-skipped=true"
   test-front-end:
     name: Test front-end
     runs-on: ubuntu-latest
@@ -40,4 +40,6 @@ jobs:
       - name: Format check
         working-directory: ${{env.working-directory}}
         run: npm run format:check
-
+      - name: Test
+        working-directory: ${{env.working-directory}}
+        run: npm test

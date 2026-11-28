@@ -1,3 +1,4 @@
+// Icon from Material Symbols (https://fonts.google.com/icons), used under the Apache License 2.0. See THIRD_PARTY_NOTICES.md.
 import { SVGProps } from "react";
 
 export default function ChevronRightIcon(props: SVGProps<SVGSVGElement>) {

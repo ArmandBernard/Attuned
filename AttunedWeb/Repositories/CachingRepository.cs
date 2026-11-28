@@ -1,7 +1,7 @@
 namespace AttunedWebApi.Repositories;
 
 public class CachingRepository<TBasic, TDetailed>(IRepository<TBasic, TDetailed> unCachedRepository, TimeSpan staleTime)
-    : IRepository<TBasic, TDetailed>
+    : IRepository<TBasic, TDetailed>, ICacheInvalidator
 {
     private Cache<IEnumerable<TBasic>>? CachedGet { get; set; }
 
@@ -20,5 +20,11 @@ public class CachingRepository<TBasic, TDetailed>(IRepository<TBasic, TDetailed>
     }
 
     // don't cache individual fetches, as there could be many
-    public Task<TDetailed?> GetById(int id, CancellationToken token) => unCachedRepository.GetById(id, token);
+    public Task<TBasic?> GetById(int id, CancellationToken token) =>
+        unCachedRepository.GetById(id, token);
+
+    // don't cache individual fetches, as there could be many
+    public Task<TDetailed?> GetDetailsById(int id, CancellationToken token) => unCachedRepository.GetDetailsById(id, token);
+
+    public void Invalidate() => CachedGet = null;
 }

@@ -11,15 +11,23 @@ public class PlaylistParser : IPlaylistParser
     public IEnumerable<Playlist> ParseDocument(XDocument doc) =>
         GetPlaylistsArrayNode(doc).Elements().Select(ParsePlaylist);
 
-    public PlaylistDetails? GetById(XDocument doc, int id)
+    public Playlist? GetById(XDocument doc, int id)
     {
-        var playlistElements = GetPlaylistsArrayNode(doc).Elements();
-        
-        var playlistNode = playlistElements
-            .FirstOrDefault(playlist => playlist.PlistDictGet("Playlist ID")?.PlistParseValue() == id);
+        var playlistNode = FindPlaylistElement(doc, id);
+
+        return playlistNode == null ? null : ParsePlaylist(playlistNode);
+    }
+
+    public PlaylistDetails? GetDetailsById(XDocument doc, int id)
+    {
+        var playlistNode = FindPlaylistElement(doc, id);
 
         return playlistNode == null ? null : ParsePlaylistDetails(playlistNode);
     }
+
+    private static XElement? FindPlaylistElement(XDocument doc, int id) =>
+        GetPlaylistsArrayNode(doc).Elements()
+            .FirstOrDefault(playlist => playlist.PlistDictGet("Playlist ID")?.PlistParseValue() == id);
 
     /// <summary>
     /// Get the node which contains all playlists
