@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using AttunedWebApi.CodeGen;
 using AttunedWebApi.Validation;
 using iTunesSmartParser.Data;
+using Reinforced.Typings.Attributes;
 
 namespace AttunedWebApi.Dtos.Tracks;
 
@@ -38,6 +39,7 @@ public record TrackPatchDto : IValidatableObject
     /// </summary>
     [JsonExtensionData]
     [JsonInclude]
+    [TsIgnore]
     internal Dictionary<string, JsonElement>? Unrecognised { get; init; }
 
     public TrackPatch ToPatch() =>
