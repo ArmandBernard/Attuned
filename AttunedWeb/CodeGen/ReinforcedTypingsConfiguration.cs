@@ -1,3 +1,5 @@
+using iTunesSmartParser.Data;
+using Reinforced.Typings;
 using Reinforced.Typings.Ast.TypeNames;
 using Reinforced.Typings.Fluent;
 using ConfigurationBuilder = Reinforced.Typings.Fluent.ConfigurationBuilder;
@@ -29,5 +31,27 @@ public static class ReinforcedTypingsConfiguration
         builder.SubstituteGeneric(typeof(Nullable<>),
             (type, resolver) =>
                 new RtSimpleTypeName($"{resolver.ResolveTypeName(type.GenericTypeArguments.Single())} | undefined"));
+        // An Option<T> is a value that may be left out of a request, which is expressed by making the property optional
+        // (see DtoInterfaceGenerator). When it is sent, null means "clear the value" for anything that can be null.
+        builder.SubstituteGeneric(typeof(Option<>),
+            (type, resolver) =>
+            {
+                var inner = type.GenericTypeArguments.Single();
+
+                return ResolveNullableAsOrNull(inner, resolver);
+            });
+    }
+
+    private static RtTypeName ResolveNullableAsOrNull(Type type, TypeResolver resolver)
+    {
+        var nullableInner = Nullable.GetUnderlyingType(type);
+        if (nullableInner != null)
+        {
+            return new RtSimpleTypeName($"{resolver.ResolveTypeName(nullableInner)} | null");
+        }
+
+        return type.IsValueType
+            ? resolver.ResolveTypeName(type)
+            : new RtSimpleTypeName($"{resolver.ResolveTypeName(type)} | null");
     }
 }

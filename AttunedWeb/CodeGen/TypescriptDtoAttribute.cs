@@ -8,5 +8,6 @@ public sealed class TypescriptDtoAttribute: TsInterfaceAttribute
     {
         AutoI = false;
         AutoExportMethods = false;
+        CodeGeneratorType = typeof(DtoInterfaceGenerator);
     }
 }
