@@ -21,7 +21,7 @@ export const PlaylistsView: FunctionComponent<{
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>();
 
   const { data: playlistDetails, isFetching: isFetchingPlaylistDetails } =
-    useRouteQuery<PlaylistDetailsDto, unknown, { id: number }>({
+    useRouteQuery<PlaylistDetailsDto, { id: number }>({
       url: "playlist/{id}",
       enabled: playlist !== undefined,
       parameters: {

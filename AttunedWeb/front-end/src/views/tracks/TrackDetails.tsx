@@ -58,17 +58,15 @@ export const TrackDetails: FunctionComponent<TrackDetailProps> = ({
     }
   }
 
-  const { data: trackDetails } = useRouteQuery<
-    TrackDetailsDto,
-    unknown,
-    { id: number }
-  >({
-    enabled: track !== undefined,
-    url: "track/{id}",
-    parameters: {
-      id: track?.Id as number,
+  const { data: trackDetails } = useRouteQuery<TrackDetailsDto, { id: number }>(
+    {
+      enabled: track !== undefined,
+      url: "track/{id}",
+      parameters: {
+        id: track?.Id as number,
+      },
     },
-  });
+  );
 
   const availableDetails: TrackDetailsDto | TrackDto | undefined =
     trackDetails ?? track;

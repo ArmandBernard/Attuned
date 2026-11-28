@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { UseQueryOptions } from "@tanstack/react-query";
 import { buildUrl } from "@utils/buildUrl.ts";
+import { APIError } from "@utils/APIError.ts";
+import { RouteError } from "@utils/RouteError.ts";
 
-type useRouteQueryProps<TParams extends ValidParams, TBody, TResult, TError> = {
+type UseRouteQueryProps<TParams extends ValidParams, TBody, TResult> = {
   url: string;
   parameters?: TParams;
   body?: TBody;
 } & Omit<
-  UseQueryOptions<TResult, TError, TResult>,
+  UseQueryOptions<TResult, RouteError, TResult>,
   "queryKey" | "queryFn" | "initialData"
 >;
 
@@ -15,13 +17,12 @@ type ValidParams = { [key: string]: string | number | undefined } | undefined;
 
 export function useRouteQuery<
   TResult,
-  TError = unknown,
   TParams extends ValidParams = undefined,
   TBody = unknown,
->(props: useRouteQueryProps<TParams, TBody, TResult, TError>) {
+>(props: UseRouteQueryProps<TParams, TBody, TResult>) {
   const { url, parameters, body, ...rest } = props;
 
-  return useQuery<TResult, TError>({
+  return useQuery<TResult, RouteError>({
     queryKey: [url, parameters, body],
     queryFn: async () => {
       const response = await fetch(buildUrl(url, parameters), {
@@ -30,9 +31,9 @@ export function useRouteQuery<
       });
 
       if (!response.ok) {
-        throw new Error("fetch failed");
+        throw new APIError(response.status, await response.json());
       }
-      return response.json();
+      return await response.json();
     },
     ...rest,
   });

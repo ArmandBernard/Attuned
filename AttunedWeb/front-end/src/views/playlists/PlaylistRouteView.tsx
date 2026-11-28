@@ -11,11 +11,7 @@ const playlistRouteApi = getRouteApi("/playlists/$playlistId");
 export function PlaylistRouteView() {
   const { playlistId } = playlistRouteApi.useParams();
 
-  const { data, isLoading } = useRouteQuery<
-    PlaylistDto,
-    unknown,
-    { id: number }
-  >({
+  const { data, isLoading } = useRouteQuery<PlaylistDto, { id: number }>({
     url: "playlist/{id}",
     parameters: {
       id: parseInt(playlistId),
