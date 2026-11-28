@@ -207,7 +207,7 @@ function Details({ track }: { track: TrackDto }) {
 
   return (
     <div className="flex flex-col p-4 gap-4">
-      <div className="grid grid-cols-[auto_1fr] gap-x-2">
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4">
         <FieldValuePair fieldName="Name">
           <TextField
             value={effectiveTrack.Name ?? ""}
@@ -291,7 +291,7 @@ function Details({ track }: { track: TrackDto }) {
         <FieldValuePair fieldName="Play count">
           {effectiveTrack.PlayCount}
         </FieldValuePair>
-      </div>
+      </dl>
 
       <ErrorAlert error={patchTrackError} />
 
@@ -326,8 +326,8 @@ function FieldValuePair({
 }) {
   return (
     <>
-      <span className="font-bold">{fieldName}</span>
-      <span>{children}</span>
+      <dt className="font-bold">{fieldName}</dt>
+      <dd>{children}</dd>
     </>
   );
 }
