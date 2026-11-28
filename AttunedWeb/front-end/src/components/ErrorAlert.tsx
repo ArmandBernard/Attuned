@@ -12,17 +12,13 @@ export function ErrorAlert({
 
   if (error instanceof APIError) {
     return (
-      <Alert>
+      <Alert {...rest}>
         <ASPNetErrorView error={error} />
       </Alert>
     );
   }
 
-  return (
-    <div {...rest} className={`bg-error/30 rounded-sm p-4 ${rest.className}`}>
-      {error.message}
-    </div>
-  );
+  return <Alert {...rest}>{error.message}</Alert>;
 }
 
 function Alert({ children, ...rest }: HTMLAttributes<HTMLDivElement>) {
